@@ -1,0 +1,13 @@
+# Segreti — mai committare
+.env
+.env.*
+!.env.example
+
+# Dipendenze
+node_modules/
+
+# Netlify
+.netlify/
+
+# Sistema
+.DS_Store
