@@ -140,3 +140,26 @@ create policy "progress: update own"
   with check (auth.uid() = user_id);
 
 -- QUIZ_RESPONSES: nessuna policy client → accesso solo con service role
+
+-- ============================================================
+-- STORAGE — bucket privato "downloads" per ebook, tracker e bump
+-- I file si caricano a mano dalla dashboard (Storage → downloads):
+--   Metodo-Argo-ebook-v2.pdf
+--   Tracker-21-giorni.pdf
+--   Checklist-arrivo-cucciolo.pdf
+-- L'area membri li serve con URL firmati: senza login e senza
+-- acquisto non si scaricano.
+-- ============================================================
+insert into storage.buckets (id, name, public)
+values ('downloads', 'downloads', false)
+on conflict (id) do nothing;
+
+create policy "downloads: leggibili solo da chi ha acquistato"
+  on storage.objects for select
+  using (
+    bucket_id = 'downloads'
+    and exists (
+      select 1 from public.purchases p
+      where p.user_id = auth.uid()
+    )
+  );

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Area membri — Il Metodo Argo</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/argo.css">
+<style>
+.member-top { padding: 56px 0 40px; }
+.member-top h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); }
+.progress-bar {
+  height: 10px; border-radius: 99px; background: var(--paper2);
+  border: 1px solid var(--line); overflow: hidden; margin-top: 18px;
+}
+.progress-bar i { display: block; height: 100%; background: var(--salvia); border-radius: 99px; transition: width .4s ease; }
+
+.downloads { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 24px; }
+.download {
+  display: flex; gap: 14px; align-items: center;
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 18px 20px; text-decoration: none; color: var(--ink);
+  transition: border-color .15s;
+}
+.download:hover { border-color: var(--salvia); }
+.download .ic { font-size: 1.6rem; }
+.download small { color: var(--muted); display: block; }
+
+.fase-label {
+  display: flex; align-items: center; gap: 14px;
+  margin: 44px 0 18px;
+}
+.fase-label h2 { font-size: 1.25rem; }
+.fase-label .dots { flex: none; }
+.fase-label small { color: var(--muted); }
+
+.giorni { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+.giorno {
+  text-align: left; font: inherit;
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 18px 20px; cursor: pointer; position: relative;
+  transition: border-color .15s, transform .15s;
+}
+.giorno:hover:not(.locked) { border-color: var(--salvia); transform: translateY(-2px); }
+.giorno .num {
+  font-size: .72rem; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--amber-d);
+}
+.giorno h3 { font-size: 1.02rem; margin-top: 4px; }
+.giorno .stato { position: absolute; top: 14px; right: 16px; font-size: 1rem; }
+.giorno.done { background: var(--salvia-t); border-color: var(--salvia); }
+.giorno.locked { opacity: .55; cursor: not-allowed; background: var(--paper2); }
+
+/* Dettaglio giorno */
+.day-detail { max-width: 720px; }
+.day-detail .content { margin-top: 24px; }
+.day-detail .content p { margin-bottom: 16px; }
+.day-detail .content ol, .day-detail .content ul { margin: 0 0 16px 24px; }
+.day-detail .content li { margin-bottom: 8px; }
+.day-nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 36px; }
+
+.modulo-pick { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 24px; }
+.modulo-pick button {
+  font: inherit; text-align: left; background: #fff;
+  border: 1.5px solid var(--line); border-radius: var(--radius);
+  padding: 20px; cursor: pointer; transition: border-color .15s;
+}
+.modulo-pick button:hover { border-color: var(--salvia); background: var(--salvia-t); }
+.modulo-pick .emoji { font-size: 1.6rem; }
+.modulo-pick h3 { font-size: 1rem; margin-top: 6px; }
+
+.loading { text-align: center; padding: 120px 24px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="logo" href="/area.html">Il Metodo <span class="paw">Argo</span> 🐾</a>
+    <nav class="site-nav">
+      <a href="#" id="logoutBtn">Esci</a>
+    </nav>
+  </div>
+</header>
+
+<div id="app">
+  <div class="loading">
+    <div style="font-size:2.5rem">🐕</div>
+    <p class="mt-1">Un attimo, sto annusando i tuoi dati…</p>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container center">
+    <p>Il Metodo Argo · Un dubbio su salute o comportamenti aggressivi? Parla con un veterinario o un educatore certificato.</p>
+  </div>
+</footer>
+
+<script type="module">
+import { getSupabase } from '/assets/js/supabase-client.js';
+
+// 'progressive' = un giorno si sblocca ogni 24h dall'acquisto
+// 'all'         = tutti i 21 giorni disponibili da subito
+const UNLOCK_MODE = 'progressive';
+
+const MODULI = {
+  trattore:    { nome: 'Il Trattore',         emoji: '🚜', tema: 'guinzaglio che non tira' },
+  squalo:      { nome: 'Lo Squalo',           emoji: '🦈', tema: 'i morsi del cucciolo' },
+  esploratore: { nome: "L'Esploratore Sordo", emoji: '🧭', tema: 'il richiamo che funziona' },
+  velcro:      { nome: 'Il Velcro',           emoji: '🧲', tema: 'stare da solo senza drammi' },
+  tornado:     { nome: 'Il Tornado',          emoji: '🌪️', tema: 'autocontrollo ed energia' }
+};
+
+const app = document.getElementById('app');
+const supabase = await getSupabase().catch(() => null);
+
+if (!supabase) {
+  app.innerHTML = '<div class="loading"><p>Il servizio non è raggiungibile. Riprova tra qualche minuto.</p></div>';
+  throw new Error('config non disponibile');
+}
+
+const { data: { session } } = await supabase.auth.getSession();
+if (!session) { window.location.replace('/accedi.html'); throw new Error('non autenticato'); }
+const userId = session.user.id;
+
+document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+  e.preventDefault();
+  await supabase.auth.signOut();
+  window.location.href = '/accedi.html';
+});
+
+// ------- Caricamento dati -------
+const [{ data: profile }, { data: purchases }, { data: allDays }, { data: progressRows }] = await Promise.all([
+  supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
+  supabase.from('purchases').select('*').order('purchased_at', { ascending: true }),
+  supabase.from('course_days').select('*').order('day_number', { ascending: true }),
+  supabase.from('progress').select('*')
+]);
+
+if (!purchases || purchases.length === 0) {
+  app.innerHTML = `
+    <section class="section"><div class="container center" style="max-width:560px">
+      <h1>Hmm, qui non trovo acquisti. 🐾</h1>
+      <p class="lead mt-2" style="margin-inline:auto">Se hai appena comprato, dammi un minuto e ricarica la pagina. Altrimenti, il Metodo ti aspetta qui sotto.</p>
+      <a class="btn btn--amber mt-3" href="/#prezzo">Sblocca il Metodo Argo →</a>
+    </div></section>`;
+  throw new Error('nessun acquisto');
+}
+
+const purchasedAt = new Date(purchases[0].purchased_at);
+const hasBump = purchases.some(p => p.order_bump);
+const progress = new Map((progressRows || []).map(r => [r.day_number, r]));
+
+function daysUnlocked() {
+  if (UNLOCK_MODE === 'all') return 21;
+  const diff = Math.floor((Date.now() - purchasedAt.getTime()) / 86400000);
+  return Math.min(21, diff + 1);
+}
+
+// ------- Mini renderer markdown (grassetto, liste, paragrafi) -------
+function esc(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function md(text) {
+  const blocks = esc(text).trim().split(/\n\s*\n/);
+  return blocks.map(b => {
+    const lines = b.split('\n');
+    if (lines.every(l => /^\d+\.\s/.test(l))) {
+      return '<ol>' + lines.map(l => `<li>${inline(l.replace(/^\d+\.\s/, ''))}</li>`).join('') + '</ol>';
+    }
+    if (lines.every(l => /^-\s/.test(l))) {
+      return '<ul>' + lines.map(l => `<li>${inline(l.replace(/^-\s/, ''))}</li>`).join('') + '</ul>';
+    }
+    return `<p>${inline(lines.join('<br>'))}</p>`;
+  }).join('');
+  function inline(s) { return s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>'); }
+}
+
+// ------- Selezione modulo (se il quiz non è stato fatto) -------
+function renderModulePicker() {
+  app.innerHTML = `
+    <section class="section--tight"><div class="container" style="max-width:760px">
+      <span class="kicker">Prima di partire</span>
+      <h1>Qual è il vostro capitolo?</h1>
+      <p class="lead mt-2">Non ho trovato il risultato del tuo quiz, quindi te lo chiedo direttamente: qual è la cosa su cui volete lavorare nei giorni 8–16?</p>
+      <div class="modulo-pick">
+        ${Object.entries(MODULI).map(([slug, m]) => `
+          <button data-mod="${slug}">
+            <span class="emoji">${m.emoji}</span>
+            <h3>${m.nome}</h3>
+            <small class="muted">${m.tema}</small>
+          </button>`).join('')}
+      </div>
+    </div></section>`;
+  app.querySelectorAll('[data-mod]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const { error } = await supabase.from('profiles')
+        .update({ quiz_profile: btn.dataset.mod, updated_at: new Date().toISOString() })
+        .eq('id', userId);
+      if (!error) { profile.quiz_profile = btn.dataset.mod; renderDashboard(); }
+    });
+  });
+}
+
+// ------- Dashboard: i 21 giorni -------
+function myDays() {
+  return (allDays || []).filter(d => d.module === null || d.module === profile?.quiz_profile);
+}
+
+function renderDashboard() {
+  const days = myDays();
+  const unlocked = daysUnlocked();
+  const doneCount = [...progress.values()].filter(r => r.completed).length;
+  const mod = MODULI[profile?.quiz_profile] || null;
+
+  const fasi = [
+    { n: 1, titolo: 'Fondamenta', sub: 'Giorni 1–7 · il linguaggio comune' },
+    { n: 2, titolo: mod ? `Il tuo modulo: ${mod.nome} ${mod.emoji}` : 'Il tuo modulo', sub: 'Giorni 8–16 · il vostro problema specifico' },
+    { n: 3, titolo: 'Consolidamento', sub: 'Giorni 17–21 · il mondo reale' }
+  ];
+
+  app.innerHTML = `
+    <section class="member-top section--salvia"><div class="container">
+      <span class="kicker">I tuoi 21 giorni</span>
+      <h1>Ciao! Pronti a lavorare? 🐾</h1>
+      <p class="muted mt-1"><strong>${doneCount}</strong> giorni completati su 21
+        ${unlocked < 21 ? ` · sbloccati fino al giorno <strong>${unlocked}</strong> (uno nuovo ogni 24 ore)` : ''}
+        ${profile?.puppy_flag ? ' · 💧 bonus SOS Pipì attivo' : ''}</p>
+      <div class="progress-bar"><i style="width:${Math.round(doneCount / 21 * 100)}%"></i></div>
+
+      <div class="downloads">
+        <a class="download" href="#" data-file="Metodo-Argo-ebook-v2.pdf">
+          <span class="ic">📖</span><span><strong>L'ebook del Metodo</strong><small>PDF · 26 pagine</small></span>
+        </a>
+        <a class="download" href="#" data-file="Tracker-21-giorni.pdf">
+          <span class="ic">📋</span><span><strong>Tracker dei 21 giorni</strong><small>PDF A4 · da stampare</small></span>
+        </a>
+        ${hasBump ? `
+        <a class="download" href="#" data-file="Checklist-arrivo-cucciolo.pdf">
+          <span class="ic">🐶</span><span><strong>Checklist arrivo cucciolo</strong><small>PDF · il tuo order bump</small></span>
+        </a>` : ''}
+      </div>
+    </div></section>
+
+    <section class="section--tight"><div class="container">
+      ${fasi.map(f => {
+        const faseDays = days.filter(d => d.phase === f.n);
+        return `
+        <div class="fase-label">
+          <h2>${f.titolo}</h2>
+          <small>${f.sub}</small>
+        </div>
+        <div class="giorni">
+          ${faseDays.map(d => {
+            const p = progress.get(d.day_number);
+            const isDone = p?.completed;
+            const isLocked = d.day_number > unlocked;
+            return `
+            <button class="giorno ${isDone ? 'done' : ''} ${isLocked ? 'locked' : ''}"
+                    data-day="${d.day_number}" ${isLocked ? 'disabled' : ''}>
+              <span class="num">Giorno ${d.day_number}</span>
+              <h3>${esc(d.title)}</h3>
+              <span class="stato">${isLocked ? '🔒' : (isDone ? '✅' : '')}</span>
+            </button>`;
+          }).join('')}
+        </div>`;
+      }).join('')}
+    </div></section>`;
+
+  app.querySelectorAll('.giorno:not(.locked)').forEach(btn => {
+    btn.addEventListener('click', () => renderDay(parseInt(btn.dataset.day, 10)));
+  });
+
+  // I PDF vivono nel bucket privato "downloads": si aprono con un
+  // URL firmato valido 1 ora, generato solo per chi ha acquistato.
+  app.querySelectorAll('[data-file]').forEach(link => {
+    link.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const { data, error } = await supabase.storage
+        .from('downloads')
+        .createSignedUrl(link.dataset.file, 3600);
+      if (error || !data?.signedUrl) {
+        alert('File non ancora disponibile: riprova più tardi o scrivici.');
+        return;
+      }
+      window.open(data.signedUrl, '_blank');
+    });
+  });
+}
+
+// ------- Dettaglio di un giorno -------
+async function saveProgress(dayNumber, checklistState, checklistLength) {
+  const completed = checklistState.length === checklistLength && checklistState.every(Boolean);
+  const row = {
+    user_id: userId,
+    day_number: dayNumber,
+    checklist_state: checklistState,
+    completed,
+    completed_at: completed ? new Date().toISOString() : null,
+    updated_at: new Date().toISOString()
+  };
+  const { data, error } = await supabase.from('progress')
+    .upsert(row, { onConflict: 'user_id,day_number' })
+    .select().single();
+  if (!error && data) progress.set(dayNumber, data);
+  return !error;
+}
+
+function renderDay(dayNumber) {
+  const day = myDays().find(d => d.day_number === dayNumber);
+  if (!day) return renderDashboard();
+  const checklist = Array.isArray(day.checklist) ? day.checklist : [];
+  const saved = progress.get(dayNumber)?.checklist_state || [];
+  const state = checklist.map((_, i) => Boolean(saved[i]));
+  const unlocked = daysUnlocked();
+
+  app.innerHTML = `
+    <section class="section--tight"><div class="container day-detail">
+      <a href="#" id="backBtn" style="font-weight:700;text-decoration:none">← Tutti i giorni</a>
+      <div class="mt-3" style="display:flex;gap:20px;align-items:center">
+        <div class="badge-circle badge-circle--amber">${dayNumber}</div>
+        <div>
+          <span class="kicker" style="margin-bottom:4px">Fase ${day.phase}${day.module ? ` · ${MODULI[day.module]?.nome || ''}` : ''}</span>
+          <h1 style="font-size:clamp(1.6rem,3.5vw,2.3rem)">${esc(day.title)}</h1>
+          ${day.subtitle ? `<p class="muted accent-i">${esc(day.subtitle)}</p>` : ''}
+        </div>
+      </div>
+
+      ${day.video_url ? `
+      <div class="mt-3" style="aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line)">
+        <iframe src="${esc(day.video_url)}" style="width:100%;height:100%;border:0" allowfullscreen loading="lazy" title="Video del giorno ${dayNumber}"></iframe>
+      </div>` : ''}
+
+      <div class="content card mt-3">${md(day.content)}</div>
+
+      ${checklist.length ? `
+      <div class="card mt-2">
+        <h3 style="margin-bottom:10px">La checklist di oggi</h3>
+        <p class="muted" style="font-size:.9rem">Spunta man mano: quando è tutta verde, il giorno è completato.</p>
+        <ul class="checklist mt-1" id="dayChecklist">
+          ${checklist.map((item, i) => `
+            <li class="${state[i] ? 'done' : ''}" data-i="${i}">
+              <span class="box" role="checkbox" aria-checked="${state[i]}" tabindex="0">
+                <svg width="13" height="11" viewBox="0 0 13 11" fill="none"><path d="M1 5.5L4.8 9.2 12 1.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <span>${esc(item)}</span>
+            </li>`).join('')}
+        </ul>
+        <p class="form-msg" id="dayMsg"></p>
+      </div>` : ''}
+
+      <div class="day-nav">
+        ${dayNumber > 1 ? `<button class="btn btn--ghost" id="prevDay">← Giorno ${dayNumber - 1}</button>` : '<span></span>'}
+        ${dayNumber < 21 && dayNumber < unlocked ? `<button class="btn btn--bosco" id="nextDay">Giorno ${dayNumber + 1} →</button>` : ''}
+      </div>
+    </div></section>`;
+
+  document.getElementById('backBtn').addEventListener('click', (e) => { e.preventDefault(); renderDashboard(); });
+  document.getElementById('prevDay')?.addEventListener('click', () => renderDay(dayNumber - 1));
+  document.getElementById('nextDay')?.addEventListener('click', () => renderDay(dayNumber + 1));
+
+  const list = document.getElementById('dayChecklist');
+  if (list) {
+    const toggle = async (li) => {
+      const i = parseInt(li.dataset.i, 10);
+      state[i] = !state[i];
+      li.classList.toggle('done', state[i]);
+      li.querySelector('.box').setAttribute('aria-checked', state[i]);
+      const ok = await saveProgress(dayNumber, state, checklist.length);
+      const msgEl = document.getElementById('dayMsg');
+      if (!ok) {
+        msgEl.textContent = 'Non sono riuscito a salvare: controlla la connessione.';
+        msgEl.className = 'form-msg form-msg--err';
+      } else if (state.every(Boolean)) {
+        msgEl.textContent = `Giorno ${dayNumber} completato! ${dayNumber === 21 ? 'E con questo… diploma! 🎓🐾' : 'Bravi, tutti e due. 🐾'}`;
+        msgEl.className = 'form-msg form-msg--ok';
+      } else {
+        msgEl.className = 'form-msg';
+      }
+    };
+    list.querySelectorAll('li').forEach(li => {
+      li.querySelector('.box').addEventListener('click', () => toggle(li));
+      li.querySelector('.box').addEventListener('keydown', (e) => {
+        if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(li); }
+      });
+    });
+  }
+}
+
+// ------- Avvio -------
+if (!profile?.quiz_profile) renderModulePicker();
+else renderDashboard();
+</script>
+</body>
+</html>
