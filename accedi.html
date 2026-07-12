@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accedi — Il Metodo Argo</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400&family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/argo.css">
+<style>
+.auth-wrap {
+  min-height: calc(100vh - 70px);
+  display: grid;
+  place-items: center;
+  padding: 48px 24px;
+}
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 40px 36px;
+  box-shadow: var(--shadow);
+}
+.auth-card h1 { font-size: 1.7rem; margin-bottom: 8px; }
+.auth-card .sub { color: var(--muted); font-size: .95rem; margin-bottom: 24px; }
+.auth-links { margin-top: 20px; font-size: .9rem; text-align: center; }
+.auth-links a { color: var(--salvia); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="logo" href="/">Il Metodo <span class="paw">Argo</span> 🐾</a>
+    <nav class="site-nav"><a href="/#prezzo">Non hai ancora accesso?</a></nav>
+  </div>
+</header>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+
+    <!-- LOGIN -->
+    <section id="viewLogin">
+      <h1>Bentornato. 🐾</h1>
+      <p class="sub">L'area membri ti aspetta. Anch'io, ovviamente.</p>
+      <div class="form-msg" id="loginMsg"></div>
+      <form id="loginForm">
+        <div class="field">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn--bosco btn--block" id="loginBtn">Entra nell'area membri</button>
+      </form>
+      <p class="auth-links"><a href="#" id="linkForgot">Password dimenticata?</a></p>
+      <p class="auth-links muted">L'account si crea automaticamente all'acquisto.<br><a href="/#prezzo">Sblocca il Metodo Argo →</a></p>
+    </section>
+
+    <!-- RECUPERO PASSWORD -->
+    <section id="viewForgot" class="hidden">
+      <h1>Capita anche ai migliori.</h1>
+      <p class="sub">Dimmi la tua email e ti mando il link per impostarne una nuova.</p>
+      <div class="form-msg" id="forgotMsg"></div>
+      <form id="forgotForm">
+        <div class="field">
+          <label for="forgotEmail">Email</label>
+          <input type="email" id="forgotEmail" required autocomplete="email">
+        </div>
+        <button type="submit" class="btn btn--bosco btn--block" id="forgotBtn">Invia il link di recupero</button>
+      </form>
+      <p class="auth-links"><a href="#" id="linkBackLogin">← Torna al login</a></p>
+    </section>
+
+    <!-- IMPOSTA PASSWORD (da invito o da recupero) -->
+    <section id="viewSetPassword" class="hidden">
+      <h1>Scegli la tua password.</h1>
+      <p class="sub">Un ultimo passo e i 21 giorni sono tuoi.</p>
+      <div class="form-msg" id="setMsg"></div>
+      <form id="setForm">
+        <div class="field">
+          <label for="setPassword">Nuova password (minimo 8 caratteri)</label>
+          <input type="password" id="setPassword" required minlength="8" autocomplete="new-password">
+        </div>
+        <div class="field">
+          <label for="setPassword2">Ripetila, per sicurezza</label>
+          <input type="password" id="setPassword2" required minlength="8" autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn btn--amber btn--block" id="setBtn">Salva e inizia il percorso →</button>
+      </form>
+    </section>
+
+  </div>
+</div>
+
+<script type="module">
+import { getSupabase } from '/assets/js/supabase-client.js';
+
+const views = {
+  login: document.getElementById('viewLogin'),
+  forgot: document.getElementById('viewForgot'),
+  set: document.getElementById('viewSetPassword')
+};
+function show(name) {
+  Object.values(views).forEach(v => v.classList.add('hidden'));
+  views[name].classList.remove('hidden');
+}
+function msg(id, text, ok = false) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = text ? `form-msg form-msg--${ok ? 'ok' : 'err'}` : 'form-msg';
+}
+
+const supabase = await getSupabase().catch(() => null);
+if (!supabase) {
+  msg('loginMsg', 'Il servizio non è raggiungibile in questo momento. Riprova tra poco.');
+}
+
+// Arrivo da link di invito (post-acquisto) o di recupero password:
+// il token è nell'hash dell'URL e supabase-js crea la sessione da solo.
+const hashParams = new URLSearchParams(window.location.hash.slice(1));
+const linkType = hashParams.get('type');
+if (hashParams.get('error_description')) {
+  msg('loginMsg', 'Il link non è più valido: richiedine uno nuovo con "Password dimenticata?".');
+} else if (linkType === 'invite' || linkType === 'recovery' || linkType === 'magiclink') {
+  show('set');
+}
+supabase?.auth.onAuthStateChange((event) => {
+  if (event === 'PASSWORD_RECOVERY') show('set');
+});
+
+// Già loggato e non sta impostando la password → dritto all'area membri
+if (supabase && !linkType) {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) window.location.href = '/area.html';
+}
+
+// --- Login ---
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!supabase) return;
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  msg('loginMsg', '');
+  const { error } = await supabase.auth.signInWithPassword({
+    email: document.getElementById('loginEmail').value.trim(),
+    password: document.getElementById('loginPassword').value
+  });
+  if (error) {
+    msg('loginMsg', 'Email o password non corretti. Se è il primo accesso, usa il link ricevuto via email.');
+    btn.disabled = false;
+  } else {
+    window.location.href = '/area.html';
+  }
+});
+
+// --- Recupero password ---
+document.getElementById('linkForgot').addEventListener('click', (e) => { e.preventDefault(); show('forgot'); });
+document.getElementById('linkBackLogin').addEventListener('click', (e) => { e.preventDefault(); show('login'); });
+
+document.getElementById('forgotForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!supabase) return;
+  const btn = document.getElementById('forgotBtn');
+  btn.disabled = true;
+  const email = document.getElementById('forgotEmail').value.trim();
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/accedi.html`
+  });
+  if (error) {
+    msg('forgotMsg', 'Non sono riuscito a inviare il link. Controlla l\'email e riprova.');
+    btn.disabled = false;
+  } else {
+    msg('forgotMsg', 'Fatto! Controlla la posta (anche lo spam): il link arriva a momenti.', true);
+  }
+});
+
+// --- Imposta nuova password ---
+document.getElementById('setForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!supabase) return;
+  const p1 = document.getElementById('setPassword').value;
+  const p2 = document.getElementById('setPassword2').value;
+  if (p1 !== p2) { msg('setMsg', 'Le due password non coincidono.'); return; }
+  const btn = document.getElementById('setBtn');
+  btn.disabled = true;
+  const { error } = await supabase.auth.updateUser({ password: p1 });
+  if (error) {
+    msg('setMsg', 'Il link potrebbe essere scaduto. Torna al login e usa "Password dimenticata?".');
+    btn.disabled = false;
+  } else {
+    msg('setMsg', 'Password salvata! Ti porto dentro…', true);
+    setTimeout(() => { window.location.href = '/area.html'; }, 800);
+  }
+});
+</script>
+</body>
+</html>

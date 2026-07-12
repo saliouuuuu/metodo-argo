@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Il Metodo Argo — 21 giorni per capirvi, finalmente</title>
+<meta name="description" content="Il percorso di 21 giorni per l'educazione del tuo cane, spiegato da un cane. Ebook + tracker + area membri giorno per giorno. Garanzia 14 giorni.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/argo.css">
+<style>
+/* ---------- Stili specifici della landing ---------- */
+.hero { padding: 110px 0 90px; }
+.hero__grid {
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: 56px;
+  align-items: center;
+}
+@media (max-width: 860px) { .hero__grid { grid-template-columns: 1fr; } }
+.hero h1 em { color: var(--salvia); }
+.hero__cta { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 34px; }
+.hero__trust { margin-top: 22px; font-size: .9rem; color: var(--muted); }
+.hero__argo {
+  aspect-ratio: 4/5;
+  border-radius: var(--radius);
+  background: linear-gradient(160deg, var(--salvia-t), var(--paper2));
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 32px;
+  box-shadow: var(--shadow);
+}
+.hero__argo .paw-big { font-size: 4rem; line-height: 1; }
+.hero__argo figcaption { margin-top: 16px; font-size: .9rem; color: var(--muted); }
+
+.problema__list { display: grid; gap: 16px; margin-top: 40px; max-width: 720px; }
+.problema__item {
+  display: flex; gap: 18px; align-items: flex-start;
+  background: #fff; border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 20px 24px;
+}
+.problema__item .x {
+  flex: none; width: 30px; height: 30px; border-radius: 50%;
+  background: #F6E3DA; color: var(--terra);
+  display: grid; place-items: center; font-weight: 700; margin-top: 2px;
+}
+
+.fasi { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 48px; }
+@media (max-width: 860px) { .fasi { grid-template-columns: 1fr; } }
+.fase { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 30px 28px; }
+.fase__giorni {
+  font-size: .78rem; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--amber-d); margin-bottom: 14px; display: block;
+}
+.fase h3 { margin-bottom: 10px; }
+.fase p { color: var(--muted); font-size: .97rem; }
+.fase .dots { margin-top: 18px; }
+
+/* Quiz */
+.quiz-wrap { max-width: 660px; margin: 48px auto 0; }
+.quiz-card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 36px; box-shadow: var(--shadow); }
+.quiz-progress { display: flex; gap: 8px; margin-bottom: 26px; }
+.quiz-progress i { height: 5px; flex: 1; border-radius: 99px; background: var(--line); }
+.quiz-progress i.on { background: var(--amber); }
+.quiz-q h3 { margin-bottom: 22px; }
+.quiz-opt {
+  display: block; width: 100%; text-align: left;
+  font: inherit; font-weight: 600;
+  background: var(--paper); border: 1.5px solid var(--line);
+  border-radius: 12px; padding: 15px 18px; margin-bottom: 12px;
+  cursor: pointer; transition: border-color .12s, background .12s;
+}
+.quiz-opt:hover { border-color: var(--salvia); background: var(--salvia-t); }
+.quiz-result { text-align: center; }
+.quiz-result__badge {
+  width: 96px; height: 96px; margin: 0 auto 18px;
+  border-radius: 50%; border: 2px solid var(--amber);
+  display: grid; place-items: center; font-size: 2.6rem; background: var(--paper);
+}
+.quiz-result h3 { font-size: 1.7rem; }
+.quiz-result .profilo-nome { color: var(--salvia); }
+
+/* Griglia profili */
+.profili { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 48px; }
+@media (max-width: 860px) { .profili { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .profili { grid-template-columns: 1fr; } }
+.profilo { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; }
+.profilo .emoji { font-size: 2rem; margin-bottom: 12px; }
+.profilo h3 { font-size: 1.15rem; margin-bottom: 6px; }
+.profilo p { font-size: .92rem; color: var(--muted); }
+.profilo--bonus { background: var(--salvia-t); border-color: var(--salvia); }
+.profilo--bonus .tag {
+  display: inline-block; font-size: .7rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--paper); background: var(--salvia);
+  border-radius: 99px; padding: 3px 10px; margin-bottom: 12px;
+}
+
+/* Pricing */
+.pricing-card {
+  max-width: 560px; margin: 48px auto 0;
+  background: var(--paper); color: var(--ink);
+  border-radius: var(--radius); padding: 44px 40px;
+  box-shadow: var(--shadow);
+}
+.pricing-card .prezzo { font-family: var(--serif); font-size: 3.4rem; font-weight: 700; line-height: 1; }
+.pricing-card .prezzo small { font-size: 1.05rem; font-family: var(--sans); font-weight: 600; color: var(--muted); }
+.pricing-card ul { list-style: none; margin: 26px 0; }
+.pricing-card ul li { padding: 9px 0 9px 34px; position: relative; border-bottom: 1px dashed var(--line); }
+.pricing-card ul li:last-child { border: none; }
+.pricing-card ul li::before {
+  content: "✓"; position: absolute; left: 0; top: 8px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--salvia-t); color: var(--bosco);
+  font-size: .8rem; font-weight: 700; display: grid; place-items: center;
+}
+.ancoraggio { text-align: center; max-width: 560px; margin: 26px auto 0; font-size: .95rem; color: rgba(247,242,232,.75); }
+.garanzia {
+  display: flex; gap: 16px; align-items: center;
+  max-width: 560px; margin: 30px auto 0;
+  background: rgba(247,242,232,.08); border: 1px solid rgba(247,242,232,.2);
+  border-radius: var(--radius); padding: 20px 24px; color: rgba(247,242,232,.85); font-size: .95rem;
+}
+.garanzia .badge-circle { width: 58px; height: 58px; font-size: .8rem; border-color: var(--amber); color: var(--amber); background: transparent; }
+
+/* FAQ */
+.faq { max-width: 720px; margin: 40px auto 0; }
+.faq details { border-bottom: 1px solid var(--line); padding: 4px 0; }
+.faq summary {
+  cursor: pointer; font-weight: 700; font-size: 1.05rem;
+  padding: 18px 30px 18px 0; list-style: none; position: relative;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after {
+  content: "+"; position: absolute; right: 4px; top: 14px;
+  font-family: var(--serif); font-size: 1.5rem; color: var(--amber-d);
+  transition: transform .2s;
+}
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq .faq-a { padding: 0 0 20px; color: var(--muted); }
+
+/* Modale checkout */
+.modal-back {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(33,29,23,.55);
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.modal-back.open { display: flex; }
+.modal {
+  background: var(--paper); border-radius: var(--radius);
+  max-width: 460px; width: 100%; padding: 36px; box-shadow: var(--shadow);
+  max-height: 90vh; overflow-y: auto;
+}
+.modal h3 { margin-bottom: 6px; }
+.modal .close {
+  float: right; background: none; border: none; font-size: 1.4rem;
+  cursor: pointer; color: var(--muted); line-height: 1;
+}
+.bump {
+  display: flex; gap: 14px; align-items: flex-start;
+  background: var(--salvia-t); border: 1.5px dashed var(--salvia);
+  border-radius: 12px; padding: 16px; margin: 20px 0; cursor: pointer;
+}
+.bump input { margin-top: 5px; width: 18px; height: 18px; accent-color: var(--salvia); flex: none; }
+.bump strong { display: block; }
+.bump small { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="logo" href="/">Il Metodo <span class="paw">Argo</span> 🐾</a>
+    <nav class="site-nav">
+      <a href="#metodo">Il metodo</a>
+      <a href="#quiz">Il quiz</a>
+      <a href="#prezzo">Prezzo</a>
+      <a href="#faq">FAQ</a>
+      <a href="/accedi.html">Accedi</a>
+      <a href="#quiz" class="btn btn--amber">Inizia dal quiz</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container hero__grid">
+    <div>
+      <span class="kicker">21 giorni · spiegati da un cane</span>
+      <h1>Il tuo cane non è testardo.<br><em>È solo mal tradotto.</em></h1>
+      <p class="lead mt-2">Ciao, sono Argo. Sono un border collie e faccio un lavoro strano: traduco i cani agli umani. In 21 giorni ti spiego cosa sta davvero cercando di dirti il tuo cane — e come costruire, insieme, la convivenza che volevi quando l'hai portato a casa.</p>
+      <div class="hero__cta">
+        <a href="#quiz" class="btn btn--amber">Scopri il profilo del tuo cane →</a>
+        <a href="#metodo" class="btn btn--ghost">Come funziona</a>
+      </div>
+      <p class="hero__trust">Ebook + tracker + area membri · Garanzia 14 giorni soddisfatti o rimborsati</p>
+    </div>
+    <figure class="hero__argo">
+      <div>
+        <div class="paw-big">🐕</div>
+        <figcaption><strong>Argo</strong><br>Border collie. Generato con l'AI, e te lo dico subito:<br><em>sono il primo educatore cinofilo che è un cane.</em></figcaption>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ PROBLEMA ============ -->
+<section class="section section--paper2" id="problema">
+  <div class="container">
+    <span class="kicker">Ti riconosci?</span>
+    <h2>Non è colpa tua.<br><em>E nemmeno sua.</em></h2>
+    <div class="problema__list">
+      <div class="problema__item"><span class="x">✕</span><p><strong>«A casa lo fa benissimo!»</strong> — poi al parco è come se non ti conoscesse. Il richiamo funziona solo quando non serve.</p></div>
+      <div class="problema__item"><span class="x">✕</span><p><strong>La passeggiata è un braccio di ferro.</strong> Tira, ti trascina, e a ogni uscita torni a casa con la spalla dolorante e il morale sotto le zampe.</p></div>
+      <div class="problema__item"><span class="x">✕</span><p><strong>Hai già provato di tutto.</strong> Video su YouTube, consigli del vicino, tre metodi diversi in tre settimane. Risultato: confusione. Per entrambi.</p></div>
+      <div class="problema__item"><span class="x">✕</span><p><strong>L'educatore in presenza costa 50–80€ l'ora.</strong> E dopo due lezioni ti resta il conto, non il metodo.</p></div>
+    </div>
+    <div class="vedi-succede mt-3" style="max-width:720px">
+      <div class="vedi-succede__vedi">
+        <h4>Quello che vedi</h4>
+        <p>Un cane che «non ascolta», «fa i dispetti», «è testardo».</p>
+      </div>
+      <div class="vedi-succede__succede">
+        <h4>Quello che succede</h4>
+        <p>Un cane che sta facendo esattamente ciò che, senza volerlo, gli è stato insegnato. Cambia l'insegnamento, cambia il cane.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LE 3 FASI ============ -->
+<section class="section" id="metodo">
+  <div class="container">
+    <span class="kicker">Il metodo</span>
+    <h2>21 giorni, tre fasi,<br><em>un solo cane: il tuo.</em></h2>
+    <p class="lead mt-2">Niente ricette uguali per tutti: dopo la base comune, il percorso si adatta al profilo comportamentale del tuo cane, assegnato dal quiz.</p>
+    <div class="fasi">
+      <div class="fase">
+        <span class="fase__giorni">Giorni 1–7</span>
+        <h3>Fondamenta</h3>
+        <p>Il linguaggio comune: nome, marker, autocontrollo, calma. Uguale per tutti, perché senza fondamenta non si costruisce niente.</p>
+        <span class="dots"><i class="on"></i><i class="on"></i><i></i></span>
+      </div>
+      <div class="fase">
+        <span class="fase__giorni">Giorni 8–16</span>
+        <h3>Il tuo modulo</h3>
+        <p>Nove giorni sul <em>tuo</em> problema specifico: uno dei 5 profili comportamentali, assegnato dal quiz. È qui che il metodo diventa su misura.</p>
+        <span class="dots"><i class="on"></i><i class="now"></i><i></i></span>
+      </div>
+      <div class="fase">
+        <span class="fase__giorni">Giorni 17–21</span>
+        <h3>Consolidamento</h3>
+        <p>Dal salotto al mondo reale: distrazioni, ospiti, vita vera. Perché un esercizio riuscito in cucina non è ancora un'abitudine.</p>
+        <span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section class="section section--salvia" id="quiz">
+  <div class="container center">
+    <span class="kicker">2 minuti, 5 domande</span>
+    <h2>Che cane hai in casa?</h2>
+    <p class="lead mt-2" style="margin-inline:auto">Rispondi con sincerità (tanto io lo capisco lo stesso, sono un cane). Alla fine ti dico il profilo del tuo cane e quale modulo del Metodo fa per voi.</p>
+
+    <div class="quiz-wrap">
+      <div class="quiz-card" id="quizCard">
+        <div class="quiz-progress" id="quizProgress"></div>
+        <div id="quizBody"><!-- domande generate da JS --></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GRIGLIA PROFILI ============ -->
+<section class="section" id="profili">
+  <div class="container">
+    <span class="kicker">I 5 profili + 1 bonus</span>
+    <h2>Ogni cane ha il suo modulo.</h2>
+    <div class="profili">
+      <div class="profilo"><div class="emoji">🚜</div><h3>Il Trattore</h3><p>Al guinzaglio sei tu quello portato a spasso. Nove giorni per una passeggiata a guinzaglio molle, senza braccio di ferro.</p></div>
+      <div class="profilo"><div class="emoji">🦈</div><h3>Lo Squalo</h3><p>Dentini ovunque: mani, caviglie, ciabatte. Nove giorni per insegnare al cucciolo cosa si morde e cosa no.</p></div>
+      <div class="profilo"><div class="emoji">🧭</div><h3>L'Esploratore Sordo</h3><p>Il richiamo per lui è un'opinione. Nove giorni per un «vieni» che funziona anche coi piccioni in vista.</p></div>
+      <div class="profilo"><div class="emoji">🧲</div><h3>Il Velcro</h3><p>Da solo non ci sa stare: pianti, danni, vicini esasperati. Nove giorni per costruire una solitudine serena.</p></div>
+      <div class="profilo"><div class="emoji">🌪️</div><h3>Il Tornado</h3><p>Energia infinita, autocontrollo zero. Nove giorni per un interruttore on/off che funziona davvero.</p></div>
+      <div class="profilo profilo--bonus"><span class="tag">Bonus cuccioli</span><div class="emoji">💧</div><h3>SOS Pipì</h3><p>Il modulo extra per i cuccioli: pipì in casa, routine e pazienza strategica. Si aggiunge al tuo modulo, non lo sostituisce.</p></div>
+    </div>
+    <div class="note mt-3" style="max-width:720px">
+      <strong>Una cosa seria, detta da un cane serio:</strong> il Metodo Argo non tratta aggressività, paura intensa, salute o alimentazione. Per quelle cose serve un professionista in carne e ossa: un educatore cinofilo certificato o il tuo veterinario. Io ti aiuto su tutto il resto.
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="section section--bosco" id="prezzo">
+  <div class="container center">
+    <span class="kicker">Un acquisto, tutto incluso</span>
+    <h2>Meno di una singola lezione.<br><em>Ventuno giorni di metodo.</em></h2>
+    <div class="pricing-card">
+      <div class="prezzo">€47 <small>una tantum · nessun abbonamento</small></div>
+      <ul>
+        <li><strong>Ebook «Il Metodo Argo»</strong> — 26 pagine, dritto al punto</li>
+        <li><strong>Tracker dei 21 giorni</strong> — A4 stampabile, da attaccare al frigo</li>
+        <li><strong>Area membri</strong> — il percorso giorno per giorno, con checklist interattive</li>
+        <li><strong>Il tuo modulo su misura</strong> — assegnato dal quiz, tra i 5 profili</li>
+        <li><strong>Accesso a vita</strong> — i 21 giorni restano tuoi, per sempre</li>
+      </ul>
+      <button class="btn btn--amber btn--block" data-checkout>Sblocca il Metodo Argo →</button>
+      <p class="muted center mt-1" style="font-size:.85rem">Pagamento sicuro con Stripe · Accesso immediato via email</p>
+    </div>
+    <p class="ancoraggio">Un educatore cinofilo in presenza costa <strong>50–80€ l'ora</strong>.<br>Qui hai 21 giorni completi a meno del prezzo di una lezione singola.</p>
+    <div class="garanzia">
+      <div class="badge-circle">14 gg</div>
+      <p><strong>Garanzia zampa sul cuore.</strong> Se entro 14 giorni il Metodo non fa per voi, scrivici e ti rimborsiamo tutto. Senza domande, senza guinzagli.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="section" id="faq">
+  <div class="container">
+    <div class="center"><span class="kicker">Domande frequenti</span>
+    <h2>Le cose che chiedono tutti</h2></div>
+    <div class="faq">
+      <details>
+        <summary>Ma Argo esiste davvero?</summary>
+        <div class="faq-a">Sono un border collie generato con l'intelligenza artificiale — te lo dico sempre, in ogni video e in ogni pagina. Il metodo che racconto, però, si basa su principi reali di educazione in rinforzo positivo. Diciamo che sono il primo educatore cinofilo che è un cane: la trasparenza è la mia specialità, insieme ai premietti.</div>
+      </details>
+      <details>
+        <summary>Quanto tempo serve ogni giorno?</summary>
+        <div class="faq-a">Tra i 10 e i 20 minuti, divisi in sessioni brevi (noi cani abbiamo la soglia di attenzione di... oh, uno scoiattolo!). Il metodo è pensato per chi lavora: gli esercizi si incastrano nella vita normale, non la sostituiscono.</div>
+      </details>
+      <details>
+        <summary>Funziona anche con un cane adulto?</summary>
+        <div class="faq-a">Sì. «Non si insegnano trucchi nuovi a un cane vecchio» è una fake news messa in giro dai gatti. Il quiz tiene conto dell'età e il percorso si adatta: solo il modulo Squalo e il bonus SOS Pipì sono pensati specificamente per i cuccioli.</div>
+      </details>
+      <details>
+        <summary>Il mio cane ringhia / ha morso qualcuno. Fa per me?</summary>
+        <div class="faq-a">No, e te lo dico chiaro: aggressività, paura intensa e qualunque questione di salute o alimentazione non si risolvono con un ebook — nemmeno col mio. In quei casi serve un educatore cinofilo certificato o un veterinario comportamentalista, in presenza. Il Metodo Argo copre tutto il resto: guinzaglio, richiamo, morsi da cucciolo, solitudine, autocontrollo.</div>
+      </details>
+      <details>
+        <summary>Come ricevo l'accesso dopo l'acquisto?</summary>
+        <div class="faq-a">Subito. Dopo il pagamento ricevi un'email con il link per impostare la tua password: da lì entri nell'area membri con l'ebook, il tracker e il percorso giorno per giorno già pronto, col tuo modulo assegnato dal quiz.</div>
+      </details>
+      <details>
+        <summary>E se non funziona per noi?</summary>
+        <div class="faq-a">Hai 14 giorni di garanzia soddisfatti o rimborsati: se il Metodo non fa per voi, scrivici e ti restituiamo tutto. Preferisco un rimborso a un umano frustrato — e comunque i cani non leggono le recensioni, ma gli umani sì.</div>
+      </details>
+    </div>
+    <div class="center mt-3">
+      <a href="#quiz" class="btn btn--bosco">Parti dal quiz: 2 minuti →</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;align-items:center">
+    <div>
+      <a class="logo" href="/">Il Metodo <span class="paw" style="color:var(--amber)">Argo</span> 🐾</a>
+      <p class="mt-1">Argo è un personaggio generato con l'AI. I contenuti non sostituiscono il parere di educatori cinofili certificati o veterinari.</p>
+    </div>
+    <div><a href="/accedi.html">Area membri</a> · <a href="#faq">FAQ</a></div>
+  </div>
+</footer>
+
+<!-- ============ MODALE CHECKOUT ============ -->
+<div class="modal-back" id="checkoutModal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+  <div class="modal">
+    <button class="close" data-close-modal aria-label="Chiudi">✕</button>
+    <h3 id="checkoutTitle">Sblocca il Metodo Argo</h3>
+    <p class="muted" style="font-size:.95rem">Inserisci la tua email: è lì che arriverà l'accesso all'area membri.</p>
+    <div class="form-msg" id="checkoutMsg"></div>
+    <form id="checkoutForm" class="mt-2">
+      <div class="field">
+        <label for="checkoutEmail">La tua email</label>
+        <input type="email" id="checkoutEmail" required autocomplete="email" placeholder="nome@esempio.it">
+      </div>
+      <label class="bump">
+        <input type="checkbox" id="bumpCheck">
+        <span><strong>Aggiungi la «Checklist arrivo cucciolo» — solo €9</strong>
+        <small>Tutto quello che serve preparare prima e durante i primi giorni a casa. Una volta sola, poi sparisce dal carrello.</small></span>
+      </label>
+      <button type="submit" class="btn btn--amber btn--block" id="checkoutSubmit">Vai al pagamento sicuro →</button>
+      <p class="muted center mt-1" style="font-size:.82rem">Totale: <strong id="checkoutTotal">€47</strong> · Stripe · Garanzia 14 giorni</p>
+    </form>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   QUIZ — 5 domande → 1 dei 5 profili + flag bonus cucciolo
+   ============================================================ */
+const PROFILI = {
+  trattore:    { nome: 'Il Trattore',          emoji: '🚜', desc: 'Il guinzaglio è il vostro braccio di ferro quotidiano. Il tuo modulo (giorni 8–16) trasforma la passeggiata da tiro alla fune a passeggiata vera.' },
+  squalo:      { nome: 'Lo Squalo',            emoji: '🦈', desc: 'Dentini ovunque: è normale, ma va incanalato adesso. Il tuo modulo (giorni 8–16) insegna al cucciolo cosa si morde e cosa no.' },
+  esploratore: { nome: "L'Esploratore Sordo",  emoji: '🧭', desc: 'Quando lo chiami, sviluppa una sordità selettiva sorprendente. Il tuo modulo (giorni 8–16) costruisce un richiamo che vale più dei piccioni.' },
+  velcro:      { nome: 'Il Velcro',            emoji: '🧲', desc: 'Attaccato a te sempre — e quando resta solo, il dramma. Il tuo modulo (giorni 8–16) costruisce una solitudine serena, un minuto alla volta.' },
+  tornado:     { nome: 'Il Tornado',           emoji: '🌪️', desc: 'Energia meravigliosa, freni da installare. Il tuo modulo (giorni 8–16) monta l\'interruttore on/off che vi manca.' }
+};
+
+const DOMANDE = [
+  {
+    q: 'Quanti anni ha il tuo cane?',
+    opts: [
+      { t: 'Meno di 6 mesi: un cucciolo',           v: { squalo: 1 }, puppy: true },
+      { t: 'Tra 6 e 18 mesi: un adolescente',        v: { tornado: 1 } },
+      { t: 'Tra 1 e 3 anni: un giovane adulto',      v: {} },
+      { t: 'Più di 3 anni: un adulto fatto e finito', v: {} }
+    ]
+  },
+  {
+    q: 'Com’è la passeggiata insieme?',
+    opts: [
+      { t: 'Mi trascina come una slitta',                    v: { trattore: 2 } },
+      { t: 'Appena può, sparisce a esplorare per conto suo', v: { esploratore: 2 } },
+      { t: 'Un fulmine: salta, si esalta, abbaia a tutto',   v: { tornado: 2 } },
+      { t: 'Tranquilla, tutto sommato',                      v: {} }
+    ]
+  },
+  {
+    q: 'E quando resta solo in casa?',
+    opts: [
+      { t: 'Piange, abbaia o distrugge: un dramma',            v: { velcro: 2 } },
+      { t: 'Non lo lascio mai solo, non oso nemmeno provarci', v: { velcro: 2 } },
+      { t: 'Qualche danno ogni tanto, dipende dai giorni',     v: { velcro: 1, tornado: 1 } },
+      { t: 'Dorme sereno fino al mio ritorno',                 v: {} }
+    ]
+  },
+  {
+    q: 'Le tue mani (e caviglie) come stanno?',
+    opts: [
+      { t: 'Piene di segni di dentini, sembro un grattino',  v: { squalo: 2 } },
+      { t: 'Le mani si salvano, ma vestiti e ciabatte no',   v: { squalo: 1, tornado: 1 } },
+      { t: 'Solo quando gioca si eccita e esagera',          v: { tornado: 1 } },
+      { t: 'Tutto intero, grazie',                           v: {} }
+    ]
+  },
+  {
+    q: 'Se lo chiami mentre è libero al parco?',
+    opts: [
+      { t: 'Richiamo? Mai sentito nominare',                    v: { esploratore: 2 } },
+      { t: 'Torna, ma solo quando ha finito i suoi giri',       v: { esploratore: 1 } },
+      { t: 'Non lo libero mai: ho troppa paura che scappi',     v: { esploratore: 1, trattore: 1 } },
+      { t: 'Torna quasi sempre al primo colpo',                 v: {} }
+    ]
+  }
+];
+
+const quizState = { step: 0, answers: [], scores: { trattore: 0, squalo: 0, esploratore: 0, velcro: 0, tornado: 0 }, puppy: false };
+const quizBody = document.getElementById('quizBody');
+const quizProgress = document.getElementById('quizProgress');
+
+function renderProgress() {
+  quizProgress.innerHTML = DOMANDE.map((_, i) =>
+    `<i class="${i <= quizState.step ? 'on' : ''}"></i>`).join('');
+}
+
+function renderQuestion() {
+  renderProgress();
+  const d = DOMANDE[quizState.step];
+  quizBody.innerHTML = `
+    <div class="quiz-q">
+      <p class="muted" style="font-size:.85rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Domanda ${quizState.step + 1} di ${DOMANDE.length}</p>
+      <h3>${d.q}</h3>
+      ${d.opts.map((o, i) => `<button type="button" class="quiz-opt" data-opt="${i}">${o.t}</button>`).join('')}
+    </div>`;
+  quizBody.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', () => answer(parseInt(btn.dataset.opt, 10)));
+  });
+}
+
+function answer(i) {
+  const opt = DOMANDE[quizState.step].opts[i];
+  quizState.answers.push({ q: DOMANDE[quizState.step].q, a: opt.t });
+  for (const [k, v] of Object.entries(opt.v)) quizState.scores[k] += v;
+  if (opt.puppy) quizState.puppy = true;
+  quizState.step++;
+  if (quizState.step < DOMANDE.length) renderQuestion();
+  else renderResult();
+}
+
+function calcProfile() {
+  // primo massimo in ordine fisso → risultato deterministico
+  const ordine = ['trattore', 'squalo', 'esploratore', 'velcro', 'tornado'];
+  let best = 'tornado', bestScore = -1;
+  for (const p of ordine) {
+    if (quizState.scores[p] > bestScore) { best = p; bestScore = quizState.scores[p]; }
+  }
+  return best;
+}
+
+function renderResult() {
+  quizProgress.querySelectorAll('i').forEach(el => el.classList.add('on'));
+  const slug = calcProfile();
+  const p = PROFILI[slug];
+  quizState.profile = slug;
+  quizBody.innerHTML = `
+    <div class="quiz-result">
+      <div class="quiz-result__badge">${p.emoji}</div>
+      <p class="kicker" style="margin-bottom:8px">Il profilo del tuo cane</p>
+      <h3 class="profilo-nome">${p.nome}</h3>
+      <p class="mt-1" style="max-width:440px;margin-inline:auto">${p.desc}</p>
+      ${quizState.puppy ? '<p class="mt-1" style="font-size:.92rem"><strong>💧 Bonus sbloccato:</strong> con un cucciolo in casa, nel tuo percorso trovi anche il modulo extra «SOS Pipì».</p>' : ''}
+      <div class="form-msg" id="quizMsg"></div>
+      <form id="quizEmailForm" class="mt-2" style="max-width:380px;margin-inline:auto;text-align:left">
+        <div class="field">
+          <label for="quizEmail">Dove ti mando il piano per ${p.nome}?</label>
+          <input type="email" id="quizEmail" required autocomplete="email" placeholder="nome@esempio.it">
+        </div>
+        <button type="submit" class="btn btn--amber btn--block">Sblocca il Metodo Argo →</button>
+        <p class="muted center mt-1" style="font-size:.82rem">€47 una tantum · Garanzia 14 giorni</p>
+      </form>
+      <button type="button" class="btn btn--ghost mt-2" id="quizRestart" style="padding:10px 22px;font-size:.85rem">Rifai il quiz</button>
+    </div>`;
+
+  document.getElementById('quizRestart').addEventListener('click', () => {
+    Object.assign(quizState, { step: 0, answers: [], scores: { trattore: 0, squalo: 0, esploratore: 0, velcro: 0, tornado: 0 }, puppy: false, profile: null });
+    renderQuestion();
+  });
+
+  document.getElementById('quizEmailForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('quizEmail').value.trim();
+    const msg = document.getElementById('quizMsg');
+    msg.className = 'form-msg';
+    // salva la risposta del quiz (non bloccante per l'utente se fallisce)
+    try {
+      await fetch('/api/save-quiz', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, answers: quizState.answers, profile: quizState.profile, puppy_flag: quizState.puppy })
+      });
+    } catch (err) { /* il checkout resta possibile comunque */ }
+    openCheckout(email);
+  });
+}
+
+renderQuestion();
+
+/* ============================================================
+   CHECKOUT — modale email + order bump → Stripe Checkout
+   ============================================================ */
+const modal = document.getElementById('checkoutModal');
+const emailInput = document.getElementById('checkoutEmail');
+const bumpCheck = document.getElementById('bumpCheck');
+const totalEl = document.getElementById('checkoutTotal');
+const checkoutMsg = document.getElementById('checkoutMsg');
+const checkoutSubmit = document.getElementById('checkoutSubmit');
+
+function openCheckout(email) {
+  if (email) emailInput.value = email;
+  if (quizState.puppy) bumpCheck.checked = true;
+  updateTotal();
+  checkoutMsg.className = 'form-msg';
+  modal.classList.add('open');
+  emailInput.focus();
+}
+function updateTotal() { totalEl.textContent = bumpCheck.checked ? '€56' : '€47'; }
+bumpCheck.addEventListener('change', updateTotal);
+
+document.querySelectorAll('[data-checkout]').forEach(b =>
+  b.addEventListener('click', () => openCheckout('')));
+document.querySelector('[data-close-modal]').addEventListener('click', () => modal.classList.remove('open'));
+modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
+
+document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  checkoutSubmit.disabled = true;
+  checkoutSubmit.textContent = 'Un attimo, preparo tutto…';
+  checkoutMsg.className = 'form-msg';
+  try {
+    const res = await fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: emailInput.value.trim(),
+        orderBump: bumpCheck.checked,
+        profile: quizState.profile || null,
+        puppy_flag: quizState.puppy
+      })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.url) throw new Error(data.error || 'Errore nella creazione del pagamento');
+    window.location.href = data.url;
+  } catch (err) {
+    checkoutMsg.textContent = 'Ops, qualcosa è andato storto: ' + err.message + '. Riprova tra un attimo.';
+    checkoutMsg.className = 'form-msg form-msg--err';
+    checkoutSubmit.disabled = false;
+    checkoutSubmit.textContent = 'Vai al pagamento sicuro →';
+  }
+});
+</script>
+</body>
+</html>
