@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Il Metodo Argo — Ebook v4</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   IL METODO ARGO — Ebook v4 (print-ready A4)
+   PDF: Chrome → Stampa → Salva come PDF → Margini: Nessuno
+   → Grafica di sfondo: ✓
+   ============================================================ */
+:root{
+  --ink:#211D17; --paper:#F7F2E8; --paper2:#EFE7D6;
+  --bosco:#20382C; --salvia:#4E7059; --salvia-t:#DCE4D3;
+  --amber:#E0A02E; --amber-d:#B77E17; --terra:#B75B33; --terra-t:#F6E3DA;
+  --line:#D9CFBA; --muted:#8A7F6B;
+  --serif:'Fraunces',Georgia,serif; --sans:'Hanken Grotesk',Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);color:var(--ink);background:#888;font-size:10pt;line-height:1.5;-webkit-print-color-adjust:exact;print-color-adjust:exact;counter-reset:pg}
+.page{width:210mm;min-height:297mm;background:var(--paper);margin:10mm auto;padding:15mm 16mm;position:relative;box-shadow:0 6px 30px rgba(0,0,0,.35);display:flex;flex-direction:column;counter-increment:pg;overflow:hidden}
+.page--full{padding:0}
+@media print{
+  body{background:none}
+  .page{margin:0;box-shadow:none;page-break-after:always}
+  @page{size:A4;margin:0}
+}
+h1,h2,h3{font-family:var(--serif);color:var(--bosco);line-height:1.1;font-weight:600}
+em{font-family:var(--serif);font-style:italic}
+p{margin-bottom:2.6mm}
+.muted{color:var(--muted)}
+.kicker{font-size:7.5pt;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--amber-d);margin-bottom:3.5mm}
+.kicker--s{color:var(--salvia)}
+.footer{margin-top:auto;padding-top:4mm;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:7.5pt;color:var(--muted)}
+.footer .paw{color:var(--amber-d)}
+.footer .num::after{content:counter(pg)}
+
+/* --- immagini --- */
+.ph{border:2px dashed var(--line);border-radius:5mm;background:var(--paper2);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:8pt;font-weight:700}
+.ph::before{content:"📷 " attr(data-img)}
+.r45{aspect-ratio:4/5}.r11{aspect-ratio:1/1}.r32{aspect-ratio:3/2}.r169{aspect-ratio:16/9}
+.pic{width:100%;object-fit:cover;border-radius:5mm;display:block;border:1px solid var(--line)}
+.fullbleed{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border:none;border-radius:0}
+.overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(33,29,23,.82),rgba(33,29,23,.15) 55%)}
+
+/* --- testata giorno + progressione --- */
+.badge{width:15mm;height:15mm;border-radius:50%;border:2px solid var(--amber);color:var(--amber-d);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;font-size:13pt;background:#fff;flex:none}
+.dayhead{display:flex;gap:5mm;align-items:center;margin-bottom:3mm}
+.dayhead h2{font-size:18pt}
+.dayhead .sub{font-family:var(--serif);font-style:italic;color:var(--salvia);font-size:10.5pt}
+.pstrip{display:flex;align-items:center;gap:3mm;font-size:7pt;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5mm}
+.pbar{flex:1;height:1.8mm;background:var(--paper2);border:1px solid var(--line);border-radius:99mm;overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--salvia);border-radius:99mm}
+
+/* --- box ricorrenti (il sistema visivo del Metodo) --- */
+.bx{border-radius:3.5mm;padding:3.5mm 4.5mm;margin-bottom:3mm;font-size:9.2pt;line-height:1.45}
+.bx h4{font-family:var(--sans);font-size:7.5pt;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:1.5mm}
+.bx p{margin-bottom:1.6mm}.bx p:last-child{margin-bottom:0}
+.bx ul{margin:0 0 0 4.5mm}.bx li{margin-bottom:1.2mm}
+.bx--missione{background:#fff;border:1.5px solid var(--amber)}
+.bx--missione h4{color:var(--amber-d)}
+.bx--dietro{background:var(--salvia-t)}
+.bx--dietro h4{color:var(--salvia)}
+.bx--errore{background:var(--terra-t)}
+.bx--errore h4{color:var(--terra)}
+.bx--soccorso{background:var(--paper2);border:1.5px dashed var(--line)}
+.bx--soccorso h4{color:var(--muted)}
+.bx--asticella{background:#fff;border:1px solid var(--line)}
+.bx--asticella h4{color:var(--bosco)}
+.bx--losai{background:var(--bosco);color:var(--paper)}
+.bx--losai h4{color:var(--amber)}
+.bx--regola{background:#fff;border-left:2.5mm solid var(--salvia);border-radius:0 3.5mm 3.5mm 0;border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.bx--regola h4{color:var(--salvia)}
+.steps{counter-reset:st;list-style:none}
+.steps li{counter-increment:st;position:relative;padding:1.5mm 0 1.5mm 8.5mm;border-bottom:1px dashed var(--line)}
+.steps li:last-child{border-bottom:none;padding-bottom:0}
+.steps li::before{content:counter(st);position:absolute;left:0;top:1.7mm;width:5.5mm;height:5.5mm;border-radius:50%;background:var(--amber);color:#fff;font-weight:700;font-size:7.5pt;display:flex;align-items:center;justify-content:center}
+.check{list-style:none;background:#fff;border:1px solid var(--line);border-radius:3.5mm;padding:3.5mm 4.5mm}
+.check li{display:flex;gap:3mm;align-items:flex-start;padding:1.5mm 0;border-bottom:1px dashed var(--line);font-size:9.2pt}
+.check li:last-child{border-bottom:none}
+.check li::before{content:"";flex:none;width:4.2mm;height:4.2mm;margin-top:.5mm;border:1.6px solid var(--salvia);border-radius:1.3mm;background:#fff}
+.check .t{font-size:7.5pt;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--salvia);border:none;padding-bottom:1.5mm}
+.check .t::before{display:none}
+.vs{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:3.5mm;overflow:hidden;margin-bottom:3mm}
+.vs>div{padding:3.5mm 4.5mm}
+.vs .v{background:var(--paper2)}.vs .s{background:var(--salvia-t)}
+.vs h4{font-family:var(--sans);font-size:7pt;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:1.2mm}
+.vs .s h4{color:var(--salvia)}
+.vs p{margin:0;font-size:9pt}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:5mm;align-items:start}
+.argo-says{display:flex;gap:3.5mm;align-items:flex-start;background:var(--salvia-t);border-radius:3.5mm;padding:3.5mm 4.5mm;margin-bottom:3mm;font-size:9.2pt}
+.argo-says .p{font-size:12pt;line-height:1}
+
+/* --- pagine speciali --- */
+.quotepage{justify-content:center;text-align:center}
+.bigquote{font-family:var(--serif);font-style:italic;font-size:24pt;line-height:1.35;color:var(--bosco);max-width:150mm;margin:0 auto}
+.bigquote .by{display:block;font-family:var(--sans);font-style:normal;font-size:9pt;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--amber-d);margin-top:8mm}
+.glossary{display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+.gitem{background:#fff;border:1px solid var(--line);border-radius:3.5mm;padding:4mm 4.5mm;font-size:9.2pt}
+.gitem h3{font-size:10.5pt;margin-bottom:1.5mm}
+.gitem p{margin:0}
+/* timeline mappa 21 giorni */
+.tl{position:relative;padding-left:9mm;margin:4mm 0}
+.tl::before{content:"";position:absolute;left:3mm;top:2mm;bottom:2mm;width:.8mm;background:var(--line);border-radius:99mm}
+.tl .seg{position:relative;margin-bottom:4.5mm}
+.tl .seg::before{content:"";position:absolute;left:-7.6mm;top:1.5mm;width:4mm;height:4mm;border-radius:50%;background:var(--salvia);border:1.5mm solid var(--paper)}
+.tl .seg.a::before{background:var(--amber)}
+.tl h3{font-size:11.5pt;margin-bottom:.8mm}
+.tl p{font-size:9.2pt;margin:0;color:var(--muted)}
+/* roadmap profili */
+.rmap{list-style:none;font-size:8.8pt}
+.rmap li{display:flex;gap:3mm;padding:1.4mm 0;border-bottom:1px dashed var(--line);align-items:baseline}
+.rmap li:last-child{border-bottom:none}
+.rmap b{flex:none;width:12mm;font-family:var(--serif);color:var(--amber-d)}
+/* fase 2: testata scura */
+.p2head{background:var(--bosco);color:var(--paper);margin:-15mm -16mm 5mm;padding:10mm 16mm 7mm;display:flex;gap:5mm;align-items:center}
+.p2head .emoji{font-size:24pt}
+.p2head h2{color:var(--paper);font-size:19pt}
+.p2head .sub{font-family:var(--serif);font-style:italic;color:var(--amber);font-size:10.5pt}
+</style>
+</head>
+<body>
+
+<!-- ═══ 1 · COPERTINA ═══ -->
+<div class="page" style="background:var(--bosco);color:var(--paper);text-align:center;justify-content:space-between">
+  <div style="padding-top:12mm">
+    <p style="font-size:8.5pt;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--amber)">Il primo educatore cinofilo che è un cane</p>
+    <h1 style="color:var(--paper);font-size:38pt;margin:8mm 0 4mm">Il Metodo<br><em style="color:var(--amber)">Argo</em></h1>
+    <p style="font-family:var(--serif);font-style:italic;font-size:13pt;color:var(--salvia-t)">21 giorni per capirvi, finalmente.</p>
+  </div>
+  <div class="ph r45" data-img="argo-cover.jpg" style="width:100mm;margin:8mm auto;border-color:rgba(247,242,232,.35);background:rgba(247,242,232,.08);color:rgba(247,242,232,.6)"></div>
+  <div style="padding-bottom:8mm">
+    <p style="font-size:9pt;color:rgba(247,242,232,.65)">Ebook + Tracker dei 21 giorni + Area membri</p>
+    <p style="font-size:8pt;color:rgba(247,242,232,.45)">🐾 ilmetodoargo</p>
+  </div>
+</div>
+
+<!-- ═══ 2 · CIAO, SONO ARGO ═══ -->
+<div class="page">
+  <p class="kicker">Presentazioni</p>
+  <h1 style="font-size:23pt;margin-bottom:5mm">Ciao. Sono Argo,<br><em>e sono un cane.</em></h1>
+  <div class="two">
+    <div>
+      <p>Border collie, per la precisione. E faccio un lavoro strano: <strong>traduco i cani agli umani</strong>.</p>
+      <p>Tu il tuo cane lo ami — si vede, altrimenti non saresti qui. Ma amarsi e capirsi sono due cose diverse: lui non parla italiano, tu non parli cane. Risultato: due che si vogliono bene e si fraintendono venti volte al giorno.</p>
+      <p>Sai cosa penso quando vedo un umano che urla «NO!» al suo cane per la decima volta? Penso: <em>quel cane ha capito benissimo che sei arrabbiato. Non ha la più pallida idea del perché.</em> Ecco il lavoro che faremo insieme: chiudere quel buco tra quello che dici e quello che lui capisce.</p>
+      <p>Nei prossimi 21 giorni ti insegno la nostra lingua. Non trucchetti da circo: <strong>un modo di comunicare</strong>. E te lo insegno io, che la parlo da madrelingua.</p>
+    </div>
+    <div>
+      <div class="ph r45" data-img="argo-ritratto.jpg" style="margin-bottom:3mm"></div>
+      <div class="argo-says" style="margin:0"><span class="p">🐾</span><div><strong>Trasparenza, zampa sul cuore:</strong> io sono un personaggio generato con l'intelligenza artificiale. Il metodo che ti racconto si basa su principi reali di educazione in rinforzo positivo. Sono il primo educatore cinofilo che è un cane — e non fingo di essere altro.</div></div>
+    </div>
+  </div>
+  <div class="footer"><span>Il Metodo <span class="paw">Argo</span></span><span class="num"></span></div>
+</div>
+
+<!-- ═══ 3 · IL PATTO ═══ -->
+<div class="page">
+  <p class="kicker">Come funziona</p>
+  <h1 style="font-size:22pt;margin-bottom:5mm">21 giorni, tre fasi,<br><em>un patto tra noi due.</em></h1>
+  <div class="two" style="margin-bottom:3mm">
+    <div>
+      <p>Questo non è un libro da leggere: è un percorso da <strong>fare</strong>. Ogni giorno ha una missione, una spiegazione di cosa succede nella testa del tuo cane, gli errori da evitare e il pronto soccorso per quando qualcosa non va come previsto.</p>
+      <p><strong>Quanto tempo serve?</strong> 10–20 minuti al giorno, spezzati in sessioni da 5. Il metodo si incastra nella vita normale: non serve mollare il lavoro, serve costanza.</p>
+      <div class="bx bx--regola"><h4>🟢 Prima Regola di Argo</h4><p>Meglio 5 minuti tutti i giorni che un'ora la domenica. Noi cani impariamo per ripetizione, non per maratone.</p></div>
+    </div>
+    <div class="ph r11" data-img="argo-patto.jpg"></div>
+  </div>
+  <h3 style="font-size:11.5pt;margin-bottom:2mm">Il patto (zampa sul cuore)</h3>
+  <ul class="check">
+    <li>Io ti spiego ogni esercizio in modo semplice, e non ti giudico mai</li>
+    <li>Tu pratichi ogni giorno, anche solo 10 minuti — e segni tutto sul tracker</li>
+    <li>Nessuno dei due urla, strattona o punisce: non funziona e rovina la fiducia</li>
+    <li>Se un giorno salta, non è un dramma: si riprende da dove eravamo</li>
+  </ul>
+  <div class="footer"><span>Il Metodo <span class="paw">Argo</span></span><span class="num"></span></div>
+</div>
+
+<!-- ═══ 4 · IL LINGUAGGIO DI ARGO ═══ -->
+<div class="page">
+  <p class="kicker">Impara queste parole: le useremo sempre</p>
+  <h1 style="font-size:22pt;margin-bottom:5mm">Il linguaggio<br><em>del Metodo Argo</em></h1>
+  <div class="glossary">
+    <div class="gitem"><h3>⏱️ La Finestra di Argo</h3><p>Il secondo — UNO — che hai per premiare il comportamento giusto. Dopo, per il cane stai premiando un'altra cosa. Tutto il metodo gira intorno a questa finestra.</p></div>
+    <div class="gitem"><h3>💣 L'Artiglieria di Argo</h3><p>I premi di altissimo valore (pollo, würstel, formaggio) riservati alle situazioni difficili. In casa bastano le crocchette; al parco coi piccioni serve l'artiglieria.</p></div>
+    <div class="gitem"><h3>👀 Gli Occhi di Argo</h3><p>Guardare il cane per quello che sta dicendo, non per quello che «dovrebbe» fare. Orecchie, coda, postura: parla di continuo — è che nessuno lo ascolta.</p></div>
+    <div class="gitem"><h3>🔑 La parola di libertà</h3><p>«Ok!» — la parola che chiude ogni attesa e ogni esercizio. Senza un via chiaro, il cane non sa mai quando può smettere di lavorare.</p></div>
+  </div>
+  <h3 style="font-size:11.5pt;margin:5mm 0 2.5mm">I box che troverai in ogni giorno</h3>
+  <div class="bx bx--missione" style="margin-bottom:2.5mm"><h4>🎯 Missione del giorno</h4><p>L'esercizio, passo per passo. È la cosa da FARE oggi.</p></div>
+  <div class="bx bx--dietro" style="margin-bottom:2.5mm"><h4>🧠 Dietro le quinte</h4><p>Cosa succede nel cervello del tuo cane mentre fate l'esercizio — il perché che nessun video di YouTube ti spiega.</p></div>
+  <div class="bx bx--errore" style="margin-bottom:2.5mm"><h4>⚠️ Errore umano</h4><p>Lo sbaglio che fanno quasi tutti in questo esercizio. Se lo conosci, non ci caschi.</p></div>
+  <div class="bx bx--soccorso" style="margin-bottom:2.5mm"><h4>🚑 Pronto soccorso</h4><p>«E se il cane…?» — le situazioni reali e come uscirne, caso per caso.</p></div>
+  <div class="bx bx--asticella" style="margin-bottom:2.5mm"><h4>📈 Alzare l'asticella</h4><p>Quando e come aumentare la difficoltà — e come capire se l'esercizio è riuscito.</p></div>
+  <div class="bx bx--losai" style="margin-bottom:0"><h4>💡 Lo sai che…</h4><p>Una cosa vera su noi cani che non sapevi. Per fare bella figura ai giardinetti.</p></div>
+  <div class="footer"><span>Il Metodo <span class="paw">Argo</span></span><span class="num"></span></div>
+</div>
+
+<!-- ═══ 5 · LA MAPPA DEI 21 GIORNI ═══ -->
+<div class="page">
+  <p class="kicker">La visione d'insieme</p>
+  <h1 style="font-size:22pt;margin-bottom:4mm">La mappa<br><em>dei 21 giorni</em></h1>
+  <div class="tl">
+    <div class="seg"><h3>Fase 1 · Fondamenta <span class="muted" style="font-size:8.5pt">· giorni 1–7</span></h3><p>Il linguaggio comune, uguale per tutti: il patto → il nome → il marker → il seduto → la calma → l'autocontrollo → il tagliando. Ogni giorno costruisce sul precedente: l'ordine non è casuale.</p></div>
+    <div class="seg a"><h3>Fase 2 · Il tuo modulo <span class="muted" style="font-size:8.5pt">· giorni 8–16</span></h3><p>Nove giorni sul VOSTRO problema, uno dei cinque profili: <strong>Il Trattore</strong> (guinzaglio) · <strong>Lo Squalo</strong> (morsi del cucciolo) · <strong>L'Esploratore Sordo</strong> (richiamo) · <strong>Il Velcro</strong> (solitudine) · <strong>Il Tornado</strong> (autocontrollo). In questo libro trovi l'identikit completo, i primi esercizi e la roadmap; il giorno-per-giorno interattivo è nell'area membri.</p></div>
+    <div class="seg"><h3>Fase 3 · Consolidamento <span class="muted" style="font-size:8.5pt">· giorni 17–21</span></h3><p>Dal salotto al mondo: posti nuovi → distrazioni → ospiti → vita vera → diploma. È qui che gli esercizi diventano abitudini.</p></div>
+  </div>
+  <div class="vs">
+    <div class="v"><h4>Quello che vedi</h4><p>Ventuno giorni di esercizi.</p></div>
+    <div class="s"><h4>Quello che succede</h4><p>Una nuova lingua condivisa, un giorno alla volta. Il giorno 22 non tornerete quelli di prima.</p></div>
+  </div>
+  <div class="bx bx--losai"><h4>💡 Lo sai che…</h4><p>Servono in media 18–66 giorni per consolidare un'abitudine — nei cani come negli umani. I nostri 21 giorni sono il cuore del lavoro: il piano di mantenimento (ultima pagina) fa il resto.</p></div>
+  <div class="footer"><span>Il Metodo <span class="paw">Argo</span></span><span class="num"></span></div>
+</div>
+
+<!-- ═══ 6 · LE 3 REGOLE D'ORO ═══ -->
+<div class="page">
+  <p class="kicker">Prima di iniziare</p>
+  <h1 style="font-size:22pt;margin-bottom:5mm">Le tre regole d'oro<br><em>(valgono per tutti i 21 giorni)</em></h1>
+  <div class="two">
+    <div>
+      <div class="bx bx--regola"><h4>🟢 Regola di Argo n.1 — La Finestra</h4><p>Noi cani viviamo nel presente. Un premio dato 8 secondi dopo premia… quello che stavo facendo 8 secondi dopo. La <strong>Finestra di Argo</strong> dura un secondo: tutto il metodo sta in quel secondo.</p></div>
+      <div class="bx bx--regola"><h4>🟢 Regola di Argo n.2 — Il premio lo decido io</h4><p>Un premio è ciò che IO trovo premiante, non ciò che costa di più. E il valore deve crescere con la difficoltà: in cucina crocchette, al parco l'<strong>Artiglieria</strong>. Se il premio non batte la distrazione, ha già perso.</p></div>
+      <div class="bx bx--regola"><h4>🟢 Regola di Argo n.3 — Sessioni brevi</h4><p>Cinque minuti, poi pausa. Meglio tre sessioni da 5 che una da 20: imparare stanca, e un cane stanco smette di imparare e inizia a subire. <strong>Chiudi sempre con un successo facile.</strong></p></div>
+    </div>
+    <div>
+      <div class="ph r45" data-img="argo-professore.jpg" style="margin-bottom:3mm"></div>
+      <div class="bx bx--dietro" style="margin:0"><h4>🧠 Dietro le quinte</h4><p>Ogni premio azzeccato rilascia dopamina nel cervello del cane — la molecola del «lo rifarò». Stai letteralmente scolpendo le sue abitudini, un premietto alla volta. Dal mio punto di vista? Il miglior lavoro del mondo.</p></div>
+    </div>
+  </div>
+  <div class="footer"><span>Il Metodo <span class="paw">Argo</span></span><span class="num"></span></div>
+</div>
+
+<!-- ═══ 7 · QUANDO NON BASTO IO ═══ -->
+<div class="page">
+  <p class="kicker" style="color:var(--terra)">Una cosa seria</p>
+  <h1 style="font-size:22pt;margin-bottom:5mm">Quando non basto io.<br><em>Detto da un cane serio.</em></h1>
+  <p>Io sono bravo, ma sono un ebook. E ci sono cose che un ebook — anche scritto da un cane — <strong>non deve toccare</strong>:</p>
+  <div class="bx bx--errore" style="margin:4mm 0"><h4>⚠️ Il Metodo Argo NON tratta</h4>
+    <ul>
+      <li>Aggressività verso persone o altri cani (ringhi seri, morsi, minacce)</li>
+      <li>Paure intense, fobie, traumi</li>
+      <li>Qualunque questione di salute, alimentazione o farmaci</li>
+    </ul>
+  </div>
+  <p>In questi casi serve un professionista in carne e ossa: un <strong>educatore cinofilo certificato</strong> o un <strong>veterinario comportamentalista</strong>, che veda il cane dal vivo. Non è un ripiego: è l'unico strumento giusto per quel lavoro.</p>
+  <div class="bx bx--regola"><h4>🟢 Regola di Argo</h4><p>Se durante un esercizio il cane si irrigidisce, ansima, si lecca il muso di continuo o cerca di evitare — <strong>fermati</strong>. Sta usando il suo linguaggio per dirti «troppo, troppo in fretta». Un passo indietro non è mai una sconfitta: è ascolto. Ricorda gli <strong>Occhi di Argo</strong>.</p></div>
+  <div class="bx bx--losai"><h4>💡 Lo sai che…</h4><p>Il «cane che fa i dispetti per vendetta» non esiste: la vendetta richiede una memoria episodica e una teoria della mente che non abbiamo. Se distruggo il divano, sto gestendo un'emozione — di solito noia o ansia. Il dispetto è una storia che vi raccontate voi umani.</p></div>
+  <div class="footer"><span>Il Metodo <span class="paw">Argo</span></span><span class="num"></span></div>
+</div>
+
+<!-- ═══ 8 · FASE 1 OPENER ═══ -->
+<div class="page" style="background:var(--salvia-t)">
+  <div style="margin:auto;text-align:center;max-width:130mm">
+    <p class="kicker kicker--s">Giorni 1–7 · uguale per tutti</p>
+    <h1 style="font-size:34pt;margin-bottom:6mm">Fase 1<br><em>Fondamenta</em></h1>
+    <p style="font-size:11.5pt">Sette giorni per costruire il linguaggio comune: il nome che funziona, la parola magica, la calma su richiesta, l'autocontrollo. Sembrano esercizi piccoli. Sono le fondamenta di tutto quello che verrà.</p>
+    <p style="font-family:var(--serif);font-style:italic;color:var(--salvia);font-size:12pt;margin-top:8mm">«Prima di insegnarmi qualcosa,<br>impara ad ascoltarmi.»</p>
+  </div>
+  <div class="footer" style="border-color:rgba(78,112,89,.3)"><span>Fase 1 · Fondamenta</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 1 · A ═══ -->
+<div class="page">
+  <div class="dayhead"><div class="badge">1</div><div><h2>Il patto</h2><p class="sub">Prima di insegnarmi qualcosa, guardami.</p></div></div>
+  <div class="pstrip"><span>Giorno 1 di 21</span><div class="pbar"><i style="width:4.8%"></i></div><span>Fase 1 · Fondamenta</span></div>
+  <div class="two" style="margin-bottom:3mm">
+    <div>
+      <p>Oggi non mi insegni niente. Lo so, non vedevi l'ora. Ma il primo giorno serve a te, non a me: <strong>devi capire chi hai davanti</strong>.</p>
+      <p>Sai cosa penso quando un umano compra un libro di educazione e parte subito coi comandi? Penso a uno che entra in un paese straniero e inizia a dare ordini senza aver ascoltato una parola della lingua locale. Oggi si ascolta. Domani si parla.</p>
+    </div>
+    <div class="ph r32" data-img="argo-patto.jpg"></div>
+  </div>
+  <div class="bx bx--missione"><h4>🎯 Missione del giorno</h4>
+    <ol class="steps">
+      <li><strong>Osservami in 3 momenti</strong> (mattina, pomeriggio, sera), 5 minuti l'uno, senza chiedermi niente. Scrivi sul tracker: dove si mette? Cosa guarda? Quando si agita? Quando si rilassa davvero?</li>
+      <li><strong>Riunisci la famiglia</strong> e decidete 3 regole della casa, chiare e uguali per tutti: divano sì o no? Cibo dal tavolo sì o no? Salta addosso agli ospiti sì o no?</li>
+      <li><strong>Scrivetele sul tracker</strong>, firmate tutti. Sembra una cerimonia sciocca: non lo è.</li>
+    </ol>
+  </div>
+  <div class="bx bx--dietro"><h4>🧠 Dietro le quinte</h4><p>Il tuo cane ti osserva da sempre: conosce il rumore delle tue chiavi, la differenza tra le scarpe del lavoro e quelle della passeggiata. Oggi inverti i ruoli e cominci a costruire i tuoi <strong>Occhi di Argo</strong>: la capacità di leggere orecchie, coda e postura. E c'è di più: le regole incoerenti sono il motivo n.1 per cui i cani «non ascoltano». Se tu dici no e tua figlia dice sì, io non divento confuso — divento <em>strategico</em>: imparo CHI dice sì.</p></div>
+  <div class="footer"><span>Fase 1 · Fondamenta</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 1 · B ═══ -->
+<div class="page">
+  <div class="bx bx--errore"><h4>⚠️ Errore umano</h4><p>Volere risultati il giorno 1. L'umano medio salta l'osservazione («tanto il mio cane lo conosco») e parte coi comandi. Poi al giorno 10 si chiede perché il cane «funziona» solo quando ha il premio in mano. Le fondamenta non si vedono, ma reggono la casa.</p></div>
+  <div class="bx bx--soccorso"><h4>🚑 Pronto soccorso</h4>
+    <ul>
+      <li><strong>«Mi segue ovunque, non riesco a osservarlo!»</strong> — Perfetto, hai già la prima nota per il tracker: potrebbe esserci un Velcro in casa. Osservalo mentre fai altro: la vera osservazione è di sottecchi.</li>
+      <li><strong>«La famiglia non è d'accordo sulle regole.»</strong> — Meglio scoprirlo oggi che al giorno 15. Negoziate: 3 regole condivise valgono più di 10 regole ignorate.</li>
+      <li><strong>«Il mio cane non fa niente di strano.»</strong> — Guarda più fino: quando sbadiglia senza sonno? Quando si lecca il muso? Sono segnali di tensione che il 90% degli umani non vede.</li>
+    </ul>
+  </div>
+  <div class="bx bx--asticella"><h4>📈 Com'è andata?</h4><p><strong>Riuscito se:</strong> hai almeno 6 note scritte sul tracker e 3 regole firmate da tutti. <strong>Se non ci sei riuscito:</strong> nessun dramma — l'osservazione continua domani in parallelo al primo esercizio. Ma le 3 regole servono stasera: senza quelle non si parte.</p></div>
+  <div class="argo-says"><span class="p">🐾</span><div><strong>Variante cucciolo:</strong> se ha meno di 6 mesi, aggiungi alle osservazioni gli orari di pipì, pasti e sonno. Ti serviranno per il bonus SOS Pipì — e ti salveranno il parquet.</div></div>
+  <ul class="check"><li class="t">La checklist di oggi</li>
+    <li>Osservato in 3 momenti diversi, con note scritte</li>
+    <li>3 regole della casa decise e firmate da tutti</li>
+    <li>Tracker stampato e attaccato al frigo</li>
+  </ul>
+  <div class="bx bx--losai" style="margin-top:3mm"><h4>💡 Lo sai che…</h4><p>Un cane adulto dorme 12–14 ore al giorno, un cucciolo fino a 18–20. Se il tuo cane è sempre «su di giri», la prima domanda giusta non è «come lo calmo?» ma «sta dormendo abbastanza?».</p></div>
+  <div class="footer"><span>Fase 1 · Fondamenta</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 2 · A ═══ -->
+<div class="page">
+  <div class="dayhead"><div class="badge">2</div><div><h2>Il mio nome non è «No»</h2><p class="sub">Quando mi chiami, vinco qualcosa.</p></div></div>
+  <div class="pstrip"><span>Giorno 2 di 21</span><div class="pbar"><i style="width:9.5%"></i></div><span>Fase 1 · Fondamenta</span></div>
+  <div class="two" style="margin-bottom:3mm">
+    <div>
+      <p>Sai qual è la parola che sento più spesso? «No». A volte penso sia il mio secondo nome. Oggi sistemiamo la cosa più importante di tutte: quando dici il mio nome, io <strong>mi volto verso di te</strong>. Non per magia — perché conviene.</p>
+      <p>Noi cani non «sappiamo» il nostro nome come lo sapete voi. Per noi è un suono, e un suono vale quanto ciò che lo segue. Nome → cose belle = suono da non perdersi. Nome → sgridata = suono da cui sparire.</p>
+    </div>
+    <img class="pic r32" src="../assets/img/ex-nome.jpg" alt="">
+  </div>
+  <div class="bx bx--missione"><h4>🎯 Missione del giorno — il gioco del nome (5 min × 3)</h4>
+    <ol class="steps">
+      <li>Stanza tranquilla, premietti piccoli in tasca (crocchette: qui non serve l'Artiglieria).</li>
+      <li>Di' il mio nome UNA volta, con voce allegra.</li>
+      <li>Appena giro la testa verso di te: premio dentro la <strong>Finestra di Argo</strong> — un secondo, non di più.</li>
+      <li>Non mi giro? Non ripetere il nome: avvicinati, riduci la distanza, riprova più facile.</li>
+      <li>10 ripetizioni, pausa, poi seconda e terza sessione in momenti diversi della giornata.</li>
+    </ol>
+  </div>
+  <div class="bx bx--dietro"><h4>🧠 Dietro le quinte</h4><p>Si chiama <em>condizionamento classico</em>: il cervello del cane collega il suono del nome all'arrivo di qualcosa di buono, e dopo poche decine di ripetizioni il collegamento diventa automatico — non una scelta, un <strong>riflesso</strong>. È lo stesso meccanismo per cui ti si muove lo stomaco quando senti il tintinnio delle posate. Tu non «decidi» di avere fame: succede. Ecco cosa stiamo costruendo col nome.</p></div>
+  <div class="footer"><span>Fase 1 · Fondamenta</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 2 · B ═══ -->
+<div class="page">
+  <div class="bx bx--errore"><h4>⚠️ Errore umano</h4><p>Il «disco rotto»: <em>Rex. Rex! REX!! REEEX!!!</em> Ogni ripetizione a vuoto insegna al cane che il nome si può ignorare — le prime tre volte non succede mai niente. E la seconda versione dell'errore è peggio: usare il nome per sgridare. Ogni «REX!» arrabbiato svuota il conto in banca che stai riempiendo con i premi.</p></div>
+  <div class="bx bx--soccorso"><h4>🚑 Pronto soccorso</h4>
+    <ul>
+      <li><strong>«Non si gira proprio.»</strong> — Sei troppo lontano o c'è troppo rumore. Mettiti a due passi, stanza silenziosa. Ancora niente? Premio migliore: passa all'Artiglieria.</li>
+      <li><strong>«Ignora il premio.»</strong> — O non ha fame (sessione prima dei pasti, non dopo) o è troppo agitato per mangiare: ambiente più calmo, riprova.</li>
+      <li><strong>«Si gira ma poi si lancia addosso.»</strong> — Premia a terra, lanciando il premietto tra le sue zampe invece che dalla mano.</li>
+      <li><strong>«In casa perfetto, in giardino sordo.»</strong> — Normale: è il capitolo della generalizzazione, giorno 17. Per ora vinci in casa.</li>
+    </ul>
+  </div>
+  <div class="bx bx--asticella"><h4>📈 Alzare l'asticella</h4><p><strong>Riuscito se:</strong> in casa si gira 8 volte su 10 al primo richiamo del nome. <strong>Quando ci sei:</strong> aumenta la distanza (altra stanza), poi aggiungi distrazioni leggere (TV accesa, qualcuno che cammina). Un gradino alla volta: se sbaglia due volte di fila, l'asticella è troppo alta — torna al gradino prima.</p></div>
+  <div class="argo-says"><span class="p">🐾</span><div><strong>Variante cucciolo:</strong> sessioni da 2 minuti, non 5 — l'attenzione di un cucciolo è una farfalla. <strong>Variante adulto «rovinato»:</strong> se il nome è ormai bruciato da anni di sgridate, valuta di ricominciare con un nomignolo nuovo di zecca: funziona.</div></div>
+  <ul class="check"><li class="t">La checklist di oggi</li>
+    <li>Sessione 1 · Sessione 2 · Sessione 3</li>
+    <li>Premio sempre dentro la Finestra di Argo (1 secondo)</li>
+    <li>Nessuno oggi ha usato il nome per sgridare</li>
+  </ul>
+  <div class="footer"><span>Fase 1 · Fondamenta</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 3 · A ═══ -->
+<div class="page">
+  <div class="dayhead"><div class="badge">3</div><div><h2>La parola magica</h2><p class="sub">Il marker: «esatto, proprio quello!» al momento giusto.</p></div></div>
+  <div class="pstrip"><span>Giorno 3 di 21</span><div class="pbar"><i style="width:14.3%"></i></div><span>Fase 1 · Fondamenta</span></div>
+  <div class="two" style="margin-bottom:3mm">
+    <div>
+      <p>Il tuo problema non è che io non capisco. È che <strong>me lo dici tardi</strong>. Ti muovi, cerchi il premio in tasca, ti chini… e nel frattempo io ho già fatto altre quattro cose. Quale delle cinque stavi premiando? Boh.</p>
+      <p>Oggi impari il <strong>marker</strong>: una parola breve — «Sì!» va benissimo — detta nell'istante esatto del comportamento giusto, sempre seguita dal premio. Il marker congela il tempo: da oggi la Finestra di Argo ce l'hai in tasca.</p>
+    </div>
+    <img class="pic r32" src="../assets/img/ex-marker.jpg" alt="">
+  </div>
+  <div class="bx bx--missione"><h4>🎯 Missione del giorno — «carica il Sì» (5 min × 3)</h4>
+    <ol class="steps">
+      <li>Di' «Sì!» e dammi subito un premietto. Non devo fare niente: sto imparando che «Sì» = premio in arrivo. Garantito, sempre.</li>
+      <li>Ripeti 10 volte. Pausa. Ripeti in un'altra stanza.</li>
+      <li>Dal pomeriggio, caccia grossa: di' «Sì!» solo quando mi becchi a fare qualcosa di giusto — seduto da solo, calmo sulla coperta, ti guardo — e premia subito.</li>
+    </ol>
+  </div>
+  <div class="bx bx--dietro"><h4>🧠 Dietro le quinte</h4><p>Il marker è un <em>ponte temporale</em>: allunga la Finestra di Argo quanto ti serve. Il «Sì!» arriva in 0,3 secondi ed è lui che fotografa il comportamento; il premio può arrivare anche 3 secondi dopo, il cervello del cane ha già registrato COSA ha funzionato. È la stessa tecnologia del clicker dei professionisti — solo che la tua voce ce l'hai sempre con te. Precisione da chirurgo, attrezzatura zero.</p></div>
+  <div class="footer"><span>Fase 1 · Fondamenta</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 3 · B ═══ -->
+<div class="page">
+  <div class="bx bx--errore"><h4>⚠️ Errore umano</h4><p>Dire «Sì!» e poi — niente premio («tanto ormai ha capito»). Ogni Sì a vuoto svaluta la parola, come una banconota stampata senza oro dietro: tre o quattro assegni scoperti e il cane smette di crederci. Nella fase di costruzione il cambio è fisso: un Sì = un premio. Sempre.</p></div>
+  <div class="bx bx--soccorso"><h4>🚑 Pronto soccorso</h4>
+    <ul>
+      <li><strong>«Al Sì non reagisce.»</strong> — Troppe poche ripetizioni: rifai la carica del mattino, 20 ripetizioni, premio top.</li>
+      <li><strong>«Si eccita troppo quando lo dico.»</strong> — Perfetto, la parola funziona! Abbassa il tono: «Sì» detto calmo, non urlato da stadio.</li>
+      <li><strong>«In famiglia ognuno dice una parola diversa.»</strong> — Riunione lampo: UNA parola per tutti. «Sì», «Bravo», va bene tutto — purché sia una sola.</li>
+      <li><strong>«Ho detto Sì al momento sbagliato.»</strong> — Capita a tutti: paga comunque il premio (il contratto è sacro) e mira meglio la prossima volta.</li>
+    </ul>
+  </div>
+  <div class="bx bx--asticella"><h4>📈 Alzare l'asticella</h4><p><strong>Riuscito se:</strong> al «Sì!» il cane si volta di scatto verso di te aspettando il premio — quello sguardo è il segno che il ponte è costruito. <strong>Da domani:</strong> il marker entra in ogni esercizio del metodo. Il gioco «caccia al comportamento giusto» invece non finisce mai: 5 Sì «a sorpresa» al giorno, per sempre.</p></div>
+  <div class="vs">
+    <div class="v"><h4>Quello che vedi</h4><p>Un umano che dice «Sì» a un cane.</p></div>
+    <div class="s"><h4>Quello che succede</h4><p>Una macchina fotografica: il «Sì» scatta la foto del comportamento giusto, il premio la stampa.</p></div>
+  </div>
+  <ul class="check"><li class="t">La checklist di oggi</li>
+    <li>Carica del marker: 2 sessioni da 10 ripetizioni</li>
+    <li>Almeno 5 comportamenti spontanei «fotografati» col Sì</li>
+    <li>Ogni Sì ha avuto il suo premio, nessun assegno scoperto</li>
+  </ul>
+  <div class="footer"><span>Fase 1 · Fondamenta</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 4 · A ═══ -->
+<div class="page">
+  <div class="dayhead"><div class="badge">4</div><div><h2>Seduto (ma sul serio)</h2><p class="sub">Non il seduto da circo. Il seduto che mi calma.</p></div></div>
+  <div class="pstrip"><span>Giorno 4 di 21</span><div class="pbar"><i style="width:19%"></i></div><span>Fase 1 · Fondamenta</span></div>
+  <div class="two" style="margin-bottom:3mm">
+    <div>
+      <p>«Ma il mio cane il seduto lo sa già!» Sì, lo so anch'io. Lo sappiamo tutti. Il punto non è <em>sapere</em> il seduto: è <strong>scegliere di sedersi</strong> quando intorno succedono cose.</p>
+      <p>Da oggi sedersi diventa il mio modo di dire «per favore»: prima della ciotola, del guinzaglio, della porta. Voi lo chiamate comando. Dal mio punto di vista è un'altra cosa: un modo per ottenere quello che voglio senza impazzire. Affare fatto.</p>
+    </div>
+    <img class="pic r32" src="../assets/img/ex-seduto.jpg" alt="">
+  </div>
+  <div class="bx bx--missione"><h4>🎯 Missione del giorno (5 min × 3)</h4>
+    <ol class="steps">
+      <li>Premietto nel pugno chiuso, sopra il mio naso: spostalo lentamente indietro, sopra la mia testa. La testa sale, il sedere scende: fisica canina.</li>
+      <li>Sedere a terra? <strong>«Sì!»</strong> + premio.</li>
+      <li>Dopo 5 riuscite: via il premio dalla mano, resta solo il gesto. «Sì!» + premio dall'altra mano.</li>
+      <li>Solo quando il gesto funziona 8 volte su 10, aggiungi la parola «seduto» PRIMA del gesto. Parola → gesto → sedere a terra → Sì → premio.</li>
+    </ol>
+  </div>
+  <div class="bx bx--dietro"><h4>🧠 Dietro le quinte</h4><p>Perché prima il gesto e poi la parola? Perché noi cani siamo una specie che comunica col corpo: leggiamo un movimento di mano mille volte meglio di un suono. La parola da sola, all'inizio, è rumore. La sequenza giusta è: <em>movimento guidato → gesto → parola</em> — ogni passaggio si appoggia sul precedente. Chi parte dalla parola costruisce il tetto prima dei muri.</p></div>
+  <div class="footer"><span>Fase 1 · Fondamenta</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 4 · B ═══ -->
+<div class="page">
+  <div class="bx bx--errore"><h4>⚠️ Errore umano</h4><p>Due classici: il disco rotto («seduto-seduto-SEDUTO») — la parola si dice una volta, se non funziona l'esercizio è troppo difficile, non il cane troppo stupido. E la spinta sul sedere: costringe il corpo, non insegna niente alla testa. Un seduto spinto è un seduto subìto; un seduto scelto è un seduto imparato.</p></div>
+  <div class="bx bx--soccorso"><h4>🚑 Pronto soccorso</h4>
+    <ul>
+      <li><strong>«Salta verso la mano col premio.»</strong> — Mano troppo alta: tienila a un dito dal naso, muovila piano.</li>
+      <li><strong>«Indietreggia invece di sedersi.»</strong> — Fai l'esercizio con un muro o il divano alle sue spalle: la retromarcia finisce, il sedere si siede.</li>
+      <li><strong>«Si sdraia direttamente.»</strong> — Entusiasmo da premiare comunque la prima volta! Poi marca un attimo prima: nel momento in cui il sedere tocca, «Sì!».</li>
+      <li><strong>«Vive in appartamento, si siede solo in cucina.»</strong> — Ripeti l'esercizio in ogni stanza: per noi «seduto-in-cucina» e «seduto-in-salotto» sono due esercizi diversi. Davvero.</li>
+    </ul>
+  </div>
+  <div class="bx bx--asticella"><h4>📈 Alzare l'asticella</h4><p><strong>Riuscito se:</strong> si siede col solo gesto 8/10, senza premio in mano. <strong>Poi:</strong> attiva il «per favore»: seduto prima della ciotola, del guinzaglio, della porta — la vita quotidiana diventa la palestra. <strong>Se non funziona dopo 3 giorni:</strong> resta al passo del gesto, la parola può aspettare: nessuno vi corre dietro.</p></div>
+  <div class="argo-says"><span class="p">🐾</span><div><strong>Variante adulto anziano:</strong> se il tuo cane ha anche o schiena delicate, il seduto ripetuto può dare fastidio — pochi seduti, e se esita sempre, prima una parola col veterinario.</div></div>
+  <ul class="check"><li class="t">La checklist di oggi</li>
+    <li>Seduto guidato (lure) → poi con il solo gesto</li>
+    <li>Primo «per favore»: seduto prima della ciotola</li>
+    <li>Parola detta una volta sola, sempre</li>
+  </ul>
+  <div class="footer"><span>Fase 1 · Fondamenta</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 5 · A ═══ -->
+<div class="page">
+  <div class="dayhead"><div class="badge">5</div><div><h2>L'arte di non fare niente</h2><p class="sub">Il relax su comando esiste. E ti cambierà la vita.</p></div></div>
+  <div class="pstrip"><span>Giorno 5 di 21</span><div class="pbar"><i style="width:23.8%"></i></div><span>Fase 1 · Fondamenta</span></div>
+  <div class="two" style="margin-bottom:3mm">
+    <div>
+      <p>Gli umani pensano che educare un cane significhi insegnargli a FARE cose. Poi vivono con un cane che non sa STARE. Oggi lavoriamo sul <strong>terra rilassato</strong>: sdraiarsi e mollare la tensione mentre la vita va avanti.</p>
+      <p>Noi cani non nasciamo zen. L'attesa tranquilla è un'abilità, come il richiamo — e nessuno la insegna, perché «tanto è solo un cane sdraiato». È l'esercizio più sottovalutato del mondo: ospiti, ristorante, ufficio, sere sul divano. Lo userai per sempre.</p>
+    </div>
+    <img class="pic r32" src="../assets/img/ex-coperta.jpg" alt="">
+  </div>
+  <div class="bx bx--missione"><h4>🎯 Missione del giorno — la coperta (10 min × 2)</h4>
+    <ol class="steps">
+      <li>Stendi una coperta o un tappetino: quello è il mio posto. Solo mio.</li>
+      <li>Portami sopra con un premietto e aspetta che mi sdraio da solo. Non dire niente. Aspetta. (Sì, anche 3 minuti. Respira.)</li>
+      <li>Appena giù: premio <em>tra le zampe</em>, lento, senza festa. Qui si celebra sottovoce.</li>
+      <li>Resto giù? Ogni tanto un premio tra le zampe. Mi alzo? Zero drammi: aspetta che ci ritorni.</li>
+      <li>Fine sessione: «Ok!» — la parola di libertà — e via la coperta.</li>
+    </ol>
+  </div>
+  <div class="bx bx--dietro"><h4>🧠 Dietro le quinte</h4><p>Stai facendo due cose insieme. Uno: premi una POSIZIONE, e il cane impara che «giù sulla coperta» è una slot machine che paga. Due — la parte magica: la postura influenza l'emozione. Un corpo disteso a lungo abbassa davvero l'attivazione: respiro più lento, muscoli molli. Non stai addestrando un cane a stare fermo: stai insegnando al suo sistema nervoso <em>com'è fatta la calma</em>.</p></div>
+  <div class="footer"><span>Fase 1 · Fondamenta</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 5 · B ═══ -->
+<div class="page">
+  <div class="bx bx--errore"><h4>⚠️ Errore umano</h4><p>La fretta e la festa. La fretta: dare il comando «terra!» invece di aspettare la scelta — un terra comandato è obbedienza, un terra scelto è rilassamento, e a noi serve il secondo. La festa: premiare con voce squillante e carezze energiche… ed ecco che il cane si rialza carico come una molla. Sulla coperta si parla come in biblioteca.</p></div>
+  <div class="bx bx--soccorso"><h4>🚑 Pronto soccorso</h4>
+    <ul>
+      <li><strong>«Non si sdraia mai.»</strong> — Sessione dopo la passeggiata, non prima: un cane carico non si molla. E premia i passi intermedi: prima lo stare sulla coperta, poi il seduto, poi il terra.</li>
+      <li><strong>«Mordicchia la coperta.»</strong> — È tensione o noia: accorcia la sessione e premia più spesso all'inizio.</li>
+      <li><strong>«Si sdraia ma fissa la mia tasca dei premi.»</strong> — Normale all'inizio. Diventerà calma vera col tempo: cerca di premiare quando lo sguardo si ammorbidisce.</li>
+      <li><strong>«Appena mi muovo io, si alza.»</strong> — Per ora resta vicino. Il «tu ti muovi, lui resta» è l'asticella di domani, non di oggi.</li>
+    </ul>
+  </div>
+  <div class="bx bx--asticella"><h4>📈 Alzare l'asticella</h4><p><strong>Riuscito se:</strong> si sdraia da solo entro un minuto e resta giù 30 secondi. <strong>Scala della coperta:</strong> ① durata (1 → 5 minuti) ② tu ti sposti di due passi ③ tu ti siedi a fare altro ④ piccole distrazioni (TV, qualcuno entra). Un gradino per volta, e la coperta vi seguirà ovunque: dai nonni, in vacanza, al bar.</p></div>
+  <div class="bx bx--losai"><h4>💡 Lo sai che…</h4><p>Il «sospiro» che facciamo quando ci sdraiamo del tutto — quello sbuffo lungo dal naso — è un segnale fisiologico di rilassamento. Se lo senti durante l'esercizio della coperta, hai appena vinto la giornata.</p></div>
+  <ul class="check"><li class="t">La checklist di oggi</li>
+    <li>Coperta scelta e usata solo per questo</li>
+    <li>Si è sdraiato da solo almeno una volta</li>
+    <li>Premi dati tra le zampe, con calma da biblioteca</li>
+  </ul>
+  <div class="footer"><span>Fase 1 · Fondamenta</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 6 · A ═══ -->
+<div class="page">
+  <div class="dayhead"><div class="badge">6</div><div><h2>Aspetta, che fretta c'è</h2><p class="sub">La ciotola, la porta, e io che imparo a scegliere.</p></div></div>
+  <div class="pstrip"><span>Giorno 6 di 21</span><div class="pbar"><i style="width:28.6%"></i></div><span>Fase 1 · Fondamenta</span></div>
+  <p>Ti svelo un segreto di noi cani: l'autocontrollo non ce l'abbiamo di fabbrica. <strong>Si installa.</strong> E si installa senza dire una parola: niente «no», niente «aspetta» urlato. Solo conseguenze, pulite come un meccanismo: la fretta allontana quello che voglio, la calma lo avvicina.</p>
+  <div class="two" style="margin-bottom:3mm">
+    <img class="pic r32" src="../assets/img/ex-ciotola.jpg" alt="">
+    <img class="pic r32" src="../assets/img/ex-porta.jpg" alt="">
+  </div>
+  <div class="two">
+    <div class="bx bx--missione" style="margin:0"><h4>🎯 Missione 1 — la ciotola paziente</h4>
+      <ol class="steps">
+        <li>Preparo la ciotola. Il cane balla il tip tap: previsto.</li>
+        <li>Abbassala lentamente: se si lancia, la ciotola risale. In silenzio totale.</li>
+        <li>Arriva a terra solo se resta seduto.</li>
+        <li>«Ok!» → si mangia. A ogni pasto, da oggi in poi.</li>
+      </ol>
+    </div>
+    <div class="bx bx--missione" style="margin:0"><h4>🎯 Missione 2 — la porta (× 2 oggi)</h4>
+      <ol class="steps">
+        <li>Mano sulla maniglia: si abbassa solo se il cane è seduto.</li>
+        <li>Scatta verso la porta? La porta si richiude. Zero commenti.</li>
+        <li>Ripeti finché resta seduto a porta aperta.</li>
+        <li>«Ok!» → si esce. La calma apre le porte. Letteralmente.</li>
+      </ol>
+    </div>
+  </div>
+  <div class="bx bx--dietro" style="margin-top:3mm"><h4>🧠 Dietro le quinte</h4><p>L'autocontrollo è un muscolo, e questi sono i suoi pesi. Il cane sta imparando a <em>inibire un impulso</em> — una delle cose più difficili per un cervello giovane, canino o umano. Nota il silenzio: se dici «aspetta!» stai controllando tu al posto suo. Il silenzio lo costringe a fare i conti da solo: «se scatto risale, se sto fermo scende». Quella, dal mio punto di vista, non è obbedienza: è <em>intelligenza</em>.</p></div>
+  <div class="footer"><span>Fase 1 · Fondamenta</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 6 · B ═══ -->
+<div class="page">
+  <div class="bx bx--errore"><h4>⚠️ Errore umano</h4><p>Cedere «solo per oggi». Se la ciotola una volta scende anche quando si lancia, hai creato un <em>rinforzo intermittente</em> — la slot machine: pagare ogni tanto, a caso, rende un comportamento praticamente indistruttibile. È il motivo per cui il cane che «a volte» ottiene le cose saltando addosso non smette mai. Le regole del gioco valgono a ogni pasto, anche quando hai fretta. <em>Soprattutto</em> quando hai fretta.</p></div>
+  <div class="bx bx--soccorso"><h4>🚑 Pronto soccorso</h4>
+    <ul>
+      <li><strong>«Alla ciotola impazzisce, non si siede proprio.»</strong> — Criterio più basso: all'inizio basta che le quattro zampe restino a terra. Il seduto arriva domani.</li>
+      <li><strong>«Abbaia mentre aspetta.»</strong> — La ciotola scende solo dopo 2 secondi di silenzio. Il conteggio riparte a ogni abbaio: capirà in fretta.</li>
+      <li><strong>«Alla porta si eccita perché porta = passeggiata!»</strong> — Fai finte: apri, chiudi, e non esci. La porta smette di essere un pronostico infallibile e l'agitazione cala.</li>
+      <li><strong>«Vivo in appartamento: la porta dà sull'ascensore.»</strong> — Vale doppio: ripeti l'esercizio anche davanti all'ascensore. Le attese in spazi stretti sono oro.</li>
+    </ul>
+  </div>
+  <div class="bx bx--asticella"><h4>📈 Alzare l'asticella</h4><p><strong>Riuscito se:</strong> a fine giornata la ciotola arriva a terra al primo tentativo, e la porta si apre col cane seduto. <strong>Poi:</strong> allunga l'attesa (2 → 5 → 10 secondi prima dell'«Ok!»), e porta la regola fuori: seduto prima di scendere dall'auto, seduto prima del guinzaglio. Ogni attesa vinta è benzina per la Fase 2.</p></div>
+  <ul class="check"><li class="t">La checklist di oggi</li>
+    <li>Ciotola paziente a entrambi i pasti, in silenzio</li>
+    <li>Esercizio della porta × 2</li>
+    <li>«Ok!» sempre, come parola di libertà</li>
+  </ul>
+  <div class="bx bx--losai" style="margin-top:3mm"><h4>💡 Lo sai che…</h4><p>Nei test di autocontrollo, i cani che avevano già «lavorato di testa» resistevano meno alla tentazione: l'autocontrollo si esaurisce come una batteria, anche il vostro. Per questo le sessioni brevi non sono un vezzo: sono scienza.</p></div>
+  <div class="footer"><span>Fase 1 · Fondamenta</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 7 · A ═══ -->
+<div class="page">
+  <div class="dayhead"><div class="badge">7</div><div><h2>Il tagliando</h2><p class="sub">Ripasso generale: le fondamenta reggono?</p></div></div>
+  <div class="pstrip"><span>Giorno 7 di 21</span><div class="pbar"><i style="width:33.3%"></i></div><span>Fase 1 · Fondamenta</span></div>
+  <p>Una settimana insieme. Se sei arrivato fin qui, sei già nel 20% degli umani che non mollano — io lo sapevo, comunque. Oggi niente esercizi nuovi: <strong>oggi si collauda</strong>. E si collauda col sorriso: questo è un tagliando, non un esame di maturità.</p>
+  <div class="bx bx--missione"><h4>🎯 Missione del giorno — il test delle fondamenta (10 min)</h4>
+    <ol class="steps">
+      <li><strong>Nome:</strong> dillo una volta mentre guarda altrove. Si gira? ✔</li>
+      <li><strong>Marker:</strong> di' «Sì!» — si volta verso di te aspettando il premio? ✔</li>
+      <li><strong>Seduto:</strong> solo gesto, senza premio in mano. Si siede? ✔</li>
+      <li><strong>Coperta:</strong> lo porti sul posto, ti allontani di due passi. Resta giù 30 secondi? ✔</li>
+      <li><strong>Attesa:</strong> resta seduto finché non dici «Ok» a ciotola e porta? ✔</li>
+    </ol>
+  </div>
+  <div class="two">
+    <div class="bx bx--asticella" style="margin:0"><h4>📈 Come leggere il risultato</h4>
+      <p><strong>4–5 su 5</strong> — Fondamenta solide: da domani si entra nel TUO modulo. 🎉</p>
+      <p><strong>2–3 su 5</strong> — Normale. Oggi rifai gli esercizi zoppicanti; domani si parte lo stesso.</p>
+      <p><strong>0–1 su 5</strong> — Riparti dal giorno 2 e prenditi due giorni in più. I 21 giorni sono una guida, non un ultimatum: meglio arrivare al giorno 23 con fondamenta vere.</p>
+    </div>
+    <div class="bx bx--dietro" style="margin:0"><h4>🧠 Dietro le quinte</h4><p>Il ripasso non è tempo perso: ogni ripetizione riuscita consolida la traccia in memoria, e il sonno della notte fa il resto — sì, il cane «studia» dormendo, proprio come voi. Ecco perché un esercizio impossibile la sera diventa facile la mattina dopo. La scienza consiglia: allenati, poi lascialo dormire sopra.</p></div>
+  </div>
+  <div class="argo-says" style="margin-top:3mm"><span class="p">🐾</span><div>Da domani si fa sul serio: si lavora sul MIO problema. Anzi, sul <em>nostro</em>. Vai alla pagina del tuo profilo — quello che ti ha assegnato il quiz — e leggi tutto, anche i profili degli altri: capirai meglio anche il tuo.</div></div>
+  <ul class="check"><li class="t">La checklist di oggi</li>
+    <li>Test delle 5 fondamenta fatto e segnato sul tracker</li>
+    <li>Esercizi zoppicanti ripassati</li>
+    <li>Festa per la prima settimana: meritata da entrambi</li>
+  </ul>
+  <div class="footer"><span>Fase 1 · Fondamenta</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ WOW · QUOTE FOTO FASE 1→2 ═══ -->
+<div class="page page--full quotepage">
+  <img class="fullbleed" src="../assets/img/ex-coperta.jpg" alt="">
+  <div class="overlay"></div>
+  <div style="position:relative;margin-top:auto;padding:18mm;text-align:left">
+    <p class="bigquote" style="color:#fff;font-size:21pt;max-width:150mm;margin:0">«Insegnare a un cane a non fare niente<br>è la cosa più difficile e più preziosa<br>che imparerete insieme.»
+    <span class="by" style="color:var(--amber)">— Argo, giorno 5</span></p>
+  </div>
+</div>
+
+<!-- ═══ FASE 2 OPENER ═══ -->
+<div class="page" style="background:var(--bosco);color:var(--paper)">
+  <div style="margin:auto;text-align:center;max-width:135mm">
+    <p class="kicker" style="color:var(--amber)">Giorni 8–16 · su misura</p>
+    <h1 style="font-size:34pt;color:var(--paper);margin-bottom:6mm">Fase 2<br><em style="color:var(--amber)">Il tuo modulo</em></h1>
+    <p style="font-size:11.5pt;color:rgba(247,242,232,.85)">Ogni cane ha il suo capitolo. Nelle prossime pagine trovi i cinque profili del Metodo: per ciascuno l'identikit completo, cosa succede nella sua testa, gli errori che lo peggiorano, <strong style="color:var(--amber)">i primi esercizi da fare subito</strong> e la roadmap dei 9 giorni.</p>
+    <p style="font-size:11.5pt;color:rgba(247,242,232,.85);margin-top:4mm">Leggi bene il TUO profilo — quello del quiz — ma non saltare gli altri: i cani veri sono sempre un po' un mix.</p>
+    <p style="font-family:var(--serif);font-style:italic;color:var(--salvia-t);font-size:12pt;margin-top:8mm">«Non esistono cani difficili.<br>Esistono manuali generici.»</p>
+  </div>
+  <div class="footer" style="border-color:rgba(247,242,232,.2);color:rgba(247,242,232,.5)"><span>Fase 2 · Il tuo modulo</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ TRATTORE · A ═══ -->
+<div class="page">
+  <div class="p2head"><span class="emoji">🚜</span><div><h2>Il Trattore</h2><p class="sub">Al guinzaglio, quello portato a spasso sei tu.</p></div></div>
+  <div class="two" style="margin-bottom:3mm">
+    <div>
+      <p><strong>Ti riconosci?</strong> Tre scene dal vero:</p>
+      <ul style="margin-left:4.5mm;font-size:9.3pt">
+        <li style="margin-bottom:1.5mm"><strong>Tira appena esce di casa</strong> — i primi 200 metri sono un rodeo: troppa energia accumulata e un mondo di odori tutto insieme.</li>
+        <li style="margin-bottom:1.5mm"><strong>Tira quando vede un altro cane</strong> — non è (solo) maleducazione: è un picco emotivo, e il guinzaglio teso lo amplifica.</li>
+        <li><strong>Tira solo al ritorno</strong> — sa dove si va e vuole arrivarci: la casa è il premio, e tirare l'ha sempre avvicinata.</li>
+      </ul>
+      <p style="margin-top:2.5mm">Scene diverse, stessa regola imparata: <strong>il guinzaglio teso funziona</strong>.</p>
+    </div>
+    <div class="ph r11" data-img="profilo-trattore.jpg"></div>
+  </div>
+  <div class="bx bx--dietro"><h4>🧠 Dietro le quinte — perché tira</h4><p>Primo: ogni passo avanti ottenuto tirando è un premio incassato — mi hai insegnato tu che è la strategia giusta, senza volerlo. Secondo: esiste il <em>riflesso di opposizione</em> — a una pressione, il corpo del cane risponde spingendo in direzione contraria. Più il guinzaglio tira indietro, più io spingo avanti. È un circolo: tu tiri, io tiro, tu tiri più forte. Qualcuno deve smettere per primo, e ha i pollici.</p></div>
+  <div class="bx bx--errore"><h4>⚠️ Errore umano</h4><p>Lo strattone «correttivo»: dà al cane un motivo in più per tenere il guinzaglio teso (riflesso di opposizione, di nuovo) e associa la tua presenza a uno strappo al collo. E il collare a strozzo? Dal mio punto di vista: dolore al posto di comunicazione. Non è il metodo — e nemmeno necessario.</p></div>
+  <div class="footer"><span>Fase 2 · Il Trattore</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ TRATTORE · B ═══ -->
+<div class="page">
+  <div class="bx bx--asticella"><h4>🏁 L'obiettivo dei 9 giorni</h4><p>La passeggiata col <strong>guinzaglio a J</strong> — molle, che disegna una curva morbida tra voi due — anche davanti alle distrazioni. Non un cane al piede militare: un cane che <em>sceglie</em> di camminare con te perché conviene.</p></div>
+  <div class="bx bx--missione"><h4>🎯 Da fare già oggi — «il semaforo»</h4>
+    <ol class="steps">
+      <li>Procurati l'attrezzatura giusta: <strong>pettorina ad H</strong> + guinzaglio da 2–3 metri (non flexi). Distribuisce la pressione e cambia subito la fisica del problema.</li>
+      <li>In passeggiata, una regola sola: <strong>guinzaglio teso = ti fermi</strong>. In silenzio, come un semaforo rosso. Non uno strattone: una statua.</li>
+      <li>Guinzaglio molle (anche per caso)? «Sì!» + si riparte. Camminare È il premio.</li>
+      <li>Porta l'Artiglieria: ogni sguardo spontaneo verso di te mentre cammina, «Sì!» + premio all'altezza della tua gamba.</li>
+    </ol>
+  </div>
+  <div class="bx bx--soccorso"><h4>🚑 Strategie iniziali</h4>
+    <ul>
+      <li><strong>Scarica prima, cammina dopo:</strong> 10 minuti di gioco in casa o in cortile prima della passeggiata «didattica». Un Trattore a serbatoio pieno non impara.</li>
+      <li><strong>Percorsi noiosi all'inizio:</strong> strade tranquille, sempre le stesse. La novità è benzina per il tiro.</li>
+      <li><strong>Sessioni brevi:</strong> 10 minuti di lavoro sul guinzaglio, poi passeggiata «libera» (annusa quanto vuole, entro il guinzaglio lungo). Metà scuola, metà vacanza.</li>
+    </ul>
+  </div>
+  <h3 style="font-size:11pt;margin:1mm 0 2mm">La roadmap dei tuoi 9 giorni</h3>
+  <ul class="rmap">
+    <li><b>G. 8</b><span><strong>Perché tiro (spoiler: funziona)</strong> — capire il meccanismo e azzerare i rinforzi involontari</span></li>
+    <li><b>G. 9</b><span><strong>L'attrezzatura giusta</strong> — pettorina, guinzaglio lungo, e come si tiene in mano</span></li>
+    <li><b>G. 10</b><span><strong>Il guinzaglio molle paga</strong> — il semaforo diventa un gioco a punti</span></li>
+    <li><b>G. 11</b><span><strong>Un metro alla volta</strong> — costruire i primi 10 passi perfetti</span></li>
+    <li><b>G. 12</b><span><strong>Cambio di direzione</strong> — la tecnica dolce per i punti difficili</span></li>
+    <li><b>G. 13</b><span><strong>La via di casa</strong> — vincere il tiro «di ritorno»</span></li>
+    <li><b>G. 14</b><span><strong>Distrazioni al guinzaglio</strong> — cani, gatti, piccioni: la scala delle tentazioni</span></li>
+    <li><b>G. 15</b><span><strong>La passeggiata vera</strong> — tutto insieme, nel percorso di ogni giorno</span></li>
+    <li><b>G. 16</b><span><strong>Test del Trattore</strong> — guinzaglio a J per 10 minuti reali</span></li>
+  </ul>
+  <p class="muted" style="font-size:8.5pt;margin-top:2mm">📱 Il giorno-per-giorno completo, con video e checklist interattive, ti aspetta nell'area membri.</p>
+  <div class="footer"><span>Fase 2 · Il Trattore</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ SQUALO · A ═══ -->
+<div class="page">
+  <div class="p2head"><span class="emoji">🦈</span><div><h2>Lo Squalo</h2><p class="sub">Dentini ovunque: mani, caviglie, ciabatte.</p></div></div>
+  <div class="two" style="margin-bottom:3mm">
+    <div>
+      <p><strong>Ti riconosci?</strong> Tre scene dal vero:</p>
+      <ul style="margin-left:4.5mm;font-size:9.3pt">
+        <li style="margin-bottom:1.5mm"><strong>Morde le mani appena giochi</strong> — per un cucciolo la bocca È il gioco: nessuno gli ha ancora spiegato che la pelle umana è fuori menu.</li>
+        <li style="margin-bottom:1.5mm"><strong>Attacca caviglie e pantaloni quando cammini</strong> — il movimento accende l'istinto di caccia: sei la preda più divertente della casa.</li>
+        <li><strong>Morde di più la sera</strong> — non è cattiveria, è stanchezza: un cucciolo esausto è uno squalo peggiore, come un bambino oltre l'orario del sonno.</li>
+      </ul>
+      <p style="margin-top:2.5mm">Tutto normale. Tutto <strong>educabile</strong> — se lo guidi adesso.</p>
+    </div>
+    <div class="ph r11" data-img="profilo-squalo.jpg"></div>
+  </div>
+  <div class="bx bx--dietro"><h4>🧠 Dietro le quinte — perché morde</h4><p>La bocca è la nostra mano: esploriamo il mondo mordendolo. Nei primi mesi, giocando coi fratelli, impariamo l'<em>inibizione del morso</em>: mordi troppo forte → il gioco finisce → impari a dosare. Un cucciolo tolto presto dalla cucciolata ha saltato lezioni preziose — e adesso il fratello di gioco sei tu. La dentizione (3–6 mesi) aggiunge gengive doloranti al quadro: masticare è anche sollievo.</p></div>
+  <div class="bx bx--errore"><h4>⚠️ Errore umano</h4><p>Reagire come una preda: strilli, mano che scatta via — per uno squaletto è il finale perfetto del gioco, e domani si replica. Peggio ancora le punizioni fisiche (musetto stretto, schiaffetti): insegnano che le mani sono imprevedibili, e un cane che teme le mani è un problema serio in costruzione. Le mani devono restare SOLO cose buone.</p></div>
+  <div class="footer"><span>Fase 2 · Lo Squalo</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ SQUALO · B ═══ -->
+<div class="page">
+  <div class="bx bx--asticella"><h4>🏁 L'obiettivo dei 9 giorni</h4><p>Un cucciolo che gioca con le mani <strong>senza chiudere i denti sulla pelle</strong>, che sposta da solo la bocca sui SUOI giochi, e che sa calmarsi dopo il gioco. Le regole della bocca, imparate una volta, durano tutta la vita.</p></div>
+  <div class="bx bx--missione"><h4>🎯 Da fare già oggi — «il gioco si spegne»</h4>
+    <ol class="steps">
+      <li>Gioca normalmente con lui, con un gioco in mezzo (treccia, gomma).</li>
+      <li>Denti sulla pelle? <strong>«Ahi»</strong> secco (non urlato) + il gioco si spegne: ti alzi, 10 secondi di statua totale, sguardo altrove.</li>
+      <li>Si è calmato? Il gioco riparte come niente fosse. Denti di nuovo? Stessa scena.</li>
+      <li>Tieni sempre a portata un «bersaglio legale»: quando la bocca cerca le mani, infilaci il gioco e fai festa quando morde QUELLO.</li>
+    </ol>
+  </div>
+  <div class="bx bx--soccorso"><h4>🚑 Strategie iniziali</h4>
+    <ul>
+      <li><strong>Gestisci l'ambiente:</strong> ciabatte e cavi fuori portata, 3–4 masticabili sempre disponibili, a rotazione. Meno occasioni di sbagliare = più occasioni di premiarlo.</li>
+      <li><strong>Attacca-caviglie:</strong> fermati immobile (la preda ferma è noiosa), poi dirotta su un gioco da trascinare a terra.</li>
+      <li><strong>Squalo serale:</strong> non è un problema di educazione, è sonno arretrato. Zona riposo tranquilla e routine della nanna: metà dei morsi sparisce da sola.</li>
+    </ul>
+  </div>
+  <h3 style="font-size:11pt;margin:1mm 0 2mm">La roadmap dei tuoi 9 giorni</h3>
+  <ul class="rmap">
+    <li><b>G. 8</b><span><strong>Perché mordo tutto</strong> — capire lo squalo per non temerlo</span></li>
+    <li><b>G. 9</b><span><strong>Le regole della bocca</strong> — cosa è sempre lecito, cosa mai</span></li>
+    <li><b>G. 10</b><span><strong>Il gioco che insegna</strong> — giocare È la lezione, se sai come</span></li>
+    <li><b>G. 11</b><span><strong>«Ahi» e stop del gioco</strong> — la conseguenza che educa senza spaventare</span></li>
+    <li><b>G. 12</b><span><strong>Alternative da masticare</strong> — costruire le abitudini legali</span></li>
+    <li><b>G. 13</b><span><strong>Le mani non sono prede</strong> — mani = carezze e premi, per sempre</span></li>
+    <li><b>G. 14</b><span><strong>Ospiti a prova di squalo</strong> — bambini e nonne comprese</span></li>
+    <li><b>G. 15</b><span><strong>La calma dopo il gioco</strong> — l'interruttore off del cucciolo</span></li>
+    <li><b>G. 16</b><span><strong>Test dello Squalo</strong> — gioco vero, denti sotto controllo</span></li>
+  </ul>
+  <p class="muted" style="font-size:8.5pt;margin-top:2mm">📱 Giorno-per-giorno completo nell'area membri · Con un cucciolo, guarda anche il bonus <strong>SOS Pipì</strong>.</p>
+  <div class="footer"><span>Fase 2 · Lo Squalo</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ ESPLORATORE · A ═══ -->
+<div class="page">
+  <div class="p2head"><span class="emoji">🧭</span><div><h2>L'Esploratore Sordo</h2><p class="sub">Il richiamo, per lui, è un'opinione.</p></div></div>
+  <div class="two" style="margin-bottom:3mm">
+    <div>
+      <p><strong>Ti riconosci?</strong> Tre scene dal vero:</p>
+      <ul style="margin-left:4.5mm;font-size:9.3pt">
+        <li style="margin-bottom:1.5mm"><strong>«A casa torna benissimo!»</strong> — al parco sviluppa una sordità miracolosa: la distrazione vince sul premio che offri.</li>
+        <li style="margin-bottom:1.5mm"><strong>Torna… quando ha finito i suoi giri</strong> — ha imparato che tornare subito non conviene: tanto il guinzaglio arriva comunque.</li>
+        <li><strong>Non lo liberi mai per paura</strong> — comprensibile. Ma senza pratica il richiamo non migliora: serve una rete di sicurezza, non una prigione.</li>
+      </ul>
+      <p style="margin-top:2.5mm">Il richiamo non è obbedienza: è <strong>un'analisi costi-benefici</strong>. E finora i conti non tornavano.</p>
+    </div>
+    <div class="ph r11" data-img="profilo-esploratore.jpg"></div>
+  </div>
+  <div class="bx bx--dietro"><h4>🧠 Dietro le quinte — perché non torna</h4><p>Facciamo i conti nella mia testa: da una parte odori (il mio organo principale: 220 milioni di recettori contro i vostri 5), piccioni, altri cani, LIBERTÀ. Dall'altra: tu, che quando torno mi metti il guinzaglio e mi porti a casa. Tornare = fine del divertimento, il 100% delle volte. Verresti, al posto mio? Il richiamo si vince cambiando i prezzi: tornare deve diventare l'affare migliore del parco.</p></div>
+  <div class="bx bx--errore"><h4>⚠️ Errore umano</h4><p>Sgridarlo QUANDO finalmente torna. Rileggi: il cane viene punito per… essere tornato. La prossima volta ci metterà il doppio. Regola di ferro: qualunque cosa sia successa prima, il momento del ritorno è SEMPRE festa. E l'altro classico: bruciare la parola («vieni!» ripetuto 40 volte al vento) — dopo un po' è rumore di fondo.</p></div>
+  <div class="footer"><span>Fase 2 · L'Esploratore Sordo</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ ESPLORATORE · B ═══ -->
+<div class="page">
+  <div class="bx bx--asticella"><h4>🏁 L'obiettivo dei 9 giorni</h4><p>Un richiamo che funziona <strong>anche coi piccioni in vista</strong>: parola nuova, mai bruciata, che significa una sola cosa — «sta per succedere qualcosa di bellissimo vicino al mio umano». E la libertà guadagnata, in sicurezza.</p></div>
+  <div class="bx bx--missione"><h4>🎯 Da fare già oggi — la parola nuova</h4>
+    <ol class="steps">
+      <li>Scegli una parola NUOVA, mai usata: «Vieni» è bruciato — prova «Qui!», «Top!», un fischio. Sarà sacra: solo per il richiamo, sempre pagata.</li>
+      <li>In casa, a due metri: di' la parola + <strong>Artiglieria vera</strong> (pollo, non crocchette). 10 volte. La parola si sta caricando come il marker del giorno 3.</li>
+      <li>Poi: parola detta quando NON ti guarda, sempre in casa. Arriva di corsa? Jackpot: 5 premietti uno dopo l'altro + festa.</li>
+      <li>Regola d'oro da oggi: <strong>mai</strong> usare la parola se non sei quasi certo che verrà. Ogni richiamo a vuoto è una crepa.</li>
+    </ol>
+  </div>
+  <div class="bx bx--soccorso"><h4>🚑 Strategie iniziali</h4>
+    <ul>
+      <li><strong>La lunghina</strong> (10–15 metri): libertà con rete di sicurezza. Non per strattonare: per impedire che «scappare» funzioni mentre il richiamo cresce.</li>
+      <li><strong>Tornare ≠ guinzaglio:</strong> richiama, premia, e rilascialo subito («Ok!») 8 volte su 10. Se tornare non chiude mai la festa, tornare conviene.</li>
+      <li><strong>Il gioco delle fughe:</strong> quando ti guarda al parco, scappa TU nell'altra direzione chiamandolo: l'inseguimento è irresistibile e tu diventi la preda migliore.</li>
+    </ul>
+  </div>
+  <h3 style="font-size:11pt;margin:1mm 0 2mm">La roadmap dei tuoi 9 giorni</h3>
+  <ul class="rmap">
+    <li><b>G. 8</b><span><strong>Perché non torno</strong> — i conti in tasca all'Esploratore</span></li>
+    <li><b>G. 9</b><span><strong>La parola nuova</strong> — caricare il richiamo sacro</span></li>
+    <li><b>G. 10</b><span><strong>Il richiamo in casa</strong> — successi facili, fondamenta vere</span></li>
+    <li><b>G. 11</b><span><strong>Giardino e lunghina</strong> — fuori, ma con la rete</span></li>
+    <li><b>G. 12</b><span><strong>Il premio jackpot</strong> — perché tornare deve valere oro</span></li>
+    <li><b>G. 13</b><span><strong>Richiamo con distrazioni</strong> — la scala, un piccione alla volta</span></li>
+    <li><b>G. 14</b><span><strong>Il parco (con rete)</strong> — la prova generale in lunghina</span></li>
+    <li><b>G. 15</b><span><strong>Libertà guadagnata</strong> — quando e come liberarlo davvero</span></li>
+    <li><b>G. 16</b><span><strong>Test dell'Esploratore</strong> — richiamo vero, distrazione vera</span></li>
+  </ul>
+  <p class="muted" style="font-size:8.5pt;margin-top:2mm">📱 Giorno-per-giorno completo, con video e checklist, nell'area membri.</p>
+  <div class="footer"><span>Fase 2 · L'Esploratore Sordo</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ VELCRO · A ═══ -->
+<div class="page">
+  <div class="p2head"><span class="emoji">🧲</span><div><h2>Il Velcro</h2><p class="sub">Attaccato a te sempre. Da solo, il dramma.</p></div></div>
+  <div class="two" style="margin-bottom:3mm">
+    <div>
+      <p><strong>Ti riconosci?</strong> Tre scene dal vero:</p>
+      <ul style="margin-left:4.5mm;font-size:9.3pt">
+        <li style="margin-bottom:1.5mm"><strong>Ti segue perfino in bagno</strong> — la tua presenza è la sua unica strategia di sicurezza: perderti di vista è già allarme.</li>
+        <li style="margin-bottom:1.5mm"><strong>Piange o distrugge quando esci</strong> — cuscini, stipiti, la porta: non è vendetta, è ansia che cerca uno sfogo.</li>
+        <li><strong>Non lo lasci mai solo</strong> — hai organizzato la vita intorno al problema: comprensibile, ma così il problema non ha mai occasione di ridursi.</li>
+      </ul>
+      <p style="margin-top:2.5mm">Il Velcro non è «troppo affettuoso»: è un cane a cui manca <strong>l'abilità della solitudine</strong>. Si costruisce.</p>
+    </div>
+    <div class="ph r11" data-img="profilo-velcro.jpg"></div>
+  </div>
+  <div class="bx bx--dietro"><h4>🧠 Dietro le quinte — perché non sa stare solo</h4><p>Siamo animali sociali: per un cucciolo, in natura, restare solo = pericolo di vita. L'allarme è di serie. Quello che si impara — e che al Velcro nessuno ha insegnato — è che la solitudine domestica è sicura e <em>finita</em>: l'umano esce E TORNA, sempre. Nel suo cervello, quando sparisci, parte un allarme vero: cortisolo, battito su, panico. I danni che trovi sono il suo modo di dire «non sapevo dove mettere tutta questa paura». Punirlo al rientro? Aggiunge paura alla paura.</p></div>
+  <div class="bx bx--errore"><h4>⚠️ Errore umano</h4><p>I saluti da telenovela: cinque minuti di «amore mio torno prestooo» in uscita, festa da stadio al rientro. Ogni volta dici al cane: «uscire è un EVENTO ENORME». E poi le uscite «di nascosto»: sparire senza segnali lo rende ipervigile — non potrà mai rilassarsi, perché potresti svanire in ogni istante.</p></div>
+  <div class="footer"><span>Fase 2 · Il Velcro</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ VELCRO · B ═══ -->
+<div class="page">
+  <div class="bx bx--asticella"><h4>🏁 L'obiettivo dei 9 giorni</h4><p>Un cane che resta a casa da solo <strong>rilassato</strong> — non rassegnato: rilassato — per il tempo di cui la vostra vita ha bisogno. Si arriva per gradini piccolissimi, sempre <em>sotto la soglia del panico</em>: è la regola che non si negozia.</p></div>
+  <div class="bx bx--missione"><h4>🎯 Da fare già oggi — l'indipendenza in casa</h4>
+    <ol class="steps">
+      <li>Con te in casa: lui sulla coperta (giorno 5), tu ti sposti nella stanza accanto per 30 secondi. Torni PRIMA che si agiti, premio tra le zampe se è rimasto.</li>
+      <li>Ripeti aumentando piano: 1 minuto, 2, 5. Porta socchiusa, poi chiusa.</li>
+      <li>In parallelo, smonta i rituali: prendi le chiavi e… guardi la TV. Metti le scarpe e… fai un caffè. I segnali di uscita smettono di essere sirene d'allarme.</li>
+      <li>Da oggi: uscite e rientri NOIOSI. Niente saluti epici: «ciao» neutro, rientro neutro, saluti veri solo 5 minuti dopo, a cane calmo.</li>
+    </ol>
+  </div>
+  <div class="bx bx--soccorso"><h4>🚑 Strategie iniziali</h4>
+    <ul>
+      <li><strong>La soglia è sacra:</strong> se piange/gratta, il gradino era troppo alto. Non «lasciarlo sfogare»: torna al gradino sotto. L'ansia non si allena a forza di ansia.</li>
+      <li><strong>Stanca prima, esci dopo:</strong> passeggiata e gioco prima delle assenze di prova — un cane stanco ha meno benzina per il panico.</li>
+      <li><strong>Il masticabile magico:</strong> qualcosa di speciale che compare SOLO quando esci: la tua assenza inizia a prevedere qualcosa di buono.</li>
+      <li><strong>Se i sintomi sono gravi</strong> (autolesioni, distruzioni violente, ore di vocalizzi): è ansia da separazione clinica — serve un professionista, questo modulo non basta.</li>
+    </ul>
+  </div>
+  <h3 style="font-size:11pt;margin:1mm 0 2mm">La roadmap dei tuoi 9 giorni</h3>
+  <ul class="rmap">
+    <li><b>G. 8</b><span><strong>Perché non ti stacco gli occhi di dosso</strong> — capire l'allarme</span></li>
+    <li><b>G. 9</b><span><strong>L'indipendenza in casa</strong> — stanze diverse, stesso relax</span></li>
+    <li><b>G. 10</b><span><strong>La porta che va e viene</strong> — aperture e chiusure noiose</span></li>
+    <li><b>G. 11</b><span><strong>Minuti da solo (pochi)</strong> — le prime vere micro-assenze</span></li>
+    <li><b>G. 12</b><span><strong>I rituali di uscita</strong> — chiavi e scarpe senza sirene</span></li>
+    <li><b>G. 13</b><span><strong>Da solo più a lungo</strong> — la scala dei minuti</span></li>
+    <li><b>G. 14</b><span><strong>Le uscite vere</strong> — la prima spesa, il primo caffè</span></li>
+    <li><b>G. 15</b><span><strong>La routine che tranquillizza</strong> — prevedibilità = sicurezza</span></li>
+    <li><b>G. 16</b><span><strong>Test del Velcro</strong> — un'ora da solo, rilassato</span></li>
+  </ul>
+  <p class="muted" style="font-size:8.5pt;margin-top:2mm">📱 Giorno-per-giorno completo nell'area membri, con la tabella dei gradini.</p>
+  <div class="footer"><span>Fase 2 · Il Velcro</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ TORNADO · A ═══ -->
+<div class="page">
+  <div class="p2head"><span class="emoji">🌪️</span><div><h2>Il Tornado</h2><p class="sub">Energia infinita, autocontrollo zero.</p></div></div>
+  <div class="two" style="margin-bottom:3mm">
+    <div>
+      <p><strong>Ti riconosci?</strong> Tre scene dal vero:</p>
+      <ul style="margin-left:4.5mm;font-size:9.3pt">
+        <li style="margin-bottom:1.5mm"><strong>Salta addosso a chiunque</strong> — ospiti, passanti, la nonna: l'entusiasmo è vero, i freni non esistono.</li>
+        <li style="margin-bottom:1.5mm"><strong>Le corse pazze delle 22:00</strong> — gli «zoomies» in corridoio, puntuali come un telegiornale: energia arretrata che esplode.</li>
+        <li><strong>Si esalta e non torna più giù</strong> — ogni gioco finisce in overdose: mordicchia, abbaia, non sente più niente.</li>
+      </ul>
+      <p style="margin-top:2.5mm">Il Tornado non è maleducato: è <strong>pieno</strong> — di energia, stimoli, entusiasmo — e nessuno gli ha montato l'impianto frenante.</p>
+    </div>
+    <div class="ph r11" data-img="profilo-tornado.jpg"></div>
+  </div>
+  <div class="bx bx--dietro"><h4>🧠 Dietro le quinte — perché esplode</h4><p>Due ingredienti. Primo: un serbatoio fisico e mentale che non si svuota mai davvero — spesso il Tornado è un cane che si annoia, e l'energia inutilizzata trova la porta che trova. Secondo: l'<em>arousal</em>, il livello di attivazione — oltre una certa soglia il cervello razionale si spegne e resta solo la festa. Un cane sopra soglia non «disobbedisce»: letteralmente non ti sente. Prima si scende di giri, poi si ragiona.</p></div>
+  <div class="bx bx--errore"><h4>⚠️ Errore umano</h4><p>Rispondere all'energia con energia: urlare a un cane eccitato è buttare benzina — voce su, cane su. E l'errore opposto: pensare che «più sport» risolva. Un Tornado super-allenato è solo un atleta instancabile: senza lavoro sull'autocontrollo, hai potenziato il motore lasciando i freni a casa. Serve l'equilibrio: scaricare E frenare.</p></div>
+  <div class="footer"><span>Fase 2 · Il Tornado</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ TORNADO · B ═══ -->
+<div class="page">
+  <div class="bx bx--asticella"><h4>🏁 L'obiettivo dei 9 giorni</h4><p>L'<strong>interruttore on/off</strong>: un cane che sa accendersi nel gioco E spegnersi a comando, che saluta con quattro zampe a terra, e una giornata costruita perché l'energia finisca nei posti giusti.</p></div>
+  <div class="bx bx--missione"><h4>🎯 Da fare già oggi — il gioco on/off</h4>
+    <ol class="steps">
+      <li>Gioca al tira-e-molla con una treccia: 20–30 secondi di gioco ACCESO, con entusiasmo vero.</li>
+      <li>Poi ferma tutto: treccia immobile contro di te, tu una statua, voce zero.</li>
+      <li>Aspetta il calo: appena molla la presa e le quattro zampe stanno a terra 2 secondi → «Sì!» + il gioco RIPARTE. Il premio della calma è la festa.</li>
+      <li>Ripeti 5 cicli. Chiudi con «Ok!» e due minuti di coperta (giorno 5): dal gioco alla calma, ogni volta.</li>
+    </ol>
+  </div>
+  <div class="bx bx--soccorso"><h4>🚑 Strategie iniziali</h4>
+    <ul>
+      <li><strong>Saluti a 4 zampe:</strong> chi entra saluta il cane SOLO quando ha le zampe a terra. Salta = l'ospite diventa una statua noiosa. Avvisa gli ospiti prima: gli umani non addestrati rovinano l'esercizio.</li>
+      <li><strong>Lavoro di naso, non solo di gambe:</strong> 10 minuti di crocchette nascoste per casa stancano più di un'ora di palla — il naso consuma il cervello, ed è il cervello che va stancato.</li>
+      <li><strong>Zoomies serali:</strong> anticipa: sessione di naso + masticabile alle 21. La tempesta, se il serbatoio è vuoto, non parte.</li>
+    </ul>
+  </div>
+  <h3 style="font-size:11pt;margin:1mm 0 2mm">La roadmap dei tuoi 9 giorni</h3>
+  <ul class="rmap">
+    <li><b>G. 8</b><span><strong>Perché esplodo</strong> — serbatoio, arousal e soglia</span></li>
+    <li><b>G. 9</b><span><strong>Scaricare prima di chiedere</strong> — la giornata che svuota il serbatoio</span></li>
+    <li><b>G. 10</b><span><strong>Il gioco on/off</strong> — l'interruttore si costruisce giocando</span></li>
+    <li><b>G. 11</b><span><strong>Calma a comando</strong> — la coperta incontra il Tornado</span></li>
+    <li><b>G. 12</b><span><strong>L'attesa che allena</strong> — ciotola, porta, guinzaglio: i pesi dei freni</span></li>
+    <li><b>G. 13</b><span><strong>Energia nei posti giusti</strong> — naso, masticazione, problem solving</span></li>
+    <li><b>G. 14</b><span><strong>Il mondo senza esplosioni</strong> — saluti e incontri sotto soglia</span></li>
+    <li><b>G. 15</b><span><strong>La giornata equilibrata</strong> — la routine definitiva del Tornado</span></li>
+    <li><b>G. 16</b><span><strong>Test del Tornado</strong> — on/off davanti a distrazione vera</span></li>
+  </ul>
+  <p class="muted" style="font-size:8.5pt;margin-top:2mm">📱 Giorno-per-giorno completo, con video e checklist, nell'area membri.</p>
+  <div class="footer"><span>Fase 2 · Il Tornado</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ SOS PIPÌ ═══ -->
+<div class="page" style="background:var(--salvia-t)">
+  <div class="dayhead"><div style="font-size:22pt">💧</div><div><h2>Bonus: SOS Pipì</h2><p class="sub">Per i cuccioli. Si aggiunge al tuo modulo, non lo sostituisce.</p></div></div>
+  <div class="two" style="margin-bottom:3mm">
+    <div>
+      <p><strong>La verità che nessuno ti dice:</strong> un cucciolo di 3 mesi ha una vescica grande come una noce e ZERO idea che il tappeto non sia un prato. Non la fa in casa per dispetto: la fa perché <em>deve</em>, e un posto per lui vale l'altro — finché non gli insegni tu la differenza.</p>
+      <div class="bx bx--dietro" style="margin:0"><h4>🧠 Dietro le quinte</h4><p>Il controllo della vescica matura col corpo, non con la volontà: prima dei 4–5 mesi trattenere a lungo è fisicamente impossibile. Regola pratica: un cucciolo trattiene circa <strong>un'ora per mese d'età</strong>. E dove sente il suo odore, lì è «bagno»: ecco perché pulire bene conta quanto premiare.</p></div>
+    </div>
+    <div>
+      <img class="pic r32" src="../assets/img/profilo-sospipi.jpg" alt="" style="margin-bottom:3mm">
+      <div class="bx bx--errore" style="margin:0"><h4>⚠️ Errore umano</h4><p>Sgridare per l'incidente (o peggio, il muso nella pipì): il cucciolo non collega la sgridata al fatto di ieri, ma impara UNA cosa: farla davanti a te è pericoloso. Risultato: la farà di nascosto, dietro il divano. Hai reso il problema invisibile, non risolto.</p></div>
+    </div>
+  </div>
+  <div class="bx bx--missione"><h4>🎯 Le tre regole d'oro</h4>
+    <ol class="steps">
+      <li><strong>Anticipa, non rincorrere:</strong> fuori (o sulla traversina) dopo OGNI pasto, sonnellino e sessione di gioco — sono i tre momenti in cui la pipì arriva, garantito.</li>
+      <li><strong>Festa da mondiale</strong> quando la fa nel posto giusto: premio dentro la Finestra di Argo, come se avesse vinto qualcosa. Perché ha vinto qualcosa.</li>
+      <li><strong>Incidente? Zero commenti:</strong> pulisci con prodotti enzimatici (non candeggina o ammoniaca: l'odore richiama il bis) e annota l'orario sul tracker: gli incidenti hanno orari, e gli orari si anticipano.</li>
+    </ol>
+  </div>
+  <p class="muted" style="font-size:8.5pt">📱 La routine completa con la tabella orari per età è nell'area membri (bonus attivo se al quiz hai indicato un cucciolo) — insieme alla <strong>Checklist arrivo cucciolo</strong> se l'hai aggiunta all'acquisto.</p>
+  <div class="footer" style="border-color:rgba(78,112,89,.3)"><span>Bonus cuccioli</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ FASE 3 OPENER (foto full bleed) ═══ -->
+<div class="page page--full quotepage">
+  <img class="fullbleed" src="../assets/img/ex-passeggiata.jpg" alt="">
+  <div class="overlay"></div>
+  <div style="position:relative;margin-top:auto;padding:18mm;text-align:left;color:#fff">
+    <p style="font-size:8.5pt;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:4mm">Giorni 17–21 · il mondo vero</p>
+    <h1 style="font-size:32pt;color:#fff;margin-bottom:4mm">Fase 3<br><em style="color:var(--amber)">Consolidamento</em></h1>
+    <p style="font-size:11pt;max-width:130mm;color:rgba(255,255,255,.9)">Il tuo cane ora sa fare cose belle — in salotto. Questi cinque giorni le portano nel mondo: posti nuovi, piccioni, campanelli, vita. È qui che gli esercizi diventano abitudini, e le abitudini diventano il vostro modo di stare insieme.</p>
+  </div>
+</div>
+
+<!-- ═══ GIORNO 17 · A ═══ -->
+<div class="page">
+  <div class="dayhead"><div class="badge">17</div><div><h2>Il mondo là fuori</h2><p class="sub">Generalizzare: ogni posto nuovo è un esame nuovo.</p></div></div>
+  <div class="pstrip"><span>Giorno 17 di 21</span><div class="pbar"><i style="width:81%"></i></div><span>Fase 3 · Consolidamento</span></div>
+  <p>Confessione imbarazzante di noi cani: se imparo il seduto in cucina, per me esiste il «seduto-in-cucina». Il «seduto-al-parco» è un altro esame, mai preparato. Si chiama <strong>generalizzazione</strong>, ed è il motivo della frase più detta ai giardinetti: «a casa lo fa benissimo!».</p>
+  <div class="bx bx--missione"><h4>🎯 Missione del giorno — la tournée</h4>
+    <ol class="steps">
+      <li>Prendi 3 esercizi ormai facili in casa (nome, seduto, coperta).</li>
+      <li>Rifalli in un'altra stanza o sul balcone <span class="muted">(facile)</span>.</li>
+      <li>Poi davanti a casa, marciapiede tranquillo <span class="muted">(medio)</span>.</li>
+      <li>Poi in un angolo calmo del parco <span class="muted">(difficile)</span>. Tre posti, stessa giornata.</li>
+    </ol>
+  </div>
+  <div class="bx bx--dietro"><h4>🧠 Dietro le quinte</h4><p>Il cervello del cane impara «in pacchetto»: comportamento + luogo + odori + contesto, tutto insieme. Cambia il contesto e il pacchetto non si trova più. Non è scarsa intelligenza — è iper-specificità: per costruire il concetto astratto di «seduto ovunque» servono tante versioni concrete. Tre posti oggi, dieci entro il diploma: a un certo punto scatta il clic e il seduto diventa universale.</p></div>
+  <div class="bx bx--errore"><h4>⚠️ Errore umano</h4><p>Pretendere al parco la stessa performance della cucina — e sgridare il «rifiuto». In un posto nuovo il tuo cane non ti sta sfidando: sta ricalcolando tutto da capo, bombardato di stimoli. La regola è il 50%: metà pretese, doppio premio, e la performance risale da sola nel giro di qualche visita.</p></div>
+  <div class="footer"><span>Fase 3 · Consolidamento</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 17 · B ═══ -->
+<div class="page">
+  <div class="bx bx--soccorso"><h4>🚑 Pronto soccorso</h4>
+    <ul>
+      <li><strong>«Fuori non prende nemmeno il premio.»</strong> — È sopra soglia: troppi stimoli. Allontanati verso una zona più tranquilla finché la bocca torna a funzionare — quello è il tuo punto di lavoro di oggi.</li>
+      <li><strong>«Al parco si siede ma lentissimo.»</strong> — Perfettamente normale: sta facendo uno sforzo doppio. Premia il seduto lento come fosse olimpico.</li>
+      <li><strong>«In un posto va benissimo, in un altro disastro.»</strong> — Ogni posto ha la sua difficoltà (odori, cani, rumori). Classifica i tuoi posti da 1 a 5 e sali la scala con ordine.</li>
+      <li><strong>«Vivo in centro, non ho posti tranquilli.»</strong> — Orari furbi: alle 7 di mattina anche la piazza è una stanza vuota. E androni, cortili e parcheggi sono palestre eccellenti.</li>
+    </ul>
+  </div>
+  <div class="bx bx--asticella"><h4>📈 Alzare l'asticella</h4><p><strong>Riuscito se:</strong> i 3 esercizi funzionano in 3 posti diversi, anche a mezza potenza. <strong>Da domani:</strong> si aggiungono le distrazioni vere — che non sono posti, ma <em>eventi</em>: piccioni, cani, bambini col panino. Il gradino più alto della scala.</p></div>
+  <div class="vs">
+    <div class="v"><h4>Quello che vedi</h4><p>Un cane «disobbediente» appena esce di casa.</p></div>
+    <div class="s"><h4>Quello che succede</h4><p>Un cervello che sta ricostruendo l'esercizio in un contesto nuovo. Dagli tempo: è matematica, non ribellione.</p></div>
+  </div>
+  <ul class="check"><li class="t">La checklist di oggi</li>
+    <li>3 esercizi × 3 posti a difficoltà crescente</li>
+    <li>Pretese dimezzate, premi raddoppiati nei posti nuovi</li>
+    <li>Classifica dei «miei posti» da 1 a 5 scritta sul tracker</li>
+  </ul>
+  <div class="bx bx--losai" style="margin-top:3mm"><h4>💡 Lo sai che…</h4><p>Anche il premio va generalizzato: il cane che in casa ama le crocchette può snobbarle al parco non per capriccio, ma perché lo stress «chiude lo stomaco». L'Artiglieria di Argo esiste per questo.</p></div>
+  <div class="footer"><span>Fase 3 · Consolidamento</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 18 · A ═══ -->
+<div class="page">
+  <div class="dayhead"><div class="badge">18</div><div><h2>Distrazioni professionali</h2><p class="sub">Piccioni, cani, bambini con panini: il volume del mondo.</p></div></div>
+  <div class="pstrip"><span>Giorno 18 di 21</span><div class="pbar"><i style="width:85.7%"></i></div><span>Fase 3 · Consolidamento</span></div>
+  <div class="two" style="margin-bottom:3mm">
+    <div>
+      <p>Ieri i luoghi, oggi il volume: le <strong>distrazioni</strong>. Mettiamola così: per te il piccione è un uccello. Per me è un <em>evento</em> — un richiamo scritto nel DNA con milioni di anni di vantaggio su qualunque premietto tu abbia in tasca.</p>
+      <p>Si vince lo stesso. Ma si vince con la matematica, non con l'eroismo: alla giusta distanza, qualunque distrazione diventa gestibile.</p>
+    </div>
+    <div class="ph r32" data-img="ex-parco.jpg"></div>
+  </div>
+  <div class="bx bx--missione"><h4>🎯 Missione del giorno — la scala delle distrazioni (15 min)</h4>
+    <ol class="steps">
+      <li>Al parco, trova la distanza alla quale il cane VEDE la distrazione ma riesce ancora ad ascoltarti: quella è la <strong>linea di lavoro</strong>. Cinque metri o cinquanta: è la sua, non giudicarla.</li>
+      <li>Sulla linea: nome → si gira → «Sì!» → Artiglieria. Seduto → «Sì!» → Artiglieria.</li>
+      <li>Funziona 8 su 10? Avvicinati di DUE passi. Non dieci. Due.</li>
+      <li>Sbaglia due volte di fila? Troppo vicino: indietro di quattro passi, e si ricomincia.</li>
+    </ol>
+  </div>
+  <div class="bx bx--dietro"><h4>🧠 Dietro le quinte</h4><p>Ogni distrazione ha un «campo gravitazionale»: più sei vicino, più forte tira. Alla distanza giusta, il cervello del cane può ancora scegliere te; troppo vicino, l'istinto prende il volante e la corteccia va in vacanza. Lavorando sempre appena FUORI dal campo gravitazionale, insegni al cervello una cosa nuova: «posso vedere un piccione E ascoltare il mio umano». Due passi alla volta, il campo si restringe.</p></div>
+  <div class="footer"><span>Fase 3 · Consolidamento</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 18 · B ═══ -->
+<div class="page">
+  <div class="bx bx--errore"><h4>⚠️ Errore umano</h4><p>L'impazienza da progresso: «va benissimo a 10 metri, proviamo a 2!» — e il castello crolla, con annesso «uffa, non funziona niente». I due passi alla volta non sono prudenza da nonna: sono il ritmo a cui il cervello consolida. Chi corre, riparte da capo. Chi fa due passi, arriva.</p></div>
+  <div class="bx bx--soccorso"><h4>🚑 Pronto soccorso</h4>
+    <ul>
+      <li><strong>«Fissa la distrazione e non molla.»</strong> — Troppo vicino, sempre. Raddoppia la distanza: il punto in cui riesce a staccare lo sguardo esiste, trovalo.</li>
+      <li><strong>«La distrazione si muove verso di noi!»</strong> — (Il piccione non collabora, lo so.) Spostati tu, con allegria: «dai, di qua!» e ricrea la distanza. Gestire lo spazio è compito tuo.</li>
+      <li><strong>«Con i cani è impossibile, col resto ok.»</strong> — I cani sono la distrazione regina. Servono più metri e l'Artiglieria migliore. Se c'è anche tensione (ringhio, pelo dritto), quello è un altro capitolo: professionista.</li>
+      <li><strong>«Abbaia alla distrazione.»</strong> — Sei oltre la soglia: distanza, subito. L'abbaio non si corregge lì: si previene da più lontano.</li>
+    </ul>
+  </div>
+  <div class="bx bx--asticella"><h4>📈 Alzare l'asticella</h4><p><strong>Riuscito se:</strong> la linea di lavoro di fine sessione è più vicina di quella d'inizio — anche solo di due passi. <strong>Il progresso qui si misura in metri</strong>, e i metri si segnano sul tracker: tra una settimana ti sembrerà magia, ma sono solo i tuoi due passi al giorno.</p></div>
+  <ul class="check"><li class="t">La checklist di oggi</li>
+    <li>Linea di lavoro trovata e scritta (quanti metri?)</li>
+    <li>Avvicinamenti solo da 2 passi, dopo 8/10 riusciti</li>
+    <li>Sessione chiusa con un successo facile</li>
+  </ul>
+  <div class="bx bx--losai" style="margin-top:3mm"><h4>💡 Lo sai che…</h4><p>Il «guardare te invece della distrazione» ha un nome tecnico: <em>disimpegno</em> — ed è considerato una delle abilità più preziose dell'educazione moderna. Ogni volta che il tuo cane sceglie i tuoi occhi al posto del piccione, sta facendo sollevamento pesi cognitivo.</p></div>
+  <div class="footer"><span>Fase 3 · Consolidamento</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 19 · A ═══ -->
+<div class="page">
+  <div class="dayhead"><div class="badge">19</div><div><h2>Ospiti a casa</h2><p class="sub">Il campanello, i saluti, e io che non travolgo la zia.</p></div></div>
+  <div class="pstrip"><span>Giorno 19 di 21</span><div class="pbar"><i style="width:90.5%"></i></div><span>Fase 3 · Consolidamento</span></div>
+  <div class="two" style="margin-bottom:3mm">
+    <div>
+      <p>Il campanello. Per te è «qualcuno alla porta». Per me è l'allarme rosso, la festa nazionale e l'invasione aliena, <em>tutto insieme</em>. Anni di associazioni: campanello → porta → PERSONE → festa o allarme. Suona, e io sono già in modalità evento.</p>
+      <p>Oggi mettiamo insieme tutto quello che abbiamo costruito — coperta, attesa, autocontrollo — e lo applichiamo alla scena più difficile della casa.</p>
+    </div>
+    <img class="pic r32" src="../assets/img/ex-ospiti.jpg" alt="">
+  </div>
+  <div class="bx bx--missione"><h4>🎯 Missione del giorno — la prova generale (serve un complice)</h4>
+    <ol class="steps">
+      <li>Il complice suona. Tu NON apri: porti il cane sulla coperta, seduto o terra, «Sì!» + premio.</li>
+      <li>La porta si apre solo a cane relativamente calmo. Esplode? L'ospite richiude. Come la ciotola del giorno 6: la calma apre le porte.</li>
+      <li>L'ospite entra e IGNORA il cane (difficilissimo per gli umani, avvisalo due volte).</li>
+      <li>Saluto SOLO con quattro zampe a terra. Salta? L'ospite diventa una statua noiosa, tu riporti il cane sulla coperta.</li>
+      <li>Ripetete almeno 3 volte. Alla terza, il copione è già un altro.</li>
+    </ol>
+  </div>
+  <div class="bx bx--dietro"><h4>🧠 Dietro le quinte</h4><p>Il campanello è un «grilletto pavloviano»: non annuncia l'evento, per il cane È l'evento. La sequenza campanello→coperta→premio, ripetuta, riscrive l'associazione alla radice: il suono inizia a significare «vai al tuo posto che piovono premi». Non stai reprimendo l'entusiasmo: gli stai dando un copione alternativo — e i copioni, per noi cani, sono tutto.</p></div>
+  <div class="footer"><span>Fase 3 · Consolidamento</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 19 · B ═══ -->
+<div class="page">
+  <div class="bx bx--errore"><h4>⚠️ Errore umano</h4><p>L'ospite «ma a me piacciono i cani!» che saluta, accarezza e squittisce mentre il cane gli salta addosso: tre ripetizioni così e l'esercizio è demolito — saltare addosso ha pagato, e con gli interessi. L'ospite va addestrato PRIMA del cane: «ignoralo finché non ha le quattro zampe a terra, poi salutalo quanto vuoi». Chi non ci riesce (la zia lo farà comunque) va gestito col guinzaglio addosso, per stavolta.</p></div>
+  <div class="bx bx--soccorso"><h4>🚑 Pronto soccorso</h4>
+    <ul>
+      <li><strong>«Al campanello parte l'abbaio a raffica.»</strong> — Lavora prima solo sul suono: registralo sul telefono, volume basso, suono → premio sulla coperta. Sali di volume a gradini.</li>
+      <li><strong>«Sulla coperta non ci sta proprio, con gli ospiti.»</strong> — Troppo per ora: tienilo al guinzaglio accanto a te durante i saluti, e premia ogni istante di calma. La coperta arriverà.</li>
+      <li><strong>«Con i bambini si esalta il triplo.»</strong> — I bambini si muovono e strillano: prede perfette. Solo incontri con bambini «istruiti» e cane al guinzaglio, per ora.</li>
+      <li><strong>«Non ho complici disponibili.»</strong> — Corriere e vicini sono complici involontari eccellenti: ogni suono di campanello vero è una ripetizione gratis della sequenza coperta+premio.</li>
+    </ul>
+  </div>
+  <div class="bx bx--asticella"><h4>📈 Alzare l'asticella</h4><p><strong>Riuscito se:</strong> alla terza prova il cane raggiunge la coperta con il campanello ancora nelle orecchie. <strong>Poi:</strong> ospiti veri, poi ospiti «difficili» (bambini, altri cani al seguito), poi la scena fuori casa: incontri per strada con la stessa regola delle 4 zampe. Ogni saluto educato è un mattone che resta.</p></div>
+  <ul class="check"><li class="t">La checklist di oggi</li>
+    <li>Prova generale col complice × 3</li>
+    <li>Ospite istruito PRIMA di entrare</li>
+    <li>Saluti avvenuti solo a 4 zampe a terra</li>
+  </ul>
+  <div class="footer"><span>Fase 3 · Consolidamento</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 20 · A ═══ -->
+<div class="page">
+  <div class="dayhead"><div class="badge">20</div><div><h2>Una giornata vera</h2><p class="sub">Niente sessioni: il metodo si scioglie nella vita.</p></div></div>
+  <div class="pstrip"><span>Giorno 20 di 21</span><div class="pbar"><i style="width:95.2%"></i></div><span>Fase 3 · Consolidamento</span></div>
+  <div class="two" style="margin-bottom:3mm">
+    <div>
+      <p>Oggi cambia tutto: <strong>niente sessioni di allenamento</strong>. Zero. Oggi il Metodo non si pratica: si vive, dentro la giornata normale — che poi è il posto dove doveva arrivare fin dall'inizio.</p>
+      <p>Dal mio punto di vista, questo è il giorno più importante dei ventuno: il giorno in cui smetti di «fare gli esercizi col cane» e cominci a <em>essere una squadra</em>.</p>
+    </div>
+    <img class="pic r32" src="../assets/img/ex-passeggiata.jpg" alt="">
+  </div>
+  <div class="bx bx--missione"><h4>🎯 Missione del giorno — la giornata col metodo dentro</h4>
+    <ol class="steps">
+      <li><strong>Sveglia</strong> → seduto prima di uscire dalla porta, come sempre ormai</li>
+      <li><strong>Colazione</strong> → ciotola paziente, come niente fosse</li>
+      <li><strong>Passeggiata</strong> → «Sì!» + premio a ogni sguardo spontaneo</li>
+      <li><strong>Tu lavori</strong> → lui sulla coperta, con qualcosa da masticare</li>
+      <li><strong>Campanello o incontro</strong> → il copione di ieri</li>
+      <li><strong>Sera</strong> → cinque minuti di coccole senza chiedere niente. Anche questo è metodo — forse il pezzo migliore.</li>
+    </ol>
+  </div>
+  <div class="bx bx--dietro"><h4>🧠 Dietro le quinte</h4><p>C'è un nome per quello che succede oggi: <em>rinforzo naturale</em>. I premietti lasciano gradualmente il posto ai premi della vita vera — la porta che si apre, la passeggiata che continua, la ciotola che arriva, le tue mani. È il traguardo tecnico di tutto il percorso: un cane che collabora non per la tasca dei premi, ma perché la collaborazione È la vita che gli piace.</p></div>
+  <div class="footer"><span>Fase 3 · Consolidamento</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 20 · B ═══ -->
+<div class="page">
+  <div class="bx bx--errore"><h4>⚠️ Errore umano</h4><p>Pensare «ha imparato, ho finito» e smettere tutto di colpo — premi, coerenza, regole. I comportamenti non mantenuti si spengono: si chiama <em>estinzione</em>, ed è la ragione per cui «il corso funzionava, poi ha smesso». Non serve l'intensità dei 21 giorni per sempre: serve il minimo sindacale, per sempre. Lo trovi nel piano di mantenimento, tra due pagine.</p></div>
+  <div class="bx bx--soccorso"><h4>🚑 Pronto soccorso</h4>
+    <ul>
+      <li><strong>«Nella vita vera mi dimentico dei premi.»</strong> — Barattolini di crocchette in tre punti strategici della casa + tasca fissa in passeggiata. L'ambiente ricorda meglio della memoria.</li>
+      <li><strong>«Oggi è andato tutto storto.»</strong> — Le giornate no esistono, per entrambi. Il metodo non è una media perfetta: è una direzione. Domani è il diploma comunque.</li>
+      <li><strong>«Il resto della famiglia non segue le regole.»</strong> — Rileggete insieme le 3 regole del giorno 1 (le avevate firmate, ricordi?). Il cane di famiglia si educa in famiglia.</li>
+    </ul>
+  </div>
+  <div class="bx bx--asticella"><h4>📈 Com'è andata?</h4><p><strong>Riuscito se:</strong> stasera ti accorgi che ALMENO tre momenti-metodo sono avvenuti «da soli», senza pensarci. Quello è il segno che le abitudini stanno passando da progetto a normalità. <strong>Compito serale:</strong> scrivi sul tracker la cosa più bella che ha fatto oggi senza che tu chiedessi niente.</p></div>
+  <div class="vs">
+    <div class="v"><h4>Quello che vedi</h4><p>Una giornata qualsiasi.</p></div>
+    <div class="s"><h4>Quello che succede</h4><p>Il passaggio dal «fare gli esercizi» all'«essere una squadra». È qui che i 21 giorni diventano il resto della vostra vita.</p></div>
+  </div>
+  <ul class="check"><li class="t">La checklist di oggi</li>
+    <li>Metodo vissuto dentro la routine, dal mattino alla sera</li>
+    <li>Almeno 3 momenti-metodo «automatici» riconosciuti</li>
+    <li>Sul tracker: la cosa più bella di oggi</li>
+  </ul>
+  <div class="footer"><span>Fase 3 · Consolidamento</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ GIORNO 21 ═══ -->
+<div class="page">
+  <div class="dayhead"><div class="badge" style="border-color:var(--amber);background:var(--amber);color:#fff">21</div><div><h2>Il diploma</h2><p class="sub">Test finale, festa, e il piano per non perdere niente.</p></div></div>
+  <div class="pstrip"><span>Giorno 21 di 21</span><div class="pbar"><i style="width:100%"></i></div><span>Fase 3 · Consolidamento 🎓</span></div>
+  <div class="two" style="margin-bottom:3mm">
+    <div>
+      <p>Ventuno giorni. Ce l'abbiamo fatta. Cioè: TU ce l'hai fatta — io lo sapevo dall'inizio, di esserne capace.</p>
+      <div class="bx bx--missione" style="margin:0"><h4>🎯 Il test finale — al parco, 15 min</h4>
+        <ol class="steps">
+          <li>Nome con distrazione in vista → si gira ✔</li>
+          <li>Seduto a distanza di guinzaglio, solo gesto ✔</li>
+          <li>Due minuti di calma sulla coperta o accanto a te ✔</li>
+          <li>La prova del TUO modulo ✔</li>
+          <li>Saluto a una persona senza saltare ✔</li>
+        </ol>
+      </div>
+    </div>
+    <div class="ph r45" data-img="argo-diploma.jpg"></div>
+  </div>
+  <div class="bx bx--asticella"><h4>📈 Come leggere il risultato</h4><p><strong>4–5 su 5:</strong> diploma con lode — festeggiate come si deve. <strong>2–3:</strong> diploma comunque: segnati le prove zoppicanti, sono il tuo piano della prossima settimana. <strong>0–1:</strong> impossibile, se sei arrivato fin qui facendo i giorni. Ma se oggi è andata storta: era una giornata no, ritesta tra tre giorni.</p></div>
+  <div class="bx bx--regola"><h4>🟢 Ultima Regola di Argo</h4><p><strong>Poi festeggia. Sul serio.</strong> Gioco libero, corsa, il suo snack preferito, foto ricordo. Gli umani sottovalutano sempre la festa — e la festa è metà del diploma. L'altra metà è tua: sei diventato un umano che parla cane. Non era scontato.</p></div>
+  <ul class="check"><li class="t">La checklist di oggi</li>
+    <li>Test finale: risultato segnato sul tracker</li>
+    <li>Festa fatta come si deve, foto compresa</li>
+    <li>Piano di mantenimento letto (pagina seguente)</li>
+  </ul>
+  <div class="footer"><span>Fase 3 · Consolidamento</span><span class="num"></span></div>
+</div>
+
+<!-- ═══ MANTENIMENTO ═══ -->
+<div class="page">
+  <p class="kicker">E adesso?</p>
+  <h1 style="font-size:22pt;margin-bottom:5mm">Il piano di mantenimento<br><em>(per il resto della nostra vita)</em></h1>
+  <div class="two">
+    <div>
+      <p>I 21 giorni finiscono. Noi no. Quello che avete costruito si mantiene con pochissimo — ma quel pochissimo va fatto:</p>
+      <div class="bx bx--missione"><h4>🎯 La ricetta settimanale</h4>
+        <ol class="steps">
+          <li><strong>5 minuti al giorno</strong> dentro la vita normale: la ciotola, la porta, il nome — li state già facendo</li>
+          <li><strong>1 volta a settimana:</strong> un posto nuovo o una difficoltà nuova</li>
+          <li><strong>Le 3 regole della casa</strong> non vanno mai in vacanza — nemmeno a Natale, nemmeno «per una volta»</li>
+        </ol>
+      </div>
+      <div class="bx bx--soccorso" style="margin:0"><h4>🚑 Se qualcosa si arrugginisce</h4><p>Nessun dramma: questi 21 giorni restano tuoi per sempre. Si torna sul giorno che serve — il nome? giorno 2. Il guinzaglio? il tuo modulo — e si ripassa per tre giorni. La ruggine viene via subito, il metallo sotto è buono.</p></div>
+    </div>
+    <div>
+      <img class="pic r32" src="../assets/img/ex-famiglia.jpg" alt="" style="margin-bottom:3mm">
+      <div class="argo-says" style="margin:0"><span class="p">🐾</span><div><strong>L'obiettivo non era mai il seduto.</strong> Era questo: due che si capiscono, una passeggiata senza braccio di ferro, un divano condiviso in pace. Il seduto era solo la porta d'ingresso.</div></div>
+    </div>
+  </div>
+  <div class="footer"><span>Il Metodo <span class="paw">Argo</span></span><span class="num"></span></div>
+</div>
+
+<!-- ═══ TRACKER ═══ -->
+<div class="page">
+  <p class="kicker">Da stampare e attaccare al frigo</p>
+  <h1 style="font-size:20pt;margin-bottom:4mm">Il tracker dei 21 giorni</h1>
+  <p style="font-size:9pt" class="muted">Un quadrato al giorno: colora la zampa quando la checklist del giorno è completa. (Il tracker A4 grande è scaricabile a parte nell'area membri.)</p>
+  <table style="width:100%;border-collapse:collapse;margin:4mm 0">
+    <tr><td colspan="7" style="background:var(--salvia-t);font-weight:700;font-size:8.5pt;padding:2mm 3mm;border:1px solid var(--line)">FASE 1 · FONDAMENTA</td></tr>
+    <tr>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center;width:14.28%"><div style="font-weight:700">1</div><div style="font-size:7pt" class="muted">Il patto</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center"><div style="font-weight:700">2</div><div style="font-size:7pt" class="muted">Il nome</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center"><div style="font-weight:700">3</div><div style="font-size:7pt" class="muted">Il marker</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center"><div style="font-weight:700">4</div><div style="font-size:7pt" class="muted">Seduto</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center"><div style="font-weight:700">5</div><div style="font-size:7pt" class="muted">La coperta</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center"><div style="font-weight:700">6</div><div style="font-size:7pt" class="muted">L'attesa</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center"><div style="font-weight:700">7</div><div style="font-size:7pt" class="muted">Tagliando</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+    </tr>
+    <tr><td colspan="7" style="background:var(--salvia-t);font-weight:700;font-size:8.5pt;padding:2mm 3mm;border:1px solid var(--line)">FASE 2 · IL TUO MODULO: ______________________</td></tr>
+    <tr>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center"><div style="font-weight:700">8</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center"><div style="font-weight:700">9</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center"><div style="font-weight:700">10</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center"><div style="font-weight:700">11</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center"><div style="font-weight:700">12</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center"><div style="font-weight:700">13</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center"><div style="font-weight:700">14</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+    </tr>
+    <tr>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center"><div style="font-weight:700">15</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center"><div style="font-weight:700">16</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+      <td colspan="5" style="background:var(--salvia-t);font-weight:700;font-size:8.5pt;padding:2mm 3mm;border:1px solid var(--line)">FASE 3 · CONSOLIDAMENTO →</td>
+    </tr>
+    <tr>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center"><div style="font-weight:700">17</div><div style="font-size:7pt" class="muted">Posti nuovi</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center"><div style="font-weight:700">18</div><div style="font-size:7pt" class="muted">Distrazioni</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center"><div style="font-weight:700">19</div><div style="font-size:7pt" class="muted">Ospiti</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center"><div style="font-weight:700">20</div><div style="font-size:7pt" class="muted">Vita vera</div><div style="font-size:13pt;opacity:.25">🐾</div></td>
+      <td style="border:1px solid var(--line);padding:2.5mm;text-align:center;background:var(--paper2)"><div style="font-weight:700;color:var(--amber-d)">21</div><div style="font-size:7pt" class="muted">DIPLOMA</div><div style="font-size:13pt">🎓</div></td>
+      <td colspan="2" style="border:1px solid var(--line);padding:2.5mm;font-size:7.5pt;vertical-align:top"><strong>Le nostre 3 regole:</strong><br>1 ______________<br>2 ______________<br>3 ______________</td>
+    </tr>
+  </table>
+  <div class="bx bx--asticella"><h4>La cosa più bella che ha fatto questa settimana</h4>
+    <p style="border-bottom:1px solid var(--line);height:6mm;margin-bottom:2mm"></p>
+    <p style="border-bottom:1px solid var(--line);height:6mm;margin:0"></p>
+  </div>
+  <div class="footer"><span>Il Metodo <span class="paw">Argo</span></span><span class="num"></span></div>
+</div>
+
+<!-- ═══ QUARTA DI COPERTINA ═══ -->
+<div class="page" style="background:var(--bosco);color:var(--paper);text-align:center">
+  <div style="margin:auto;max-width:125mm">
+    <div style="font-size:26pt;margin-bottom:6mm">🐾</div>
+    <p style="font-family:var(--serif);font-style:italic;font-size:15pt;color:var(--salvia-t);line-height:1.5">«Il tuo cane non è testardo.<br>È solo mal tradotto.»</p>
+    <div style="width:30mm;height:.5mm;background:var(--amber);margin:8mm auto"></div>
+    <p style="font-size:10pt;color:rgba(247,242,232,.8);margin-bottom:6mm">Hai domande su un esercizio? Qualcosa non torna?<br>Scrivici: rispondiamo sempre — io detto, un umano batte i tasti.</p>
+    <p style="font-size:9pt;color:rgba(247,242,232,.55)">Garanzia 14 giorni soddisfatti o rimborsati<br>Argo è un personaggio generato con l'AI — e non l'ha mai nascosto.<br>Per aggressività, paure intense e salute: educatore cinofilo certificato o veterinario.</p>
+    <p style="font-family:var(--serif);font-size:12pt;color:var(--amber);margin-top:10mm">Firmato: Argo,<br><em style="font-size:10pt">il primo educatore cinofilo che è un cane.</em></p>
+  </div>
+</div>
+
+</body>
+</html>
