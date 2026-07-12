@@ -150,6 +150,44 @@ orecchie, occhi (per i box «Occhi di Argo» e i segnali del corpo).
 
 ---
 
+## 9 · Materia & finiture (integrazione Art Direction Premium)
+
+**Principio di dosaggio (non negoziabile):** gli effetti materici sono
+**accenti, mai stile dominante**. Regola: massimo UN effetto materico
+per spread, e solo dove rappresenta una finitura di stampa plausibile.
+Ciò che rende premium il libro resta: gerarchia tipografica, composizione,
+spazio, palette controllata, immagini integrate, micro-dettagli.
+Se un effetto si nota, è troppo.
+
+### La materia
+- **Grana carta**: noise quasi impercettibile (opacità ≤ 4%) su ogni
+  pagina — è la texture di base che toglie il "digitale piatto".
+- **Deboss/emboss**: SOLO su elementi che su carta sarebbero una
+  finitura — il numero-fantasma delle pagine profilo, la parola-texture
+  del manifesto. Mai sui titoli correnti. Max 3–4 apparizioni nel libro.
+- **Foil simulato**: una sola applicazione ricorrente — la cornice
+  hairline ambra (0.25mm, 40% opacità) sulle pagine scure. Nient'altro.
+
+### I gradienti (tonali, mai «Canva»)
+Solo coppie della stessa famiglia, differenza minima:
+- ambra → oro caldo (`#E6A93B → #D9962A`) sulle pagine piene ambra
+- bosco → verde profondo (`#22392E → #16271E`) sulle pagine scure
+- crema → sabbia (radiale morbido, quasi invisibile) sulle pagine chiare
+Mai gradienti tra famiglie diverse, mai saturi, mai a 45° vistosi.
+
+### La profondità
+- Ombre morbide SOLO sulle fotografie «appoggiate» (mai su testo o box)
+- Layer editoriale: blocco tonale sfalsato di 3mm dietro le foto chiave
+- Foto e numerali possono sovrapporsi di qualche mm — mai coprirsi
+
+### I micro-layer (il segreto delle reference)
+Sistema di micro-dettagli ricorrenti, quasi invisibili:
+- **crocini di stampa** angolari sulle pagine piene (opacità 40%)
+- **micro-coordinate** d'angolo: `F1 · G02 · IMA MMXXVI` (5.5pt, spaziato)
+- **hairline** di separazione 0.25mm dove la griglia lo chiede
+- **numerazione FIG.** sulle infografiche
+- griglia di base accennata (≤ 8% opacità) dietro i diagrammi
+
 ## Esportazioni
 
 1. **PDF Standard** (per tutti i clienti): pagine singole A4 verticali,

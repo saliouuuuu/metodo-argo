@@ -32,6 +32,34 @@ em{font-family:var(--serif);font-style:italic}
 .vkick{position:absolute;writing-mode:vertical-rl;font-size:7.5pt;font-weight:700;letter-spacing:.3em;text-transform:uppercase}
 .pad{padding:16mm 14mm 18mm 16mm}
 .pad--r{padding:16mm 16mm 18mm 14mm}
+
+/* ---- MATERIA & FINITURE (accenti, mai stile dominante) ---- */
+/* grana carta impercettibile su ogni pagina */
+.page::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:40;opacity:.05;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='240' height='240' filter='url(%23n)' opacity='.6'/></svg>")}
+/* gradienti tonali, stessa famiglia */
+.bg-amber{background:linear-gradient(168deg,#E6A93B 0%,#DE9C26 62%,#D69328 100%) !important}
+.bg-bosco{background:linear-gradient(180deg,#22392E 0%,#16271E 100%) !important}
+.bg-paper{background:radial-gradient(120% 90% at 22% 8%,#FAF6EE 0%,var(--paper) 55%,#F2ECDD 100%) !important}
+/* deboss: pressione sulla carta — solo elementi-finitura */
+.deboss-amber{color:#D89B29;text-shadow:-0.45mm -0.45mm 0.7mm rgba(255,240,205,.65),0.5mm 0.5mm 0.9mm rgba(88,58,10,.28);opacity:1 !important}
+.deboss-paper{color:var(--paper);text-shadow:-0.35mm -0.35mm 0.5mm rgba(255,255,255,.9),0.4mm 0.4mm 0.7mm rgba(33,29,23,.14)}
+/* foto con profondità editoriale */
+.ph-depth{box-shadow:0 5mm 16mm -7mm rgba(33,29,23,.5)}
+.ph-layer{position:absolute;background:var(--salvia-t);z-index:0}
+/* crocini di stampa (pagine piene) */
+.crop{position:absolute;width:4.5mm;height:4.5mm;opacity:.4;z-index:30}
+.crop.tl{top:6mm;left:6mm;border-top:.3mm solid currentColor;border-left:.3mm solid currentColor}
+.crop.tr{top:6mm;right:6mm;border-top:.3mm solid currentColor;border-right:.3mm solid currentColor}
+.crop.bl{bottom:6mm;left:6mm;border-bottom:.3mm solid currentColor;border-left:.3mm solid currentColor}
+.crop.br{bottom:6mm;right:6mm;border-bottom:.3mm solid currentColor;border-right:.3mm solid currentColor}
+/* micro-coordinate editoriali */
+.micro{position:absolute;font-size:5.5pt;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);opacity:.8;z-index:30}
+/* cornice foil (solo pagine scure) */
+.foil{position:absolute;inset:7mm;border:.25mm solid rgba(224,160,46,.42);pointer-events:none;z-index:2}
+/* numerale con gradiente tonale */
+.num-grad{background:linear-gradient(180deg,#E9B04A 0%,#C98A1D 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* griglia di base accennata (dietro le infografiche) */
+.gridbg{position:absolute;inset:0;pointer-events:none;background-image:repeating-linear-gradient(to bottom,transparent 0 7.7mm,rgba(78,112,89,.07) 7.7mm 7.95mm);z-index:0}
 .folio{position:absolute;bottom:9mm;font-size:7.5pt;color:var(--muted);display:flex;gap:2mm;align-items:center}
 .folio.l{left:16mm}.folio.r{right:16mm}
 .small{font-size:8.5pt;line-height:1.45}
@@ -122,7 +150,7 @@ p{margin-bottom:2.6mm}
 
 <!-- ══════════════════ SPREAD 1 · INDICE EDITORIALE ══════════════════ -->
 <div class="spread">
-<div class="page">
+<div class="page bg-paper">
   <div class="pad">
     <p class="kick" style="color:var(--amber-d)">Il Metodo Argo · Manuale</p>
     <h1 style="font-size:44pt;margin:6mm 0 2mm">Indice</h1>
@@ -157,11 +185,12 @@ p{margin-bottom:2.6mm}
       <p class="small" style="color:var(--muted)">Prima di partire: il linguaggio di Argo · le tre regole d'oro · quando serve un professionista</p>
     </div>
   </div>
-  <div class="num" style="position:absolute;right:-30mm;top:192mm;font-size:250pt;color:var(--amber)">2</div>
+  <div class="num num-grad" style="position:absolute;right:-30mm;top:192mm;font-size:250pt">2</div>
+  <div class="micro" style="left:16mm;bottom:26mm">IMA · MMXXVI · Indice generale</div>
   <div class="folio l"><svg width="9" height="8" viewBox="0 0 40 34" fill="var(--amber)"><use href="#ais-paw"/></svg> 2 · Indice</div>
 </div>
 <div class="page">
-  <div class="num" style="position:absolute;left:-12mm;top:192mm;font-size:250pt;color:var(--amber)">1</div>
+  <div class="num num-grad" style="position:absolute;left:-12mm;top:192mm;font-size:250pt">1</div>
   <div class="pad--r" style="margin-left:52mm">
     <div style="margin-top:14mm">
       <div class="num" style="font-size:64pt;color:var(--bosco)">17</div>
@@ -184,7 +213,9 @@ p{margin-bottom:2.6mm}
 
 <!-- ══════════════════ SPREAD 2 · APERTURA DI FASE ══════════════════ -->
 <div class="spread">
-<div class="page" style="background:var(--amber)">
+<div class="page bg-amber">
+  <i class="crop tl" style="color:var(--bosco)"></i><i class="crop tr" style="color:var(--bosco)"></i><i class="crop bl" style="color:var(--bosco)"></i><i class="crop br" style="color:var(--bosco)"></i>
+  <div class="micro" style="right:8mm;bottom:6.5mm;color:var(--bosco);opacity:.55">F1 · G 1–7 · IMA</div>
   <svg width="210mm" height="297mm" viewBox="0 0 210 297" style="position:absolute;inset:0">
     <clipPath id="knock1"><text x="105" y="235" text-anchor="middle" font-family="Anton" font-size="290" >1</text></clipPath>
     <image href="../assets/img/ex-coperta.jpg" x="-40" y="30" width="300" height="240" preserveAspectRatio="xMidYMid slice" clip-path="url(#knock1)"/>
@@ -227,7 +258,8 @@ p{margin-bottom:2.6mm}
 <!-- ══════════════════ SPREAD 3 · GIORNO NORMALE ══════════════════ -->
 <div class="spread">
 <div class="page">
-  <div class="num" style="position:absolute;left:-6mm;top:-10mm;font-size:170pt;color:var(--amber)">02</div>
+  <div class="num num-grad" style="position:absolute;left:-6mm;top:-10mm;font-size:170pt">02</div>
+  <div class="micro" style="right:14mm;top:8mm">F1 · G02 · 5 min × 3</div>
   <div class="vkick" style="left:8mm;bottom:18mm;color:var(--muted)">Fase 1 · Fondamenta · giorno 2 di 21</div>
   <div class="pad" style="padding-top:74mm">
     <h1 style="font-size:27pt;max-width:120mm">Il mio nome non è «No»</h1>
@@ -237,8 +269,9 @@ p{margin-bottom:2.6mm}
       <p>Noi cani non «sappiamo» il nostro nome come lo sapete voi. Per noi è un suono, e un suono vale quanto ciò che lo segue. Nome → cose belle = suono da non perdersi. Nome → sgridata = suono da cui sparire.</p>
     </div>
   </div>
-  <img src="../assets/img/ex-nome.jpg" alt="" style="position:absolute;left:34mm;bottom:0;width:176mm;height:96mm;object-fit:cover">
-  <div style="position:absolute;left:16mm;bottom:8mm;background:var(--bosco);color:var(--paper);padding:3mm 5mm;font-size:8pt;max-width:44mm"><b class="kick" style="letter-spacing:.14em">Occhi di Argo</b><br>orecchie avanti + peso sulle zampe anteriori = sta per girarsi: premia ORA.</div>
+  <div class="ph-layer" style="left:31mm;bottom:3mm;width:176mm;height:96mm"></div>
+  <img class="ph-depth" src="../assets/img/ex-nome.jpg" alt="" style="position:absolute;left:34mm;bottom:0;width:176mm;height:96mm;object-fit:cover;z-index:1">
+  <div style="position:absolute;left:16mm;bottom:8mm;background:var(--bosco);color:var(--paper);padding:3mm 5mm;font-size:8pt;max-width:44mm;z-index:3;box-shadow:0 3mm 10mm -4mm rgba(33,29,23,.5)"><b class="kick" style="letter-spacing:.14em">Occhi di Argo</b><br>orecchie avanti + peso sulle zampe anteriori = sta per girarsi: premia ORA.</div>
   <div class="folio l" style="color:var(--bosco);z-index:2;background:var(--paper);padding:1mm 2.5mm;border-radius:2mm">6 · Giorno 2</div>
 </div>
 <div class="page">
@@ -297,15 +330,16 @@ p{margin-bottom:2.6mm}
 <!-- ══════════════════ SPREAD 4 · PAGINA MANIFESTO ══════════════════ -->
 <div class="spread">
 <div class="page">
-  <p style="position:absolute;left:-24mm;top:96mm;font-family:var(--serif);font-style:italic;font-weight:900;font-size:98pt;color:var(--bosco);opacity:.045;transform:rotate(-8deg);white-space:nowrap">argo argo argo</p>
-  <div class="pad" style="display:flex;flex-direction:column;justify-content:center;height:100%">
+  <p style="position:absolute;left:-24mm;top:176mm;font-family:var(--serif);font-style:italic;font-weight:900;font-size:98pt;transform:rotate(-8deg);white-space:nowrap;color:var(--paper);text-shadow:-0.25mm -0.25mm 0.4mm rgba(255,255,255,.55),0.3mm 0.3mm 0.5mm rgba(33,29,23,.075)">argo argo argo</p>
+  <div class="pad" style="display:flex;flex-direction:column;justify-content:center;height:100%;position:relative;z-index:2">
     <p class="kick" style="color:var(--amber-d);margin-bottom:8mm">Manifesto</p>
     <p style="font-family:var(--serif);font-style:italic;font-size:37pt;line-height:1.2;color:var(--bosco);max-width:165mm">Il tuo cane<br>non è testardo.<br>È solo <span style="color:var(--amber-d)">mal tradotto</span>.</p>
     <p class="small" style="color:var(--muted);margin-top:10mm;max-width:80mm">Ventuno giorni non per addestrarlo.<br>Per imparare, in due, la stessa lingua.</p>
   </div>
   <div class="folio l">8 · Manifesto</div>
 </div>
-<div class="page" style="background:var(--bosco)">
+<div class="page bg-bosco">
+  <div class="foil"></div>
   <svg width="440" height="330" viewBox="0 0 160 120" style="position:absolute;left:50%;top:64mm;transform:translateX(-50%);color:var(--paper)">
     <g fill="currentColor">
       <g transform="translate(6,76) scale(.9) rotate(-14)"><use href="#ais-paw"/></g>
@@ -332,7 +366,8 @@ p{margin-bottom:2.6mm}
 <div class="spread">
 <div class="page">
   <div class="pad">
-    <p class="kick" style="color:var(--amber-d)">Infografica · il cuore del metodo</p>
+    <div class="gridbg"></div><p class="kick" style="color:var(--amber-d)">Infografica · il cuore del metodo</p>
+    <div class="micro" style="right:16mm;top:16mm">Fig. 01</div>
     <h1 style="font-size:34pt;margin:4mm 0 2mm">La Finestra<br>di Argo</h1>
     <p class="small" style="color:var(--muted);max-width:90mm">Hai un secondo per dire al tuo cane cosa ha funzionato. Uno. Il marker te lo allunga.</p>
     <svg width="176mm" height="112mm" viewBox="0 0 176 112" style="margin-top:8mm;color:var(--bosco)">
@@ -364,7 +399,8 @@ p{margin-bottom:2.6mm}
 </div>
 <div class="page">
   <div class="pad--r">
-    <p class="kick" style="color:var(--amber-d)">Infografica · fase 3</p>
+    <div class="gridbg"></div><p class="kick" style="color:var(--amber-d)">Infografica · fase 3</p>
+    <div class="micro" style="right:16mm;top:16mm">Fig. 02</div>
     <h1 style="font-size:26pt;margin:4mm 0 2mm">La scala delle distrazioni</h1>
     <p class="small" style="color:var(--muted);max-width:100mm">Ogni distrazione ha un campo gravitazionale. Si lavora appena fuori — e ci si avvicina di due passi alla volta.</p>
     <svg width="176mm" height="130mm" viewBox="0 0 176 130" style="margin-top:6mm;color:var(--bosco)">
@@ -397,8 +433,10 @@ p{margin-bottom:2.6mm}
 
 <!-- ══════════════════ SPREAD 6 · PROFILO ══════════════════ -->
 <div class="spread">
-<div class="page" style="background:var(--amber)">
-  <div class="num" style="position:absolute;right:-8mm;top:-14mm;font-size:230pt;color:var(--bosco);opacity:.14">01</div>
+<div class="page bg-amber">
+  <i class="crop tl" style="color:var(--bosco)"></i><i class="crop bl" style="color:var(--bosco)"></i>
+  <div class="num deboss-amber" style="position:absolute;right:-8mm;top:-14mm;font-size:230pt">01</div>
+  <div class="micro" style="left:16mm;bottom:6.5mm;color:var(--bosco);opacity:.55">PRF 01 / 05 · Il Trattore</div>
   <div class="vkick" style="left:8mm;top:16mm;color:var(--bosco)">Fase 2 · profilo 01 · giorni 8–16</div>
   <div class="pad" style="padding-top:60mm">
     <p class="kick" style="color:var(--bosco)">Il primo dei cinque profili</p>
