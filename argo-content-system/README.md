@@ -82,6 +82,31 @@ logs/                  log giornalieri
 5. **Analytics**: esporta/da TikTok o compila il CSV (modello incluso)
    una volta a settimana.
 
+## Kimi come "motore a volume" (risparmio token)
+
+Schema: **Claude orchestra, Kimi esegue il lavoro ripetitivo.** L'adapter
+`automation/kimi_adapter.py` (solo stdlib, API Moonshot compatibile OpenAI)
+genera bozze di pacchetti e batch di hook; il validatore `register` fa da
+rete di sicurezza sui guardrail, qualunque sia la fonte del testo.
+
+```bash
+# 1. metti la chiave NUOVA nel .env (mai nel codice, mai in chat)
+cp .env.example .env   # poi compila KIMI_API_KEY
+
+# 2. bozza di un pacchetto via Kimi (poi la rivedi e la promuovi a package.json)
+python3 automation/kimi_adapter.py draft <id-video>
+python3 automation/kimi_adapter.py draft <id-video> --dry-run   # prova senza chiamare
+
+# 3. batch di hook su un tema
+python3 automation/kimi_adapter.py hooks "guinzaglio che tira" -n 8
+```
+
+L'output di Kimi finisce in `content/<id>/package.draft-kimi.json`: lo
+controlli, lo copi su `package.json`, e `register` valida come sempre.
+Nota: i subagent lanciati DENTRO una sessione Claude usano modelli Claude;
+Kimi si usa via questo adapter (chiamata diretta all'API), che è appunto
+il modo per spostare il volume fuori da Claude.
+
 ## Requisiti ambiente
 
 Python 3.10+ e ffmpeg (`apt-get install -y ffmpeg`). In sessione cloud
