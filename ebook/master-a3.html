@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Il Metodo Argo — Master A3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,600&family=Hanken+Grotesk:wght@400;600;700&family=Anton&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   IL METODO ARGO — MASTER A3 (dual-export)
+   Desktop: spread A3 orizzontale 420×297mm (due A4 affiancate).
+   Mobile:  aggiungi ?mode=mobile → ogni faccia diventa una A4
+            verticale singola (per lo split via export-mobile.py).
+   Stampa desktop: Chrome → Stampa → A3 orizzontale → Margini nessuno.
+   ============================================================ */
+:root{
+  --ink:#211D17; --paper:#F7F2E8; --paper2:#EFE7D6; --cream:#FAF6EC;
+  --bosco:#20382C; --bosco-d:#16271E; --salvia:#4E7059; --salvia-t:#DCE4D3;
+  --amber:#E0A02E; --amber-d:#B77E17; --oro:#C9A24B; --terra:#B75B33;
+  --line:#D9CFBA; --muted:#8A7F6B;
+  --serif:'Fraunces',Georgia,serif; --sans:'Hanken Grotesk',Arial,sans-serif;
+  --num:'Anton',Impact,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);color:var(--ink);background:#6f6f6f;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.spread{width:420mm;height:297mm;margin:12mm auto;display:flex;background:var(--paper);
+        box-shadow:0 10px 44px rgba(0,0,0,.45);overflow:hidden;position:relative}
+.face{width:210mm;height:297mm;position:relative;overflow:hidden}
+.grain::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:40;opacity:.045;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix type='saturate' values='0'/></filter><rect width='200' height='200' filter='url(%23n)' opacity='.6'/></svg>")}
+
+@media print{
+  body{background:none}
+  .spread{margin:0;box-shadow:none;page-break-after:always}
+  @page{size:420mm 297mm;margin:0}
+}
+/* ---- modalità mobile: ogni faccia = una A4 verticale singola ---- */
+body.mobile .spread{display:block;width:210mm;height:auto;margin:0;box-shadow:none;background:none}
+body.mobile .face{page-break-after:always}
+body.mobile{background:none}
+@media print{ body.mobile .spread{page-break-after:auto} @page{size:A4;margin:0} }
+
+h1,h2,h3{font-family:var(--serif);color:var(--bosco);line-height:1.04;font-weight:600}
+em{font-family:var(--serif);font-style:italic}
+.num{font-family:var(--num);font-weight:400;line-height:.8;letter-spacing:-.01em}
+.kick{font-size:9pt;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--muted)}
+.pad{padding:26mm 22mm}
+.pic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    background:var(--bosco);color:rgba(247,242,232,.5);font-size:11pt;font-weight:700;letter-spacing:.05em}
+.ph::before{content:"📷 " attr(data-img)}
+.ov-bottom{position:absolute;inset:0;background:linear-gradient(to top,rgba(20,25,20,.72),rgba(20,25,20,.05) 55%)}
+.folio{position:absolute;bottom:12mm;font-size:8.5pt;color:var(--muted);display:flex;gap:3mm;align-items:center}
+.card{position:absolute;background:var(--cream);border-radius:4mm;padding:6mm 7mm;box-shadow:0 6mm 18mm -8mm rgba(33,29,23,.4)}
+.card .kick{font-size:7.5pt;letter-spacing:.2em}
+.card h3{font-size:14pt;margin:2mm 0 1mm}
+.card .sub{font-family:var(--sans);font-size:9pt;color:var(--muted);border-bottom:.4mm solid var(--line);padding-bottom:2mm;margin-bottom:2.5mm}
+.card p{font-size:9pt;line-height:1.45}
+p{margin-bottom:3mm}
+</style>
+</head>
+<body>
+
+<!-- SVG line-art (Argo Illustration System L1) -->
+<svg width="0" height="0" style="position:absolute"><defs>
+<g id="paw"><ellipse cx="20" cy="26" rx="11" ry="9"/><ellipse cx="7" cy="12" rx="4.5" ry="6"/><ellipse cx="17" cy="7" rx="4.5" ry="6"/><ellipse cx="27" cy="8" rx="4.5" ry="6"/><ellipse cx="35" cy="15" rx="4" ry="5.5"/></g>
+<g id="hand-treat" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 40 Q10 20 24 18 L44 16"/><path d="M44 16 a4 4 0 0 1 0 8 L30 26"/><circle cx="50" cy="14" r="3" fill="currentColor"/></g>
+<g id="brain" fill="none" stroke-width="3" stroke-linecap="round"><path d="M20 40 Q6 38 8 24 Q6 10 22 10 Q28 4 38 10 Q54 8 52 24 Q56 38 40 40 Q30 46 20 40Z"/><path d="M30 12 V40 M22 22 Q30 26 22 30 M40 20 Q32 26 40 32"/></g>
+<g id="clock" fill="none" stroke-width="3" stroke-linecap="round"><circle cx="24" cy="26" r="18"/><path d="M24 16 V26 L32 30 M24 6 V2 M20 3 h8"/></g>
+<g id="bone" fill="none" stroke-width="3" stroke-linejoin="round"><path d="M14 18 a6 6 0 1 1 6-8 a6 6 0 1 1 8 6 L20 26 a6 6 0 1 1 -8 -6 a6 6 0 1 1 -6 -8 Z" transform="rotate(14 20 16)"/></g>
+<g id="stopwatch" fill="none" stroke-width="3" stroke-linecap="round"><circle cx="24" cy="28" r="17"/><path d="M24 28 V16 M24 6 h0 M19 4 h10 M24 4 V11 M38 14 l3 -3"/></g>
+</defs></svg>
+
+<!-- ═══════════ SPREAD 1 · COPERTINA (retro crema | fronte ARGO) ═══════════ -->
+<section class="spread">
+  <div class="face grain" style="background:radial-gradient(120% 90% at 25% 12%,#FBF7EE,var(--paper) 60%,#F1EAD9)">
+    <div class="pad" style="display:flex;flex-direction:column;height:100%">
+      <p class="kick" style="color:var(--amber-d)">Il Metodo Argo</p>
+      <h1 style="font-size:40pt;margin-top:10mm">21 giorni<br>per capirvi,<br><em>finalmente.</em></h1>
+      <div style="margin-top:auto">
+        <div style="width:22mm;height:.5mm;background:var(--amber);margin-bottom:5mm"></div>
+        <p style="font-size:10pt;color:var(--muted)">Ebook · Tracker dei 21 giorni · Area membri</p>
+        <p style="font-size:9pt;color:var(--muted);margin-top:2mm">🐾 ilmetodoargo</p>
+      </div>
+    </div>
+    <div class="folio" style="left:22mm">retro di copertina</div>
+  </div>
+  <div class="face grain" style="background:var(--bosco-d)">
+    <div class="ph" data-img="argo-cover.jpg — ritratto Argo, ambiente scuro"></div>
+    <div class="ov-bottom"></div>
+    <div style="position:absolute;left:0;right:0;top:26mm;text-align:center">
+      <p class="kick" style="color:var(--oro);letter-spacing:.32em">Il primo educatore cinofilo<br>che è un cane</p>
+    </div>
+    <div style="position:absolute;left:0;right:0;bottom:40mm;text-align:center">
+      <div class="num" style="font-family:var(--serif);font-weight:600;font-size:120pt;color:var(--oro);letter-spacing:.02em">ARGO</div>
+      <p style="font-family:var(--serif);font-style:italic;font-size:15pt;color:var(--paper);margin-top:2mm">21 giorni per capirvi, finalmente.</p>
+      <div style="width:.4mm;height:16mm;background:var(--oro);margin:6mm auto 0"></div>
+    </div>
+    <div style="position:absolute;left:0;right:0;bottom:16mm;text-align:center">
+      <p class="kick" style="color:var(--oro);font-size:8pt;letter-spacing:.3em">Ebook &nbsp;+&nbsp; Tracker &nbsp;+&nbsp; Area membri</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SPREAD 2 · CIAO, SONO ARGO (testo | ritratto seduto) ═══════════ -->
+<section class="spread">
+  <div class="face grain" style="background:var(--cream)">
+    <div class="pad" style="display:flex;flex-direction:column;height:100%">
+      <p class="kick">Presentazione</p>
+      <h1 style="font-size:82pt;margin-top:6mm;line-height:.92">Ciao.</h1>
+      <h1 style="font-size:44pt;margin-top:2mm"><em>Sono Argo.</em></h1>
+      <div style="max-width:150mm;margin-top:12mm;font-size:11pt;line-height:1.6">
+        <p>Border collie, per la precisione. E faccio un lavoro strano: <strong>traduco i cani agli umani</strong>.</p>
+        <p>Tu il tuo cane lo ami — si vede. Ma amarsi e capirsi sono due cose diverse: lui non parla italiano, tu non parli cane. Due che si vogliono bene e si fraintendono venti volte al giorno.</p>
+      </div>
+      <div style="margin-top:auto;border:1px solid var(--line);border-radius:3mm;padding:6mm 7mm;max-width:150mm">
+        <p style="font-family:var(--serif);font-size:15pt;color:var(--bosco);margin:0">Due che si vogliono bene e si fraintendono venti volte al giorno.</p>
+      </div>
+    </div>
+    <div class="folio" style="left:22mm">2 · Il Metodo Argo 🐾</div>
+  </div>
+  <div class="face grain" style="background:var(--bosco-d)">
+    <img class="pic" src="../assets/img/profilo-sospipi.jpg" alt="" style="object-position:center 30%">
+    <div class="ov-bottom"></div>
+    <p class="kick" style="position:absolute;left:0;right:0;bottom:34mm;text-align:center;color:var(--paper);letter-spacing:.28em">Il primo educatore cinofilo che è un cane</p>
+    <p style="position:absolute;right:14mm;bottom:16mm;text-align:right;font-size:8.5pt;color:rgba(247,242,232,.7);line-height:1.4">Border collie · Narratore<br>Fondatore del Metodo</p>
+  </div>
+</section>
+
+<!-- ═══════════ SPREAD 3 · LE TRE REGOLE D'ORO (foto | banda scura + regole) ═══════════ -->
+<section class="spread">
+  <div class="face grain" style="position:relative">
+    <img class="pic" src="../assets/img/ex-coperta.jpg" alt="" style="object-position:center 35%">
+    <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(250,246,236,.92) 30%,rgba(250,246,236,.1) 62%)"></div>
+    <div class="pad" style="position:relative">
+      <p class="kick" style="color:var(--amber-d)">Prima di iniziare</p>
+      <h1 style="font-size:46pt;margin-top:5mm">Le tre<br>regole <em style="color:var(--amber-d)">d'oro</em></h1>
+      <p style="font-family:var(--serif);font-style:italic;font-size:14pt;color:var(--bosco);margin-top:3mm">(valgono per tutti i 21 giorni)</p>
+    </div>
+    <div style="position:absolute;left:22mm;bottom:26mm;display:flex;gap:4mm;align-items:flex-start;max-width:150mm">
+      <svg width="16" height="14" viewBox="0 0 40 34" fill="var(--amber-d)"><use href="#paw"/></svg>
+      <p style="font-family:var(--serif);font-style:italic;font-size:12pt;color:var(--bosco);margin:0">Non servono regole complicate.<br>Servono coerenza, tempismo e buoni premi.</p>
+    </div>
+    <div class="folio" style="left:22mm">Il Metodo Argo · 🐾 · 4</div>
+  </div>
+  <div class="face grain" style="background:var(--bosco);color:var(--paper)">
+    <div style="padding:26mm 20mm">
+      <div style="display:flex;gap:8mm;align-items:flex-start;margin-bottom:9mm">
+        <div class="num" style="font-family:var(--serif);font-size:44pt;color:var(--oro)">01</div>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="color:var(--paper);font-size:17pt">Il tempismo è tutto</h3>
+            <svg width="30" height="30" viewBox="0 0 48 48" style="color:var(--oro)"><use href="#clock" stroke="currentColor"/></svg></div>
+          <p style="font-size:9.5pt;line-height:1.5;color:rgba(247,242,232,.82);margin-top:2mm">Noi cani viviamo nel presente. Un premio dato 8 secondi dopo premia… quello che stavo facendo 8 secondi dopo. La finestra utile è 1 secondo. <strong style="color:var(--oro)">Per questo esiste il marker (giorno 3).</strong></p>
+        </div>
+      </div>
+      <div style="height:.4mm;background:rgba(247,242,232,.2);margin:0 0 9mm 52mm"></div>
+      <div style="display:flex;gap:8mm;align-items:flex-start;margin-bottom:9mm">
+        <div class="num" style="font-family:var(--serif);font-size:44pt;color:var(--oro)">02</div>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="color:var(--paper);font-size:17pt">Il premio lo decido io</h3>
+            <svg width="30" height="24" viewBox="0 0 40 28" style="color:var(--oro)"><use href="#bone" stroke="currentColor"/></svg></div>
+          <p style="font-size:9.5pt;line-height:1.5;color:rgba(247,242,232,.82);margin-top:2mm">Un premio è ciò che IO trovo premiante, non ciò che costa di più. Per la cucina bastano crocchette; per il parco pieno di piccioni serve l'artiglieria: pollo, würstel, formaggio. Più difficile la situazione, più buono il premio.</p>
+        </div>
+      </div>
+      <div style="height:.4mm;background:rgba(247,242,232,.2);margin:0 0 9mm 52mm"></div>
+      <div style="display:flex;gap:8mm;align-items:flex-start">
+        <div class="num" style="font-family:var(--serif);font-size:44pt;color:var(--oro)">03</div>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="color:var(--paper);font-size:17pt">Sessioni brevi, sempre</h3>
+            <svg width="28" height="28" viewBox="0 0 48 48" style="color:var(--oro)"><use href="#stopwatch" stroke="currentColor"/></svg></div>
+          <p style="font-size:9.5pt;line-height:1.5;color:rgba(247,242,232,.82);margin-top:2mm">5 minuti, poi pausa. Meglio tre sessioni da 5 che una da 20: la mia attenzione è quella di uno scoiattolo, e imparare stanca. <strong style="color:var(--oro)">Chiudi sempre con un successo facile.</strong></p>
+        </div>
+      </div>
+      <div style="margin-top:11mm;background:var(--bosco-d);border-radius:4mm;padding:6mm 8mm;display:flex;gap:10mm">
+        <div style="flex:1;text-align:center">
+          <p class="kick" style="color:rgba(247,242,232,.55);font-size:7pt">Quello che vedi</p>
+          <svg width="60" height="30" viewBox="0 0 60 34" style="color:var(--oro);margin:4mm 0"><use href="#hand-treat" stroke="currentColor"/></svg>
+          <p style="font-size:8.5pt;color:rgba(247,242,232,.8)">Un umano che dà premietti a un cane.</p>
+        </div>
+        <div style="width:.4mm;background:rgba(247,242,232,.2)"></div>
+        <div style="flex:1;text-align:center">
+          <p class="kick" style="color:var(--oro);font-size:7pt">Quello che succede</p>
+          <svg width="40" height="30" viewBox="0 0 60 50" style="color:var(--oro);margin:4mm auto"><use href="#brain" stroke="currentColor"/></svg>
+          <p style="font-size:8.5pt;color:rgba(247,242,232,.85)">Un cervello che impara:<br><strong style="color:var(--oro)">«quel comportamento conviene, lo rifarò».</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SPREAD 4 · MAPPA 21 GIORNI (titolo+2 | card fasi su foto) ═══════════ -->
+<section class="spread">
+  <div class="face grain" style="background:var(--cream);position:relative">
+    <div class="num" style="position:absolute;right:-14mm;top:38mm;font-family:var(--serif);font-weight:600;font-size:300pt;color:var(--salvia);opacity:.9;line-height:.8">2</div>
+    <div class="pad" style="position:relative;display:flex;flex-direction:column;height:100%">
+      <p class="kick">Il percorso</p>
+      <h1 style="font-size:52pt;margin-top:6mm">21 giorni.<br>Una sola<br><em>direzione.</em></h1>
+      <p style="font-size:11pt;color:var(--muted);margin-top:8mm;max-width:90mm">21 giorni, tre fasi,<br>un patto tra noi due.</p>
+      <p style="margin-top:auto;font-size:9.5pt;color:var(--muted);max-width:95mm">Ogni grande cambiamento inizia da una direzione chiara.</p>
+    </div>
+    <div class="folio" style="left:22mm">3 · Il Metodo Argo 🐾</div>
+  </div>
+  <div class="face grain" style="position:relative;background:var(--paper2)">
+    <img class="pic" src="../assets/img/ex-passeggiata.jpg" alt="" style="opacity:.9">
+    <div style="position:absolute;inset:0;background:linear-gradient(to left,rgba(239,231,214,.25),rgba(239,231,214,.75))"></div>
+    <div class="num" style="position:absolute;left:16mm;top:30mm;font-family:var(--serif);font-weight:600;font-size:300pt;color:var(--cream);opacity:.85;line-height:.8">1</div>
+    <div class="card" style="top:34mm;left:20mm;width:118mm">
+      <div style="display:flex;justify-content:space-between"><span class="kick" style="color:var(--salvia)">Fase 1</span><span class="num" style="font-family:var(--serif);color:var(--amber-d);font-size:12pt">01</span></div>
+      <h3>Fondamenta</h3><p class="sub">Giorni 1–7</p>
+      <p>Il linguaggio comune: nome, marker, calma, autocontrollo.</p>
+    </div>
+    <div class="card" style="top:112mm;left:56mm;width:118mm">
+      <span class="kick" style="color:var(--salvia)">Fase 2</span>
+      <h3>Il tuo modulo</h3><p class="sub">Giorni 8–16</p>
+      <p>Uno dei cinque profili. Percorso personalizzato. Area membri.</p>
+    </div>
+    <div class="card" style="top:190mm;left:30mm;width:118mm">
+      <span class="kick" style="color:var(--salvia)">Fase 3</span>
+      <h3>Consolidamento</h3><p class="sub">Giorni 17–21</p>
+      <p>Dal salotto alla vita reale. Distrazioni. Ospiti. Passeggiate.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+if (new URLSearchParams(location.search).get('mode') === 'mobile') document.body.classList.add('mobile');
+</script>
+</body>
+</html>
