@@ -1,0 +1,6 @@
+# video pesanti fuori dal repo (restano in locale/kit)
+content/*/assets/*.mp4
+scheduled/*/final.mp4
+*.mov
+# segreti
+.env

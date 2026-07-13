@@ -1,0 +1,31 @@
+{
+  "id": "2026-07-13-02-psicologia-cane",
+  "data": "2026-07-13",
+  "slot": 2,
+  "orario": "19:15",
+  "categoria": "psicologia-cane",
+  "pilastro": "valore",
+  "format": "pov-cane",
+  "obiettivo": "Far capire il meccanismo della Finestra (1 secondo per premiare) e generare salvataggi",
+  "target_specifico": "Proprietari frustrati perché 'il cane non capisce' nonostante i premi",
+  "idea": "POV di Argo: il tuo cane ha una finestra di 1 secondo per collegare premio e comportamento — ecco perché pensi che non capisca",
+  "hook": "Il tuo cane non è stupido. Sei solo lento.",
+  "script": "0-2s [HOOK, testo a schermo + voce]: Il tuo cane non è stupido. Sei solo lento.\n2-8s [POV cane, salotto]: Mi siedo. Tu sorridi, cerchi il premietto in tasca, lo trovi, ti chini... quattro secondi. Un'eternità.\n8-16s [close-up cane che guarda]: Nel frattempo io ho guardato la porta, sbadigliato e mosso la coda. Quale delle tre cose mi stai premiando? Boh.\n16-26s [scena umano che dice 'Sì!' e premia]: Noi cani colleghiamo premio e azione solo se passa MENO di 1 secondo. Si chiama finestra. Un secondo. Poi il collegamento svanisce.\n26-36s [dimostrazione: seduto → 'Sì!' immediato → premio]: Il trucco: di' 'Sì!' NELL'ISTANTE esatto del comportamento giusto. Il premio può arrivare dopo: la foto è già scattata.\n36-40s [chiusura, cane in primo piano]: Prova stasera. E poi torna a dirmi che non capisco.",
+  "voiceover": "Il tuo cane non è stupido. Sei solo lento. Mi siedo. Tu sorridi, cerchi il premietto in tasca, ti chini... quattro secondi. Un'eternità. Nel frattempo io ho guardato la porta, sbadigliato e mosso la coda. Quale delle tre cose mi stai premiando? Boh. Noi cani colleghiamo premio e azione solo se passa meno di un secondo. Si chiama finestra. Un secondo, poi il collegamento svanisce. Il trucco: di' Sì nell'istante esatto del comportamento giusto. Il premio può arrivare dopo: la foto è già scattata. Prova stasera. E poi torna a dirmi che non capisco.",
+  "scene": [
+    {"n": 1, "inquadratura": "primo piano border collie che guarda in camera, salotto", "durata_s": 8, "fonte": "ai", "prompt_ai": "candid smartphone video, black and white border collie sitting in an italian living room looking at camera, natural window light, slightly imperfect framing, realistic, no text, no watermark", "asset": ""},
+    {"n": 2, "inquadratura": "cane che osserva umano frugarsi in tasca, mezzo busto", "durata_s": 10, "fonte": "ai", "prompt_ai": "candid smartphone video, owner slowly searching treat in pocket while border collie waits sitting, home interior, natural light, realistic motion, no text, no watermark", "asset": ""},
+    {"n": 3, "inquadratura": "close-up occhi del cane, sguardo che si sposta", "durata_s": 8, "fonte": "ai", "prompt_ai": "close-up of border collie eyes glancing around, shallow depth of field, natural light, realistic, no text, no watermark", "asset": ""},
+    {"n": 4, "inquadratura": "seduto → marker → premio immediato", "durata_s": 10, "fonte": "ai", "prompt_ai": "candid smartphone video, border collie sits and instantly receives a small treat from owner hand, precise training moment, italian home, natural light, realistic, no text, no watermark", "asset": ""},
+    {"n": 5, "inquadratura": "primo piano finale, testa inclinata", "durata_s": 4, "fonte": "ai", "prompt_ai": "border collie tilting head at camera, curious expression, living room, natural light, realistic, no text, no watermark", "asset": ""}
+  ],
+  "testi_a_schermo": ["Non è stupido. Sei lento.", "4 secondi = boh", "1 SECONDO", "Sì! = foto scattata", "Prova stasera"],
+  "sottotitoli": "come voiceover, sincronizzati per frase",
+  "caption": "La finestra dura un secondo. Dopo, stai premiando un'altra cosa.\nSalva il video e prova stasera. 🐾",
+  "cta": "salva il video per provarlo dopo",
+  "hashtags": ["#cane", "#addestramentocani", "#educazionecinofila", "#cuccioli", "#ilmetodoargo"],
+  "durata_prevista_s": 40,
+  "status": "ideation",
+  "video_path": "",
+  "tiktok_url": ""
+}

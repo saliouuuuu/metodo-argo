@@ -1,0 +1,43 @@
+{
+  "id": "2026-07-13-02-psicologia-cane",
+  "file": "content/2026-07-13-02-psicologia-cane/assets/demo.mp4",
+  "checks": {
+    "risoluzione": {
+      "valore": "1080x1920",
+      "ok": true
+    },
+    "formato_9_16": {
+      "valore": 1.778,
+      "ok": true
+    },
+    "durata": {
+      "valore": 40.0,
+      "ok": true
+    },
+    "dimensione_mb": {
+      "valore": 2.4,
+      "ok": true
+    },
+    "audio_presente": {
+      "valore": true,
+      "ok": true
+    },
+    "loudness_lufs": {
+      "valore": -14.0,
+      "ok": true
+    },
+    "frame_neri": {
+      "valore": 0,
+      "ok": true
+    },
+    "caption_presente": {
+      "valore": true,
+      "ok": true
+    },
+    "hashtag_presenti": {
+      "valore": 5,
+      "ok": true
+    }
+  },
+  "esito": "PASS"
+}

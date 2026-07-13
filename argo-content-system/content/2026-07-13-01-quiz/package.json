@@ -1,0 +1,34 @@
+{
+  "id": "2026-07-13-01-quiz",
+  "data": "2026-07-13",
+  "slot": 1,
+  "orario": "13:30",
+  "categoria": "quiz",
+  "pilastro": "coinvolgimento",
+  "format": "testo-a-schermo",
+  "obiettivo": "",
+  "target_specifico": "",
+  "idea": "",
+  "hook": "",
+  "script": "",
+  "voiceover": "",
+  "scene": [
+    {
+      "n": 1,
+      "inquadratura": "",
+      "durata_s": 0,
+      "fonte": "ai|asset|ripresa",
+      "prompt_ai": "",
+      "asset": ""
+    }
+  ],
+  "testi_a_schermo": [],
+  "sottotitoli": "",
+  "caption": "",
+  "cta": "",
+  "hashtags": [],
+  "durata_prevista_s": 0,
+  "status": "ideation",
+  "video_path": "",
+  "tiktok_url": ""
+}

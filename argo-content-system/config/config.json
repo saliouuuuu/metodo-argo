@@ -1,0 +1,48 @@
+{
+  "brand": {
+    "nome": "Il Metodo Argo",
+    "prodotto": "Percorso digitale di educazione cinofila di 21 giorni",
+    "prezzo": "47€ una tantum",
+    "target": "Proprietari di cani, neo-proprietari di cuccioli, persone in difficoltà nella gestione quotidiana",
+    "promessa": "Un cane più educato, collaborativo e gestibile con esercizi semplici, progressivi e rispettosi",
+    "link_bio": "https://ilmetodoargo.netlify.app",
+    "personaggio": "Argo, border collie bianco e nero che traduce i cani agli umani (AI dichiarata)"
+  },
+  "pubblicazione": {
+    "modalita": "semi-auto",
+    "video_al_giorno": 2,
+    "slot": ["13:30", "19:15"],
+    "distanza_minima_ore": 4,
+    "publisher": "kit"
+  },
+  "editoriale": {
+    "mix_pilastri": { "valore": 0.6, "coinvolgimento": 0.2, "autorevolezza": 0.1, "conversione": 0.1 },
+    "giorni_senza_ripetere_categoria": 4,
+    "giorni_senza_ripetere_format": 2,
+    "durata_video_secondi": [15, 45]
+  },
+  "video": {
+    "risoluzione": [1080, 1920],
+    "formato": "9:16",
+    "dimensione_max_mb": 280,
+    "loudness_target_lufs": -14
+  },
+  "controlli": {
+    "parole_vietate": ["cura", "guarisce", "guarigione", "miracoloso", "garantito al 100%", "mai più", "qualsiasi cane in", "risultati garantiti", "addestratore certificato"],
+    "temi_da_reindirizzare": ["aggressività seria", "morsi a persone", "salute", "alimentazione", "farmaci", "malattia"],
+    "hook_vietati": ["ciao ragazzi", "oggi vi parlerò", "benvenuti", "in questo video", "ciao a tutti"]
+  },
+  "percorsi": {
+    "contenuti": "content",
+    "kit": "scheduled",
+    "pubblicati": "published",
+    "analytics": "analytics",
+    "log": "logs",
+    "database": "database/argo.db"
+  },
+  "servizi": {
+    "video_ai": { "adapter": "manuale-higgsfield", "nota": "generazione manuale su Higgsfield con i prompt del pacchetto; adapter API da collegare in futuro" },
+    "voiceover": { "adapter": "manuale", "nota": "registrazione propria o TTS esterno; adapter edge-tts/elevenlabs predisposto ma non attivo" },
+    "llm": { "adapter": "claude-in-sessione", "nota": "i contenuti li genera Claude direttamente nella sessione usando prompts/ e lo storico" }
+  }
+}

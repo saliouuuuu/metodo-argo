@@ -1,0 +1,52 @@
+[2026-07-13T17:21:32] Inizializzato: cartelle e database pronti.
+[2026-07-13T17:21:32] Slot 1 · 13:30 → quiz (coinvolgimento, format testo-a-schermo) → content/2026-07-13-01-quiz/
+[2026-07-13T17:21:32] Slot 2 · 19:15 → psicologia-cane (valore, format pov-cane) → content/2026-07-13-02-psicologia-cane/
+[2026-07-13T17:21:32] Pianificazione fatta. Ora compila i package.json (vedi prompts/genera-pacchetto.md) e poi 'register <id>'.
+[2026-07-13T17:22:59]   ✕ campo mancante: idea
+[2026-07-13T17:22:59]   ✕ campo mancante: obiettivo
+[2026-07-13T17:22:59]   ✕ campo mancante: hook
+[2026-07-13T17:22:59]   ✕ campo mancante: script
+[2026-07-13T17:22:59]   ✕ campo mancante: voiceover
+[2026-07-13T17:22:59]   ✕ campo mancante: caption
+[2026-07-13T17:22:59]   ✕ campo mancante: cta
+[2026-07-13T17:22:59]   ✕ campo mancante: hashtags
+[2026-07-13T17:22:59]   ✕ campo mancante: durata_prevista_s
+[2026-07-13T17:22:59] REGISTRAZIONE RIFIUTATA per 2026-07-13-01-quiz: correggi il package.json.
+[2026-07-13T17:22:59] ✔ 2026-07-13-02-psicologia-cane registrato → ready_for_production
+[2026-07-13T17:23:58]   ✔ risoluzione: 1080x1920
+[2026-07-13T17:23:58]   ✔ formato_9_16: 1.778
+[2026-07-13T17:23:58]   ✔ durata: 40.0
+[2026-07-13T17:23:58]   ✔ dimensione_mb: 2.4
+[2026-07-13T17:23:58]   ✔ audio_presente: True
+[2026-07-13T17:23:58]   ✕ loudness_lufs: -70.0
+[2026-07-13T17:23:58]   ✔ frame_neri: 0
+[2026-07-13T17:23:58]   ✔ caption_presente: True
+[2026-07-13T17:23:58]   ✔ hashtag_presenti: 5
+[2026-07-13T17:23:58] QC FAIL → 2026-07-13-02-psicologia-cane = failed (report: content/2026-07-13-02-psicologia-cane/qc-report.json)
+[2026-07-13T17:24:26]   ✔ risoluzione: 1080x1920
+[2026-07-13T17:24:26]   ✔ formato_9_16: 1.778
+[2026-07-13T17:24:26]   ✔ durata: 40.0
+[2026-07-13T17:24:26]   ✔ dimensione_mb: 2.4
+[2026-07-13T17:24:26]   ✔ audio_presente: True
+[2026-07-13T17:24:26]   ✕ loudness_lufs: -34.0
+[2026-07-13T17:24:26]   ✔ frame_neri: 0
+[2026-07-13T17:24:26]   ✔ caption_presente: True
+[2026-07-13T17:24:26]   ✔ hashtag_presenti: 5
+[2026-07-13T17:24:26] QC FAIL → 2026-07-13-02-psicologia-cane = failed (report: content/2026-07-13-02-psicologia-cane/qc-report.json)
+[2026-07-13T17:25:12]   ✔ risoluzione: 1080x1920
+[2026-07-13T17:25:12]   ✔ formato_9_16: 1.778
+[2026-07-13T17:25:12]   ✔ durata: 40.0
+[2026-07-13T17:25:12]   ✔ dimensione_mb: 2.4
+[2026-07-13T17:25:12]   ✔ audio_presente: True
+[2026-07-13T17:25:12]   ✔ loudness_lufs: -14.0
+[2026-07-13T17:25:12]   ✔ frame_neri: 0
+[2026-07-13T17:25:12]   ✔ caption_presente: True
+[2026-07-13T17:25:12]   ✔ hashtag_presenti: 5
+[2026-07-13T17:25:12] QC PASS → 2026-07-13-02-psicologia-cane = qc_passed (report: content/2026-07-13-02-psicologia-cane/qc-report.json)
+[2026-07-13T17:25:12] 2026-07-13-02-psicologia-cane → approved
+[2026-07-13T17:25:12] 2026-07-13-02-psicologia-cane → scheduled
+[2026-07-13T17:25:12] Kit pronto in scheduled/2026-07-13-02-psicologia-cane/ — carica su TikTok e programma alle 19:15.
+[2026-07-13T17:25:35] 2026-07-13-02-psicologia-cane → published (https://www.tiktok.com/@test/video/DEMO)
+[2026-07-13T17:25:35] importate metriche per 1 video.
+[2026-07-13T17:25:35] punteggi categoria aggiornati (guidano plan-day).
+[2026-07-13T17:25:35] report scritto: analytics/report-2026-07-13.md
