@@ -188,6 +188,18 @@ Sistema di micro-dettagli ricorrenti, quasi invisibili:
 - **numerazione FIG.** sulle infografiche
 - griglia di base accennata (≤ 8% opacità) dietro i diagrammi
 
+## 10 · Copertina (direzione ufficiale — da materiale utente)
+
+Tela verde bosco, titolo serif maiuscolo in foil oro/crema, ritratto
+realistico di Argo che entra dal bordo basso, dorso con filetti oro.
+Reference in `design-system/direzione/img/copertina.png` — da ricostruire
+in codice con tipografia vera. Adottati anche: il «21» deboss
+sabbia-su-crema per le pagine-cerniera e la fascia-guinzaglio diagonale
+a tutta apertura per gli spread profilo (testo lungo la diagonale).
+
+Il design system vive anche su claude.ai/design (progetto «Il Metodo
+Argo — Design System»), sincronizzato da `design-system/` con DesignSync.
+
 ## Esportazioni
 
 1. **PDF Standard** (per tutti i clienti): pagine singole A4 verticali,

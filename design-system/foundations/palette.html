@@ -1,0 +1,34 @@
+<!-- @dsCard group="Fondamenta" name="Palette" subtitle="6 colori + proporzioni d'uso" -->
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,400&family=Hanken+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body{font-family:'Hanken Grotesk',Arial,sans-serif;background:#F7F2E8;color:#211D17;padding:32px;margin:0}
+h1{font-family:'Fraunces',Georgia,serif;color:#20382C;font-size:26px;margin:0 0 6px}
+.sub{color:#8A7F6B;font-size:13px;margin:0 0 24px}
+.row{display:flex;gap:10px;margin-bottom:22px}
+.sw{flex:1;border-radius:10px;padding:14px 12px;min-height:110px;display:flex;flex-direction:column;justify-content:flex-end;border:1px solid rgba(33,29,23,.08)}
+.sw b{font-size:12px}.sw span{font-size:11px;opacity:.75}
+.bar{display:flex;height:26px;border-radius:8px;overflow:hidden;border:1px solid #D9CFBA}
+.bar div{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.note{background:#EFE7D6;border-left:4px solid #E0A02E;padding:10px 14px;border-radius:0 8px 8px 0;font-size:12.5px;margin-top:18px}
+</style></head><body>
+<h1>La palette del Metodo Argo</h1>
+<p class="sub">Un colore che comanda (ambra), uno che legge (bosco), la carta (crema). Mai più di 2 colori pieni per spread.</p>
+<div class="row">
+  <div class="sw" style="background:#F7F2E8"><b>Carta · paper</b><span>#F7F2E8</span></div>
+  <div class="sw" style="background:#EFE7D6"><b>Carta scura · paper2</b><span>#EFE7D6</span></div>
+  <div class="sw" style="background:#E0A02E;color:#211D17"><b>Ambra — la voce alta</b><span>#E0A02E · display, pagine piene</span></div>
+  <div class="sw" style="background:#20382C;color:#F7F2E8"><b>Bosco — la voce che legge</b><span>#20382C · testo, titoli</span></div>
+  <div class="sw" style="background:#4E7059;color:#F7F2E8"><b>Salvia</b><span>#4E7059 · note, diagrammi</span></div>
+  <div class="sw" style="background:#B75B33;color:#F7F2E8"><b>Terra</b><span>#B75B33 · solo warning</span></div>
+</div>
+<div class="bar">
+  <div style="flex:60;background:#F7F2E8">carta 60%</div>
+  <div style="flex:20;background:#E0A02E">ambra 20%</div>
+  <div style="flex:15;background:#20382C;color:#F7F2E8">bosco 15%</div>
+  <div style="flex:4;background:#DCE4D3">4%</div>
+  <div style="flex:1;background:#B75B33"></div>
+</div>
+<div class="note"><b>Gradienti ammessi (tonali, mai tra famiglie):</b> ambra #E6A93B→#D9962A · bosco #22392E→#16271E · crema→sabbia radiale. Foil oro simulato solo come cornice hairline sulle pagine scure.</div>
+</body></html>
