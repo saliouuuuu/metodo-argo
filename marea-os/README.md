@@ -1,46 +1,77 @@
-# Marea OS — Command Center
+# Marea OS — App desktop (Electron)
 
-A single-file, self-contained React dashboard for **Marea OS**: a calm, living
-command center for a founder running a digital agency. Architectural precision,
-invisible glass, hairline borders, ambient motion — no neon, no gamer HUD, no
-fake "Jarvis".
+**Marea OS** è una dashboard "command center": un centro di comando calmo e
+vivo per un founder. Qui è impacchettata come **applicazione desktop** (Electron
++ React + Vite + Tailwind + Framer Motion), da eseguire sul tuo computer —
+niente a che vedere con il sito web del Metodo Argo.
 
-## What's inside
+Il cuore visivo è il singolo componente [`MareaOS.jsx`](./MareaOS.jsx): sequenza
+di avvio, Marea Core animato, feed attività live, numeri con rolling, metriche
+circolari e un motore di simulazione che genera eventi ogni 3–8s.
 
-`MareaOS.jsx` is one component that renders the whole experience:
+## Requisiti
 
-- **Startup sequence** — black screen → `MAREA SYSTEM` → simulated auth/boot log
-  → the Core assembles from rings and points → `WELCOME BACK` → dissolves into
-  the dashboard (wrapped in `AnimatePresence`).
-- **Marea Core** — an SVG heart: concentric rings rotating in opposite
-  directions, orbiting coordinate markers, a radial grid, a slow scan line, a
-  breathing disc, and a cyan ripple on every event.
-- **Live Activity feed** — events scroll in from the top with color-coded dots
-  (blue info · green success · amber warning · violet AI decision).
-- **Rolling numbers** — digits roll vertically with a brief glow on change.
-- **Premium circular metrics** — segmented tick-mark rings with orbit
-  indicators instead of plain donuts.
-- **Simulation engine** — a `useEffect` loop dispatches a realistic agency event
-  every 3–8s that feeds the feed, nudges the metrics, and pulses the Core.
+- [Node.js](https://nodejs.org) 18 o superiore (include `npm`).
 
-## Requirements
+## Avvio rapido
+
+Dalla cartella `marea-os/`:
 
 ```bash
-npm install react react-dom framer-motion lucide-react
-# Tailwind CSS must be configured in the host project (default palette only).
+npm install      # scarica le dipendenze (una volta sola)
+npm start        # compila e apre l'app in una finestra desktop
 ```
 
-## Usage
+Per lo sviluppo con ricarica automatica:
+
+```bash
+npm run dev      # Vite + Electron con hot-reload
+```
+
+## Creare l'installer (per averla come programma)
+
+L'installer si costruisce **sul sistema operativo di destinazione** (è il modo
+più affidabile):
+
+```bash
+npm run dist         # installer per il TUO sistema operativo attuale
+# oppure, esplicito:
+npm run dist:win     # Windows  → release/Marea OS Setup x.y.z.exe
+npm run dist:mac     # macOS    → release/Marea OS-x.y.z.dmg
+npm run dist:linux   # Linux    → release/Marea OS-x.y.z.AppImage
+```
+
+Il risultato finisce nella cartella `release/`. Su Windows ottieni un `.exe` da
+installare; su macOS un `.dmg`; su Linux un `.AppImage` eseguibile.
+
+> Nota: costruire un installer Windows da Mac/Linux (o viceversa) è possibile ma
+> richiede strumenti aggiuntivi. Per un risultato sicuro, lancia `npm run dist`
+> direttamente sul PC su cui userai l'app.
+
+## Struttura
+
+```
+marea-os/
+  MareaOS.jsx            Il componente-esperienza (tutta la dashboard)
+  index.html            Pagina del renderer
+  src/main.jsx          Bootstrap React → monta MareaOS
+  src/index.css         Direttive Tailwind
+  electron/main.cjs     Processo principale Electron (apre la finestra)
+  electron/preload.cjs  Preload minimale (nessuna API di sistema esposta)
+  vite.config.mjs       Config Vite (base "./" per il caricamento file://)
+  tailwind.config.cjs   Scansione classi Tailwind
+  package.json          Script e configurazione electron-builder
+```
+
+## Usare il componente altrove
+
+`MareaOS.jsx` resta un componente React autonomo: puoi importarlo in qualsiasi
+progetto React (Vite, Next.js, Claude Artifacts) con le dipendenze `react`,
+`framer-motion`, `lucide-react` e Tailwind configurato.
 
 ```jsx
 import MareaOS from "./MareaOS";
-
 export default function App() {
   return <MareaOS />;
 }
 ```
-
-The component is Claude-Artifacts compatible and uses only default Tailwind
-colors and standard Lucide icons. Motion is hardware-accelerated
-(transform/opacity, `will-change`) and heavy subtrees are memoized so the
-per-event state updates don't re-render the Core or the feed items needlessly.
