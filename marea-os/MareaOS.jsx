@@ -645,7 +645,7 @@ function LeftColumn({ clock }) {
       {/* brand */}
       <div className="flex items-center gap-3 px-1">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03]">
-          <Waves className="h-4.5 w-4.5 text-sky-300" strokeWidth={1.5} />
+          <Waves className="h-[18px] w-[18px] text-sky-300" strokeWidth={1.5} />
         </div>
         <div>
           <p className="text-[13px] font-semibold tracking-wide text-slate-100">Marea OS</p>
