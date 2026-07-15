@@ -76,6 +76,25 @@ Sblocco dei giorni: **progressivo** (un giorno ogni 24 ore dall'acquisto). Per s
 - Video: colonna `video_url` già pronta per Bunny.net, quando ci saranno i video.
 - Immagini fotorealistiche (Higgsfield): rifinitura finale, non blocca nulla — oggi ci sono placeholder emoji.
 
+## Landing premium (upgrade fiducia & conversione)
+
+La landing è stata rifinita per trasmettere valore e ridurre le esitazioni, **senza cambiare palette, font o identità del brand**. Elementi aggiunti:
+
+- **Hero** con sottotitolo di valore, rating e *trust bar* (accesso immediato · 21 giorni · multi-device · Stripe).
+- **Offerta** con prezzo di listino barrato (€97 → €47), risparmio e badge «Offerta lancio».
+- **Codice sconto dinamico**: ogni visita genera un codice `ARGO-####` (in `localStorage`) con countdown; alla scadenza se ne genera uno nuovo. Il codice è **realmente collegato a Stripe**: `create-checkout.js` crea al volo un coupon `percent_off` del 10% (monouso). La percentuale è **fissa lato server** — il valore inviato dal client non viene mai usato per calcolare lo sconto.
+- **Recensioni** in carosello con autoplay lento (8 storie, avatar iniziali sostituibili).
+- Sezioni **Cosa ricevi**, **Come funziona** (timeline), **Perché nasce**, **Immagina il risultato**, **Garanzia** dedicata, **FAQ** ampliata, **checkout reassurance**, footer completo con pagine legali.
+- **Micro-animazioni** (scroll reveal, hover, sticky CTA mobile) rispettose di `prefers-reduced-motion`; fallback `<noscript>`.
+
+File nuovi: `assets/css/landing.css`, `assets/js/landing.js`, `assets/favicon.svg`, le pagine `chi-siamo/contatti/privacy/cookie/termini/rimborso.html`.
+
+### Sostituire i placeholder
+
+- **Immagini**: in `assets/img/placeholders/*.svg` ci sono segnaposto brandizzati (proprietaria+border collie, esercizi, passeggiata, dare la zampa, casa, tablet/dettagli ebook, «immagina» ×4). Sostituisci il file mantenendo lo stesso nome, oppure cambia l'`src` (le dimensioni `width`/`height` evitano layout shift).
+- **Video**: i blocchi in `#video` sono segnaposto. Aggiungi l'attributo `data-video="URL"` (es. Bunny.net) al blocco: al click viene montato un `<video>` con `preload="metadata"` e `playsinline`.
+- **Dati legali/contatti**: nelle pagine legali i punti da compilare (denominazione, P. IVA, sede, titolare del trattamento) e l'email `assistenza@ilmetodoargo.it` sono segnalati con una nota; completa e fai verificare i testi a un professionista.
+
 ## Sicurezza
 
 - Nessuna chiave nel codice: tutto in variabili d'ambiente (`.env` è in `.gitignore`).
