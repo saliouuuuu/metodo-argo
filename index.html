@@ -55,6 +55,12 @@
 }
 .hero__argo .paw-big { font-size: 4rem; line-height: 1; }
 .hero__argo figcaption { margin-top: 16px; font-size: .9rem; color: var(--muted); }
+.hero__photo {
+  width: 100%; aspect-ratio: 4/5; object-fit: cover;
+  border-radius: var(--radius); border: 1px solid var(--line);
+  box-shadow: var(--shadow); display: block;
+}
+.hero__cap { margin-top: 12px; font-size: .9rem; color: var(--muted); text-align: center; }
 .hero__float {
   position: absolute; right: -14px; bottom: 26px;
   background: #fff; border: 1px solid var(--line); border-radius: 14px;
@@ -280,12 +286,8 @@
       </ul>
     </div>
     <figure class="hero__figure" data-reveal data-reveal-delay="2">
-      <div class="hero__argo">
-        <div>
-          <div class="paw-big">🐕</div>
-          <figcaption><strong>Argo</strong><br>Border collie. Generato con l'AI, e te lo dico subito:<br><em>sono il primo educatore cinofilo che è un cane.</em></figcaption>
-        </div>
-      </div>
+      <img class="hero__photo" src="/assets/img/argo-hero.jpg" width="900" height="1200" alt="Argo, il border collie del Metodo Argo, disteso tranquillo davanti a una porta">
+      <figcaption class="hero__cap"><strong>Argo</strong> · border collie e vostra guida per i prossimi 21 giorni</figcaption>
       <div class="hero__float">
         <span class="stars">★★★★★</span>
         <div><b>4,9/5</b><small>recensioni verificate</small></div>
@@ -343,7 +345,7 @@
         <h2>Nato da un problema concreto,<br><em>non da una teoria.</em></h2>
         <p>La maggior parte delle persone non ha bisogno di un corso da mille euro o di un educatore diverso ogni settimana. Ha bisogno di <strong>una direzione chiara</strong>: sapere cosa fare oggi, domani e il giorno dopo, senza contraddirsi.</p>
         <p>Il Metodo Argo nasce per riordinare in un unico percorso i principi dell'educazione in rinforzo positivo — quelli che funzionano davvero — e renderli praticabili da chiunque, anche da chi lavora tutto il giorno e ha dieci minuti liberi la sera.</p>
-        <p>Il personaggio di Argo (un border collie generato con l'AI, e lo diciamo sempre) serve a una cosa sola: <strong>ribaltare il punto di vista</strong>. Smettere di chiedersi «perché non mi ascolta» e iniziare a chiedersi «cosa sta cercando di dirmi». È da lì che cambia tutto.</p>
+        <p>Argo — il border collie che dà il nome e la voce al metodo — serve a una cosa sola: <strong>ribaltare il punto di vista</strong>. Smettere di chiedersi «perché non mi ascolta» e iniziare a chiedersi «cosa sta cercando di dirmi». È da lì che cambia tutto.</p>
         <p class="signature">— L'obiettivo non è un cane obbediente. È un cane capito.</p>
       </div>
     </div>
@@ -665,13 +667,13 @@
       <p class="lead mt-2" style="margin-inline:auto" data-reveal>Piccoli gesti quotidiani, esercizi brevi, risultati che si vedono. Ecco com'è una giornata di percorso.</p>
     </div>
     <div class="ricevi-grid" style="grid-template-columns:repeat(4,1fr)">
-      <figure class="ph ph--1x1" data-reveal><img src="/assets/img/placeholders/esercizi.svg" width="700" height="700" loading="lazy" alt="Il cane durante un esercizio di autocontrollo"><figcaption class="ph__tag">Gli esercizi</figcaption></figure>
+      <figure class="ph ph--1x1" data-reveal><img src="/assets/img/esercizi.jpg" width="700" height="700" loading="lazy" alt="Il cane durante un esercizio, con lo sguardo attento"><figcaption class="ph__tag">Gli esercizi</figcaption></figure>
       <figure class="ph ph--1x1" data-reveal data-reveal-delay="1"><img src="/assets/img/placeholders/passeggiata.svg" width="700" height="700" loading="lazy" alt="Passeggiata a guinzaglio molle"><figcaption class="ph__tag">La passeggiata</figcaption></figure>
-      <figure class="ph ph--1x1" data-reveal data-reveal-delay="2"><img src="/assets/img/placeholders/dare-la-zampa.svg" width="700" height="700" loading="lazy" alt="Il cane che dà la zampa"><figcaption class="ph__tag">La complicità</figcaption></figure>
-      <figure class="ph ph--1x1" data-reveal data-reveal-delay="3"><img src="/assets/img/placeholders/casa.svg" width="700" height="700" loading="lazy" alt="Il cane sereno a casa"><figcaption class="ph__tag">La calma a casa</figcaption></figure>
+      <figure class="ph ph--1x1" data-reveal data-reveal-delay="2"><img src="/assets/img/dare-la-zampa.jpg" width="700" height="700" loading="lazy" alt="Un cane che dà la zampa al proprietario"><figcaption class="ph__tag">La complicità</figcaption></figure>
+      <figure class="ph ph--1x1" data-reveal data-reveal-delay="3"><img src="/assets/img/casa.jpg" width="700" height="700" loading="lazy" alt="Un cane sereno e rilassato a casa"><figcaption class="ph__tag">La calma a casa</figcaption></figure>
     </div>
     <div class="video-grid" style="margin-top:22px">
-      <figure class="ph ph--3x2" data-reveal><img src="/assets/img/placeholders/tablet-ebook.svg" width="1000" height="667" loading="lazy" alt="L'ebook del Metodo Argo aperto su un tablet"><figcaption class="ph__tag">L'ebook sul tablet</figcaption></figure>
+      <figure class="ph ph--3x2" data-reveal><img src="/assets/img/ebook-tablet.jpg" width="1100" height="734" loading="lazy" alt="L'ebook del Metodo Argo aperto su un tablet"><figcaption class="ph__tag">L'ebook sul tablet</figcaption></figure>
       <figure class="ph ph--3x2" data-reveal data-reveal-delay="1"><img src="/assets/img/placeholders/dettagli-ebook.svg" width="1000" height="667" loading="lazy" alt="Dettagli editoriali delle pagine dell'ebook"><figcaption class="ph__tag">Dentro l'ebook</figcaption></figure>
     </div>
   </div>
@@ -779,8 +781,8 @@
         <div class="faq-a">Hai 14 giorni di garanzia soddisfatti o rimborsati: se il Metodo non fa per voi, scrivici a <a href="/contatti.html">assistenza</a> con la mail dell'acquisto e ti restituiamo tutto. Nessuna domanda, nessun modulo complicato.</div>
       </details>
       <details>
-        <summary>Ma Argo esiste davvero?</summary>
-        <div class="faq-a">Sono un border collie generato con l'intelligenza artificiale — te lo dico sempre, in ogni video e in ogni pagina. Il metodo che racconto, però, si basa su principi reali di educazione in rinforzo positivo. Diciamo che sono il primo educatore cinofilo che è un cane: la trasparenza è la mia specialità, insieme ai premietti.</div>
+        <summary>Chi è Argo?</summary>
+        <div class="faq-a">Argo è un border collie in carne, ossa e (tanto) pelo: è la voce e la mascotte del metodo, quello che ti accompagna nei 21 giorni raccontando le cose dal punto di vista di un cane. Il metodo si basa su principi reali di educazione in rinforzo positivo; non sono un educatore certificato, ma la trasparenza è la mia specialità, insieme ai premietti.</div>
       </details>
       <details>
         <summary>Il mio cane ringhia / ha morso qualcuno. Fa per me?</summary>
@@ -816,7 +818,7 @@
     <div class="footer-main">
       <div class="footer-brand">
         <a class="logo" href="/">Il Metodo <span class="paw" style="color:var(--amber)">Argo</span> 🐾</a>
-        <p>Il percorso di 21 giorni per capire il tuo cane, spiegato da un cane. Argo è un personaggio generato con l'AI; i contenuti non sostituiscono il parere di educatori cinofili certificati o veterinari.</p>
+        <p>Il percorso di 21 giorni per capire il tuo cane, spiegato da un cane. Argo è la mascotte del metodo; i contenuti hanno finalità educative e non sostituiscono il parere di educatori cinofili certificati o veterinari.</p>
         <div class="footer-badges">
           <span><svg class="ic"><use href="#i-lock"/></svg> Pagamenti Stripe</span>
           <span><svg class="ic"><use href="#i-shield"/></svg> Garanzia 14 giorni</span>
