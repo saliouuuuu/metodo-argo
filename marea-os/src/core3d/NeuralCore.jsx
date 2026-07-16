@@ -128,7 +128,7 @@ function GlassSphere() {
       varying vec3 vN; varying vec3 vV; uniform vec3 uColor;
       void main() {
         float fr = pow(1.0 - abs(dot(vN, vV)), 2.6);
-        gl_FragColor = vec4(uColor, fr * 0.55);
+        gl_FragColor = vec4(uColor, fr * 0.3);
       }`,
   }), []);
   return (
@@ -204,9 +204,9 @@ function Neurons({ count = 110 }) {
         attribute float aPhase; varying float vA; uniform float uTime; uniform float uKick;
         void main() {
           float p = 0.35 + 0.65 * pow(0.5 + 0.5 * sin(uTime * 1.7 + aPhase), 3.0);
-          vA = p + uKick * 0.8;
+          vA = (p + uKick * 0.8) * 0.9;
           vec4 mv = modelViewMatrix * vec4(position, 1.0);
-          gl_PointSize = (2.2 + p * 3.2 + uKick * 3.0) * (140.0 / -mv.z);
+          gl_PointSize = (1.1 + p * 1.7 + uKick * 2.0) * (36.0 / -mv.z);
           gl_Position = projectionMatrix * mv;
         }`,
       fragmentShader: `
@@ -252,7 +252,7 @@ function Neurons({ count = 110 }) {
   );
 }
 
-/* ---------- Nucleo luminoso centrale ---------- */
+/* ---------- Alone tenue al centro (niente "palla di luce") ---------- */
 function CoreGlow() {
   const ref = useRef();
   const tex = useMemo(() => {
@@ -260,20 +260,18 @@ function CoreGlow() {
     c.width = c.height = 128;
     const x = c.getContext("2d");
     const g = x.createRadialGradient(64, 64, 0, 64, 64, 64);
-    g.addColorStop(0, "rgba(255,255,255,1)");
-    g.addColorStop(0.18, "rgba(190,235,255,0.9)");
-    g.addColorStop(0.45, "rgba(60,180,240,0.34)");
-    g.addColorStop(1, "rgba(0,40,80,0)");
+    g.addColorStop(0, "rgba(120,210,240,0.16)");
+    g.addColorStop(0.5, "rgba(40,140,190,0.05)");
+    g.addColorStop(1, "rgba(0,0,0,0)");
     x.fillStyle = g; x.fillRect(0, 0, 128, 128);
-    const t = new THREE.CanvasTexture(c);
-    return t;
+    return new THREE.CanvasTexture(c);
   }, []);
   useFrame(({ clock }) => {
     const t = clock.elapsedTime;
-    const breathe = 1 + Math.sin(t * 0.9) * 0.07 + pulseState.kick * 0.55;
+    const breathe = 1 + Math.sin(t * 0.9) * 0.08 + pulseState.kick * 0.5;
     if (ref.current) {
-      ref.current.scale.setScalar(1.5 * breathe);
-      ref.current.material.opacity = 0.85 + Math.sin(t * 1.4) * 0.1;
+      ref.current.scale.setScalar(2.1 * breathe);
+      ref.current.material.opacity = 0.7 + Math.sin(t * 1.4) * 0.15 + pulseState.kick * 0.5;
     }
   });
   return (
@@ -290,6 +288,8 @@ function Scene() {
   });
   return (
     <>
+      {/* nero assoluto: il canvas si fonde con lo sfondo OLED della pagina */}
+      <color attach="background" args={["#000000"]} />
       <group rotation={[-0.42, 0, 0]}>
         <TorusFibers />
       </group>
@@ -299,7 +299,7 @@ function Scene() {
       <Neurons />
       <CoreGlow />
       <EffectComposer multisampling={0}>
-        <Bloom intensity={1.15} luminanceThreshold={0.14} luminanceSmoothing={0.3} mipmapBlur radius={0.72} />
+        <Bloom intensity={0.55} luminanceThreshold={0.22} luminanceSmoothing={0.35} mipmapBlur radius={0.7} />
       </EffectComposer>
     </>
   );

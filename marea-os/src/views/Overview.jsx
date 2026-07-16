@@ -122,9 +122,9 @@ export default function Overview() {
           </Panel>
         </div>
 
-        {/* CORE */}
-        <Panel className="relative flex min-h-0 flex-col overflow-hidden">
-          <div className="flex items-center justify-between px-4 pt-3.5">
+        {/* CORE — integrato nello sfondo, nessun riquadro */}
+        <div className="relative flex min-h-0 flex-col overflow-visible">
+          <div className="pointer-events-none z-10 flex items-center justify-between px-2 pt-1">
             <SysLabel>MAREA CORE</SysLabel>
             <span className="num flex items-center gap-1.5 text-[9px] tracking-[0.2em] text-zinc-600">
               <span className="h-1.5 w-1.5 rounded-full bg-cyan-300 dot-live" /> NEURAL LINK ACTIVE
@@ -133,13 +133,13 @@ export default function Overview() {
           <div className="min-h-0 flex-1">
             <NeuralCore pulse={pulse} />
           </div>
-          <div className="flex items-center justify-between gap-3 border-t border-white/[0.05] px-4 py-2.5">
+          <div className="z-10 flex items-center justify-between gap-3 px-2 pb-1">
             <AgentStrip />
             <span className="num shrink-0 text-[9px] tracking-[0.15em] text-zinc-600">
               {events.length.toLocaleString("it-IT")} EVENTS
             </span>
           </div>
-        </Panel>
+        </div>
 
         {/* FEED */}
         <Panel className="flex min-h-0 flex-col p-3.5">
