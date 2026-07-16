@@ -1,8 +1,8 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import MareaOS from "../MareaOS.jsx";
+import App from "./App.jsx";
 import "./index.css";
 
-// Niente StrictMode: il motore di simulazione usa timer che verrebbero
-// avviati due volte in sviluppo. In produzione non cambierebbe nulla.
-createRoot(document.getElementById("root")).render(<MareaOS />);
+// Niente StrictMode: i timer del motore demo e i loop del core 3D
+// verrebbero montati due volte in sviluppo.
+createRoot(document.getElementById("root")).render(<App />);
