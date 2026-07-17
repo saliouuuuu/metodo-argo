@@ -9,7 +9,7 @@ import { useStore, useDerived } from "../data/store.js";
 import { nextId } from "../data/events.js";
 
 const ACTIONS = [
-  { id: "lead.found", label: "Lead trovato", hint: "Nuova attività individuata", fields: ["name", "sector", "location", "issues"] },
+  { id: "lead.found", label: "Lead trovato", hint: "Nuova attività individuata", fields: ["name", "email", "sector", "location", "issues"] },
   { id: "lead.verified", label: "Lead verificato", hint: "Contatto controllato e completo", fields: ["lead"] },
   { id: "lead.contacted", label: "Attività contattata", hint: "Primo contatto avvenuto", fields: ["lead"] },
   { id: "email.sent", label: "Email inviata", hint: "Outreach o follow-up manuale", fields: ["lead", "subject"] },
@@ -28,6 +28,7 @@ const ACTIONS = [
 
 const FIELD_DEFS = {
   name: { label: "Nome attività", type: "text", req: true, ph: "Es. Pizzeria La Brace" },
+  email: { label: "Email (per l'outreach)", type: "email", ph: "info@attivita.it" },
   sector: { label: "Settore", type: "text", ph: "Ristorazione, Beauty…" },
   location: { label: "Località", type: "text", ph: "Milano" },
   issues: { label: "Problemi individuati", type: "text", ph: "Nessun sito, GMB incompleto…" },

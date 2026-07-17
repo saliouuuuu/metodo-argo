@@ -48,6 +48,37 @@ Accetta un evento singolo o un array (batch). Tipi validi: `lead.found`,
 
 Da n8n/Make: nodo HTTP Request → POST all'endpoint con header Bearer.
 
+## Outreach reale — invio email automatico (SMTP)
+
+L'app desktop invia **email vere** e gestisce le sequenze di follow-up. Motore
+in `electron/outreach.cjs` (nodemailer via `electron/mailer.cjs`, template in
+`electron/templates.cjs`).
+
+**Configurazione** (Impostazioni → Outreach · Email):
+1. SMTP host/porta/utente/password. Con Gmail: attiva la verifica in 2 passaggi
+   e crea una **App password** (host `smtp.gmail.com`, porta `465` o `587`).
+   In alternativa un provider SMTP: Brevo, Resend, Mailgun, SMTP del dominio.
+2. Nome ed email mittente, limite giornaliero, modalità.
+3. **Verifica connessione** → poi attiva il motore.
+
+**Modalità**
+- **Manuale** — nessun invio automatico; invii tu dal pulsante «Invia ora».
+- **Approvazione** — il motore prepara le email e le mette in **coda**
+  (tab Motore); tu approvi prima dell'invio.
+- **Automatica** — invia da solo entro il limite giornaliero.
+
+**Come funziona la sequenza** — avvii una sequenza su un lead (o «Avvia sui
+verificati»): email iniziale → follow-up +2g → +3g → +4g. La sequenza si
+**ferma automaticamente** quando il lead risponde (evento `email.replied`,
+registrato con ⌘K o via API). Ogni invio scrive un evento reale nello store →
+pipeline, feed, KPI e agenti si aggiornano insieme.
+
+> Serve un'email sul lead (campo aggiunto in ⌘K → «Lead trovato»).
+> Rispetta GDPR e norme anti-spam: contatta solo attività pertinenti, includi
+> un modo per dire STOP (già nel footer dei template) e onora le richieste.
+> La lettura automatica delle risposte (IMAP) è il prossimo passo: per ora le
+> risposte si registrano a mano o via API.
+
 ## Avvio
 
 ```bash

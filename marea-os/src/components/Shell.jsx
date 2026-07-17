@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useStore, useDerived } from "../data/store.js";
 import { isElectron } from "../data/bridge.js";
+import { useOutreach } from "../data/useOutreach.js";
 import { Eyebrow, Btn, Pill } from "./ui/index.jsx";
 import { fmtTime } from "../data/events.js";
 
@@ -129,6 +130,51 @@ function Header({ onMenu }) {
   );
 }
 
+function OutreachSettings() {
+  const { status, refresh, api } = useOutreach();
+  const [f, setF] = useState(null);
+  const [verify, setVerify] = useState(null);
+  const [saved, setSaved] = useState(false);
+  useEffect(() => { if (status && !f) setF({ host: status.smtp?.host || "", port: status.smtp?.port || 587, user: status.smtp?.user || "", pass: "", senderName: status.senderName || "Marea Creative", fromEmail: status.fromEmail || "", dailyLimit: status.dailyLimit || 40, mode: status.mode || "approval", enabled: !!status.enabled }); }, [status, f]);
+  if (!f) return <p className="mt-2 text-[11px] text-faint">Caricamento…</p>;
+  const inp = "num rounded-lg border border-hair bg-bg px-2.5 py-1.5 text-[12px] text-fg outline-none focus:border-[rgba(38,230,255,.5)] w-full";
+  const save = async () => {
+    const patch = { senderName: f.senderName, fromEmail: f.fromEmail, dailyLimit: Number(f.dailyLimit) || 40, mode: f.mode, enabled: f.enabled, smtp: { host: f.host, port: Number(f.port) || 587, user: f.user } };
+    if (f.pass) patch.smtp.pass = f.pass;
+    await api.setConfig(patch); setSaved(true); setTimeout(() => setSaved(false), 1500); refresh();
+  };
+  const doVerify = async () => { setVerify("..."); await save(); const r = await api.verify(); setVerify(r.ok ? "ok" : r.error || "errore"); };
+  return (
+    <div className="grid gap-2.5">
+      <div className="grid grid-cols-2 gap-2.5">
+        <label className="grid gap-1"><Eyebrow>SMTP HOST</Eyebrow><input className={inp} placeholder="smtp.gmail.com" value={f.host} onChange={(e) => setF({ ...f, host: e.target.value })} /></label>
+        <label className="grid gap-1"><Eyebrow>PORTA</Eyebrow><input className={inp} value={f.port} onChange={(e) => setF({ ...f, port: e.target.value })} /></label>
+        <label className="grid gap-1"><Eyebrow>UTENTE</Eyebrow><input className={inp} placeholder="tu@gmail.com" value={f.user} onChange={(e) => setF({ ...f, user: e.target.value })} /></label>
+        <label className="grid gap-1"><Eyebrow>PASSWORD / APP PASSWORD</Eyebrow><input type="password" className={inp} placeholder={status?.smtp?.pass ? "••••••" : "app password"} value={f.pass} onChange={(e) => setF({ ...f, pass: e.target.value })} /></label>
+        <label className="grid gap-1"><Eyebrow>NOME MITTENTE</Eyebrow><input className={inp} value={f.senderName} onChange={(e) => setF({ ...f, senderName: e.target.value })} /></label>
+        <label className="grid gap-1"><Eyebrow>EMAIL MITTENTE</Eyebrow><input className={inp} placeholder="tu@tuodominio.it" value={f.fromEmail} onChange={(e) => setF({ ...f, fromEmail: e.target.value })} /></label>
+        <label className="grid gap-1"><Eyebrow>LIMITE GIORNALIERO</Eyebrow><input className={inp} value={f.dailyLimit} onChange={(e) => setF({ ...f, dailyLimit: e.target.value })} /></label>
+        <label className="grid gap-1"><Eyebrow>MODALITÀ</Eyebrow><select className={inp} value={f.mode} onChange={(e) => setF({ ...f, mode: e.target.value })}><option value="manual">Manuale</option><option value="approval">Approvazione</option><option value="auto">Automatica</option></select></label>
+      </div>
+      <label className="flex items-center gap-2 text-[12px] text-muted">
+        <input type="checkbox" checked={f.enabled} onChange={(e) => setF({ ...f, enabled: e.target.checked })} className="accent-[#26E6FF]" />
+        Motore attivo (invia/pianifica secondo la modalità)
+      </label>
+      <div className="flex items-center gap-2">
+        <Btn tone="cyan" onClick={save}>{saved ? "Salvato ✓" : "Salva"}</Btn>
+        <Btn onClick={doVerify}>Verifica connessione</Btn>
+        {verify === "ok" && <span className="text-[11px] text-green">Connesso ✓</span>}
+        {verify && verify !== "ok" && verify !== "..." && <span className="text-[11px] text-red">{verify}</span>}
+        {verify === "..." && <span className="text-[11px] text-muted">verifica…</span>}
+      </div>
+      <p className="text-[10px] leading-relaxed text-faint">
+        Gmail: crea una “App password” (con verifica in 2 passaggi) e usala qui. Oppure usa un provider SMTP (Brevo, Resend, Mailgun…).
+        Rispetta GDPR e norme anti-spam: contatta solo attività pertinenti e onora le richieste di STOP.
+      </p>
+    </div>
+  );
+}
+
 function SettingsModal() {
   const open = useStore((s) => s.settingsOpen);
   const setOpen = useStore((s) => s.openSettings);
@@ -178,6 +224,12 @@ function SettingsModal() {
                   </div>
                 ) : <p className="mt-2 text-[11px] text-faint">Disponibile nell'app desktop (Electron).</p>}
               </div>
+              {isElectron && (
+                <div className="card-2 p-3.5">
+                  <Eyebrow>OUTREACH · EMAIL (SMTP)</Eyebrow>
+                  <div className="mt-2"><OutreachSettings /></div>
+                </div>
+              )}
               <div className="grid grid-cols-2 gap-3.5">
                 <div className="card-2 p-3.5">
                   <Eyebrow>AUDIO</Eyebrow>

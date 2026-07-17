@@ -100,15 +100,16 @@ function CoreBand({ derived, pulse, agentsState, eventsCount, mode }) {
         <EssentialTile Icon={Mail} label="EMAIL INVIATE" value={derived.today.emailsSent} accent="#3388FF" />
       </div>
 
-      <Card className="order-1 relative flex min-h-[380px] flex-col items-center justify-center overflow-hidden lg:order-2">
-        <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between px-4 pt-3">
+      {/* Core: nessun riquadro, si fonde con lo sfondo scuro della pagina */}
+      <div className="order-1 relative flex min-h-[420px] flex-col items-center justify-center lg:order-2">
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between px-2 pt-1">
           <Eyebrow>MAREA CORE</Eyebrow>
           <span className="num flex items-center gap-1.5 text-[9px] tracking-[0.2em] text-faint">
             <span className="h-1.5 w-1.5 rounded-full bg-cyan live-dot" /> NEURAL LINK
           </span>
         </div>
-        <div className="h-[360px] w-full max-w-[440px]"><NeuralCore pulse={pulse} /></div>
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col items-center gap-1 pb-4">
+        <div className="h-[380px] w-full max-w-[460px]"><NeuralCore pulse={pulse} /></div>
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-col items-center gap-1">
           <p className="text-[13px] font-semibold tracking-wide text-fg">Operational</p>
           <div className="num flex items-center gap-3 text-[10.5px] text-muted">
             <span><span className="text-green">{onlineAgents}</span> agenti attivi</span>
@@ -119,7 +120,7 @@ function CoreBand({ derived, pulse, agentsState, eventsCount, mode }) {
           </div>
           <span className="num mt-1 text-[8.5px] tracking-[0.2em] text-faint">{eventsCount.toLocaleString("it-IT")} EVENTS · {mode.toUpperCase()}</span>
         </div>
-      </Card>
+      </div>
 
       <div className="order-3 grid content-center gap-3">
         <EssentialTile Icon={CalendarClock} label="APPUNTAMENTI" value={derived.today.meetings} accent="#9D6CFF" />

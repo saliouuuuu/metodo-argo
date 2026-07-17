@@ -2,10 +2,93 @@
    MAREA OS — Outreach: Campaigns / Sequences / Inbox / Leads / Analytics
    ============================================================ */
 import React, { useMemo, useState } from "react";
-import { Mail, PhoneCall, BellRing, Check, ArrowRight, Inbox as InboxIcon } from "lucide-react";
+import { Mail, PhoneCall, BellRing, Check, X, ArrowRight, Inbox as InboxIcon, Zap, Play, Square, Send as SendIcon, ShieldCheck } from "lucide-react";
 import { useStore, useDerived } from "../data/store.js";
 import { fmtTime, fmtDate, isToday, STAGE_INDEX } from "../data/events.js";
-import { Card, Eyebrow, Pill, Bar, Empty, Tabs } from "../components/ui/index.jsx";
+import { useOutreach } from "../data/useOutreach.js";
+import { Card, Eyebrow, Pill, Bar, Btn, Empty, Tabs } from "../components/ui/index.jsx";
+
+const MODE_LABEL = { manual: "Manuale", approval: "Approvazione", auto: "Automatica" };
+
+/* ---------- Barra motore ---------- */
+function EngineBar({ status, api, isElectron, leads }) {
+  const setSettings = useStore((s) => s.openSettings);
+  if (!isElectron) {
+    return (
+      <Card className="flex items-center justify-between gap-3 p-3.5">
+        <div className="flex items-center gap-2.5"><Zap size={15} className="text-cyan" /><div><p className="text-[12.5px] font-semibold text-fg">Motore Outreach</p><p className="text-[10.5px] text-faint">Invio email reale disponibile nell'app desktop</p></div></div>
+        <Pill tone="violet">DEMO / BROWSER</Pill>
+      </Card>
+    );
+  }
+  const st = status || {};
+  const startable = leads.filter((l) => l.email && (l.stage === "new" || l.stage === "verified"));
+  const toggle = () => api.setConfig({ enabled: !st.enabled });
+  return (
+    <Card ambient={st.enabled ? "cyan" : undefined} className="flex flex-wrap items-center gap-3 p-3.5">
+      <button onClick={toggle} className={`flex h-6 w-11 shrink-0 items-center rounded-full px-0.5 transition-colors ${st.enabled ? "bg-cyan" : "bg-white/10"}`}>
+        <span className={`h-5 w-5 rounded-full bg-[#04121a] transition-transform ${st.enabled ? "translate-x-5" : ""}`} />
+      </button>
+      <div><p className="text-[12.5px] font-semibold text-fg">Motore Outreach {st.enabled ? "attivo" : "in pausa"}</p>
+        <p className="num text-[10.5px] text-faint">{MODE_LABEL[st.mode] || st.mode} · {st.sentToday || 0}/{st.dailyLimit} oggi · {st.active || 0} sequenze attive</p></div>
+      <span className={`num flex items-center gap-1 rounded-md px-2 py-1 text-[10px] ${st.smtpReady ? "text-green" : "text-yellow"}`} style={{ background: st.smtpReady ? "rgba(65,245,162,.1)" : "rgba(255,200,87,.1)" }}>
+        <ShieldCheck size={12} /> {st.smtpReady ? "SMTP connesso" : "SMTP da configurare"}</span>
+      <div className="ml-auto flex items-center gap-2">
+        <select value={st.mode} onChange={(e) => api.setConfig({ mode: e.target.value })} className="num rounded-lg border border-hair bg-card2 px-2 py-1.5 text-[11px] text-muted outline-none">
+          <option value="manual">Manuale</option><option value="approval">Approvazione</option><option value="auto">Automatica</option>
+        </select>
+        <Btn tone="cyan" onClick={() => api.startBulk(startable)} disabled={!startable.length}><Play size={12} className="mr-1 inline" />Avvia sui verificati ({startable.length})</Btn>
+        <Btn onClick={() => setSettings(true)}>Configura SMTP</Btn>
+      </div>
+    </Card>
+  );
+}
+
+/* ---------- Pannello motore: sequenze + coda approvazioni ---------- */
+function MotorePanel({ status, api, isElectron }) {
+  if (!isElectron) return <Empty title="Motore non attivo nel browser" hint="Apri Marea OS come app desktop, configura l'SMTP nelle Impostazioni e potrai inviare email reali con follow-up automatici." />;
+  const st = status || {};
+  const drafts = st.drafts || [];
+  const seq = st.sequences || [];
+  const SEQ_STATUS = { active: ["Attiva", "cyan"], replied: ["Risposta ✓", "green"], completed: ["Completata", "muted"], stopped: ["Ferma", "yellow"] };
+  return (
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <Card className="flex min-h-0 flex-col p-4">
+        <div className="mb-2.5 flex items-center justify-between"><Eyebrow>CODA APPROVAZIONI</Eyebrow><Pill tone={drafts.length ? "yellow" : "green"}>{drafts.length}</Pill></div>
+        {!drafts.length ? <Empty title="Nessuna bozza in attesa" hint="In modalità Approvazione, le email preparate dal motore compaiono qui prima dell'invio." /> :
+          <div className="flex max-h-[460px] flex-col gap-2 overflow-y-auto">
+            {drafts.map((d) => (
+              <div key={d.id} className="rounded-xl border border-hair2 bg-white/[0.012] p-3">
+                <div className="flex items-center justify-between"><p className="text-[12.5px] font-semibold text-fg">{d.name}</p><span className="num text-[9px] text-faint">{d.to}</span></div>
+                <p className="mt-1 text-[11px] font-medium text-cyan">{d.subject}</p>
+                <p className="mt-1 line-clamp-3 whitespace-pre-line text-[10.5px] leading-relaxed text-muted">{d.body}</p>
+                <div className="mt-2 flex items-center gap-2">
+                  <Btn tone="cyan" size="sm" onClick={() => api.approve(d.id)}><Check size={12} className="mr-1 inline" />Approva &amp; invia</Btn>
+                  <Btn size="sm" onClick={() => api.discard(d.id, false)}>Salta</Btn>
+                  <Btn tone="danger" size="sm" onClick={() => api.discard(d.id, true)}><X size={12} className="mr-1 inline" />Stop sequenza</Btn>
+                </div>
+              </div>
+            ))}
+          </div>}
+      </Card>
+      <Card className="flex min-h-0 flex-col p-4">
+        <div className="mb-2.5 flex items-center justify-between"><Eyebrow>SEQUENZE</Eyebrow><span className="num text-[10px] text-faint">{seq.length}</span></div>
+        {!seq.length ? <Empty title="Nessuna sequenza avviata" hint="Avvia una sequenza sui lead verificati per iniziare l'outreach automatico." /> :
+          <div className="flex max-h-[460px] flex-col gap-1.5 overflow-y-auto">
+            {seq.map((s) => { const ss = SEQ_STATUS[s.status] || SEQ_STATUS.active; return (
+              <div key={s.leadId} className="flex items-center justify-between gap-2 rounded-lg border border-hair2 bg-white/[0.012] px-3 py-2">
+                <div className="min-w-0"><p className="truncate text-[12px] font-medium text-fg">{s.name}</p><p className="num text-[9.5px] text-faint">passo {Math.min(s.step + 1, 4)}/4 · {s.email}</p></div>
+                <div className="flex items-center gap-2">
+                  <Pill tone={ss[1]}>{ss[0]}</Pill>
+                  {s.status === "active" && <button onClick={() => api.stop(s.leadId)} title="Ferma" className="text-faint hover:text-red"><Square size={12} /></button>}
+                </div>
+              </div>
+            ); })}
+          </div>}
+      </Card>
+    </div>
+  );
+}
 
 const DAILY_LIMIT = 50;
 const MAIL_STATUS = { sent: ["Inviata", "#3388FF"], delivered: ["Consegnata", "#26E6FF"], opened: ["Aperta", "#9D6CFF"], replied: ["Risposta", "#41F5A2"], error: ["Errore", "#FF5E6C"] };
@@ -20,8 +103,8 @@ function normalizeSubject(s) {
 }
 
 export default function Outreach() {
-  const { emails, calls, followups, followupsPending, followupsOverdue, meetings, leads } = useDerived();
-  const today = useDerived().today;
+  const { emails, calls, followups, followupsPending, followupsOverdue, meetings, leads, today } = useDerived();
+  const { status, api, isElectron } = useOutreach();
   const [tab, setTab] = useState("campaigns");
 
   const m = useMemo(() => {
@@ -66,7 +149,11 @@ export default function Outreach() {
         <Metric label="APPUNTAMENTI" value={meetings.length} accent="#FFC857" />
       </div>
 
-      <Tabs tabs={[{ id: "campaigns", label: "Campaigns", count: campaigns.length }, { id: "sequences", label: "Sequences" }, { id: "inbox", label: "Inbox", count: inbox.length }, { id: "leads", label: "Leads", count: outreachLeads.length }, { id: "analytics", label: "Analytics" }]} active={tab} onChange={setTab} />
+      <EngineBar status={status} api={api} isElectron={isElectron} leads={leads} />
+
+      <Tabs tabs={[{ id: "engine", label: "Motore", count: (status?.drafts?.length || 0) || undefined }, { id: "campaigns", label: "Campaigns", count: campaigns.length }, { id: "sequences", label: "Sequences" }, { id: "inbox", label: "Inbox", count: inbox.length }, { id: "leads", label: "Leads", count: outreachLeads.length }, { id: "analytics", label: "Analytics" }]} active={tab} onChange={setTab} />
+
+      {tab === "engine" && <MotorePanel status={status} api={api} isElectron={isElectron} />}
 
       {tab === "campaigns" && (
         !campaigns.length ? <Empty title="Nessuna campagna" hint="Le campagne si formano dalle email inviate dall'Outreach Agent." /> :
@@ -132,9 +219,23 @@ export default function Outreach() {
         !outreachLeads.length ? <Empty title="Nessun lead in outreach" hint="I lead contattati e in dialogo appariranno qui." /> :
         <Card className="overflow-auto p-0">
           <table className="w-full min-w-[600px]">
-            <thead className="border-b border-hair text-left"><tr>{["ATTIVITÀ", "SETTORE", "CITTÀ", "FASE", "ULT. CONTATTO"].map((h) => <th key={h} className="eyebrow px-3 py-2.5 font-medium">{h}</th>)}</tr></thead>
+            <thead className="border-b border-hair text-left"><tr>{["ATTIVITÀ", "EMAIL", "CITTÀ", "FASE", "ULT. CONTATTO", ...(isElectron ? ["AZIONI"] : [])].map((h) => <th key={h} className="eyebrow px-3 py-2.5 font-medium">{h}</th>)}</tr></thead>
             <tbody>{outreachLeads.map((l) => (
-              <tr key={l.id} className="border-b border-hair2"><td className="px-3 py-2.5 text-[12.5px] text-fg">{l.name}</td><td className="px-3 py-2.5 text-[11.5px] text-muted">{l.sector}</td><td className="px-3 py-2.5 text-[11.5px] text-muted">{l.location}</td><td className="px-3 py-2.5"><Pill tone="cyan">{l.stage}</Pill></td><td className="num px-3 py-2.5 text-[10.5px] text-faint">{fmtDate(l.updated)}</td></tr>
+              <tr key={l.id} className="border-b border-hair2">
+                <td className="px-3 py-2.5 text-[12.5px] text-fg">{l.name}</td>
+                <td className="num px-3 py-2.5 text-[11px] text-muted">{l.email || <span className="text-faint">—</span>}</td>
+                <td className="px-3 py-2.5 text-[11.5px] text-muted">{l.location}</td>
+                <td className="px-3 py-2.5"><Pill tone="cyan">{l.stage}</Pill></td>
+                <td className="num px-3 py-2.5 text-[10.5px] text-faint">{fmtDate(l.updated)}</td>
+                {isElectron && <td className="px-3 py-2.5">
+                  <div className="flex items-center gap-1.5">
+                    <button disabled={!l.email} onClick={() => api.start({ leadId: l.id, name: l.name, email: l.email, sector: l.sector, location: l.location, issues: l.issues })}
+                      className="rounded-md border border-[rgba(38,230,255,.25)] bg-[rgba(38,230,255,.08)] px-2 py-1 text-[10px] text-cyan disabled:opacity-30"><Play size={10} className="mr-0.5 inline" />Avvia</button>
+                    <button disabled={!l.email} onClick={() => api.sendNow({ leadId: l.id, name: l.name, email: l.email, sector: l.sector, location: l.location, issues: l.issues })}
+                      className="rounded-md border border-hair px-2 py-1 text-[10px] text-muted disabled:opacity-30"><SendIcon size={10} className="mr-0.5 inline" />Invia ora</button>
+                  </div>
+                </td>}
+              </tr>
             ))}</tbody>
           </table>
         </Card>

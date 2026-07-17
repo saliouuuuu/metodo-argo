@@ -8,12 +8,19 @@ const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const path = require("path");
 const { Store } = require("./store.cjs");
 const { startApi } = require("./api.cjs");
+const { Outreach } = require("./outreach.cjs");
 
 let win = null;
 let store = null;
+let outreach = null;
 
 function broadcast(evt) {
-  if (win && !win.isDestroyed()) win.webContents.send("marea:event", evt);
+  if (!win || win.isDestroyed()) return;
+  if (evt && evt.type === "outreach.status") {
+    win.webContents.send("marea:outreach", outreach ? outreach.status() : null);
+  } else {
+    win.webContents.send("marea:event", evt);
+  }
 }
 
 function createWindow() {
@@ -55,6 +62,18 @@ app.whenReady().then(() => {
   ipcMain.handle("marea:addEvent", (_e, evt) => store.addEvent(evt, evt?.source || "manual"));
   ipcMain.handle("marea:setAgent", (_e, agentId, patch) => store.setAgent(String(agentId), patch || {}));
   ipcMain.handle("marea:setSetting", (_e, key, value) => store.setSetting(String(key), value));
+
+  // ---- Motore Outreach (email reali + automazione) ----
+  outreach = new Outreach(store, broadcast);
+  ipcMain.handle("outreach:status", () => outreach.status());
+  ipcMain.handle("outreach:setConfig", (_e, p) => outreach.setConfig(p || {}));
+  ipcMain.handle("outreach:verify", () => outreach.verifySmtp());
+  ipcMain.handle("outreach:sendNow", (_e, lead, custom) => outreach.sendNow(lead, custom));
+  ipcMain.handle("outreach:start", (_e, lead) => outreach.startSequence(lead));
+  ipcMain.handle("outreach:startBulk", (_e, leads) => outreach.startBulk(leads));
+  ipcMain.handle("outreach:stop", (_e, id) => outreach.stopSequence(id));
+  ipcMain.handle("outreach:approve", (_e, id) => outreach.approve(id));
+  ipcMain.handle("outreach:discard", (_e, id, stop) => outreach.discard(id, stop));
 
   // ---- API locale: gli eventi degli agenti arrivano qui ----
   startApi(store, broadcast);

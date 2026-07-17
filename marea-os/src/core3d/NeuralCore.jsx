@@ -288,8 +288,7 @@ function Scene() {
   });
   return (
     <>
-      {/* nero assoluto: il canvas si fonde con lo sfondo OLED della pagina */}
-      <color attach="background" args={["#000000"]} />
+      {/* canvas trasparente: si fonde con lo sfondo della pagina, nessun riquadro */}
       <group rotation={[-0.42, 0, 0]}>
         <TorusFibers />
       </group>

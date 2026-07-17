@@ -22,6 +22,7 @@
     "@react-three/postprocessing": "^2.16.3",
     "framer-motion": "^11.3.0",
     "lucide-react": "^0.400.0",
+    "nodemailer": "^6.9.14",
     "postprocessing": "^6.35.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

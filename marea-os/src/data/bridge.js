@@ -34,3 +34,15 @@ export async function persistAgentState(agentId, patch) {
 export async function persistSetting(key, value) {
   if (isElectron) return await window.marea.setSetting(key, value);
 }
+
+/* ---------- Motore Outreach (solo Electron) ---------- */
+const OUTREACH_STUB = {
+  status: async () => null,
+  setConfig: async () => null,
+  verify: async () => ({ ok: false, error: "Disponibile nell'app desktop" }),
+  sendNow: async () => ({ ok: false, error: "Disponibile nell'app desktop" }),
+  start: async () => ({ ok: false }), startBulk: async () => ({ ok: false }),
+  stop: async () => ({ ok: false }), approve: async () => ({ ok: false }), discard: async () => ({ ok: false }),
+  onStatus: () => () => {},
+};
+export const outreach = isElectron ? window.marea.outreach : OUTREACH_STUB;
