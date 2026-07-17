@@ -11,3 +11,7 @@ node_modules/
 
 # Sistema
 .DS_Store
+
+# Python (cache generata dagli script delle skill)
+__pycache__/
+*.pyc
