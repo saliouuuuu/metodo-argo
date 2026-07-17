@@ -2,6 +2,7 @@
 @import "@fontsource/inter/500.css";
 @import "@fontsource/inter/600.css";
 @import "@fontsource/inter/700.css";
+@import "@fontsource/inter/800.css";
 @import "@fontsource/jetbrains-mono/400.css";
 @import "@fontsource/jetbrains-mono/500.css";
 @import "@fontsource/jetbrains-mono/700.css";
@@ -12,55 +13,82 @@
 
 :root {
   color-scheme: dark;
+  --bg: #05080d;
+  --card: #0c1119;
+  --card2: #0a0f16;
+  --hair: rgba(120, 190, 255, 0.12);
+  --cyan: #26e6ff;
+  --blue: #3388ff;
+  --green: #41f5a2;
 }
 
 html,
 body,
 #root {
   height: 100%;
-  background: #000000; /* OLED puro */
+  background: var(--bg);
   overflow: hidden;
 }
 
 body {
   font-family: "Inter", system-ui, sans-serif;
+  color: #f5f8fc;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   user-select: none;
 }
 
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.16); }
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-thumb { background: rgba(120, 190, 255, 0.1); border-radius: 99px; border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: rgba(120, 190, 255, 0.2); background-clip: padding-box; }
 ::-webkit-scrollbar-track { background: transparent; }
 
-/* pannello vetro invisibile su OLED */
-.panel {
-  background: rgba(255, 255, 255, 0.024);
-  border: 1px solid rgba(255, 255, 255, 0.065);
-  border-radius: 14px;
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.03);
+@layer components {
+  /* Card premium: bordo sottile, fondo leggermente trasparente, ombra interna impercettibile */
+  .card {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0));
+    background-color: var(--card);
+    border: 1px solid var(--hair);
+    border-radius: 16px;
+    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.03);
+  }
+  .card-2 {
+    background-color: var(--card2);
+    border: 1px solid rgba(120, 190, 255, 0.07);
+    border-radius: 14px;
+  }
+  .card-hover { transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.18s ease; }
+  .card-hover:hover { border-color: rgba(120, 190, 255, 0.24); background-color: #0e141d; }
+
+  .eyebrow {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8b97a8;
+  }
+  .num { font-family: "JetBrains Mono", monospace; font-variant-numeric: tabular-nums; }
+
+  /* superficie ambientale blu/ciano per gli hero (saldo, profitto, core) */
+  .ambient-cyan {
+    background:
+      radial-gradient(120% 120% at 12% 0%, rgba(38, 230, 255, 0.10), transparent 55%),
+      radial-gradient(130% 130% at 100% 120%, rgba(51, 136, 255, 0.10), transparent 55%),
+      var(--card);
+  }
+  .ambient-green {
+    background:
+      radial-gradient(120% 120% at 10% 0%, rgba(65, 245, 162, 0.10), transparent 55%),
+      var(--card);
+  }
 }
 
-.label-sys {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.22em;
-  color: rgb(113 113 122);
-  text-transform: uppercase;
-}
+@keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+.live-dot { animation: flicker 2.4s ease-in-out infinite; }
 
-.num {
-  font-family: "JetBrains Mono", monospace;
-  font-variant-numeric: tabular-nums;
-}
-
-@keyframes coreflicker {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.35; }
-}
-.dot-live { animation: coreflicker 2.4s ease-in-out infinite; }
+@keyframes drawline { from { stroke-dashoffset: var(--len, 1000); } to { stroke-dashoffset: 0; } }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }

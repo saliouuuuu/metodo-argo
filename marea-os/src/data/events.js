@@ -187,7 +187,10 @@ export function deriveState(events) {
       case "finance.expense": tx.push({ id: e.id, ts: e.ts, kind: "expense", amount: Number(d.amount) || 0, category: d.category || "Operativo", note: d.note || "" }); break;
       case "task.created": {
         const id = d.taskId || e.id;
-        tasks.set(id, { id, ts: e.ts, title: d.title || "Task", due: d.due || null, priority: d.priority || "med", done: false });
+        tasks.set(id, { id, ts: e.ts, title: d.title || "Task", due: d.due || null,
+          priority: d.priority || "med", done: false,
+          project: d.project || "", assignee: d.assignee || "", description: d.description || "",
+          status: d.status || null });
         break;
       }
       case "task.done": {

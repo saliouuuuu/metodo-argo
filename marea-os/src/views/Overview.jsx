@@ -1,174 +1,225 @@
 /* ============================================================
-   MAREA OS — Overview: il centro di comando
-   Neural Core al centro, attività di oggi a sinistra, feed
-   live a destra, barra KPI (i soldi) in basso.
+   MAREA OS — Overview / Command Center (3 livelli)
+   1) Hero finanziario · 2) Marea Core + essenziali · 3) Priorità + Live
    ============================================================ */
 import React, { useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { TrendingUp, TrendingDown, Users, Activity } from "lucide-react";
+import {
+  TrendingUp, Users, Mail, CalendarClock, Wallet,
+  AlertTriangle, PhoneCall, BellRing, Flag, ArrowUpRight,
+} from "lucide-react";
 import NeuralCore from "../core3d/NeuralCore.jsx";
 import { useStore, useDerived, useEvents, useAgentsState } from "../data/store.js";
 import { AGENTS } from "../data/agents.js";
-import { Panel, SysLabel, Rolling, FeedItem, Stat } from "../components/ui.jsx";
-import { fmtEur } from "../data/events.js";
+import { financeStats, forecast } from "../data/analytics.js";
+import { Card, Eyebrow, Rolling, Delta, FeedRow, Bar, Pill, Empty } from "../components/ui/index.jsx";
+import { fmtEur, fmtDate, isToday } from "../data/events.js";
 
-function KpiBar({ finance, clients }) {
-  const items = [
-    { label: "PROFIT", value: finance.profit, eur: true, color: finance.profit >= 0 ? "#34d399" : "#f87171", Icon: TrendingUp },
-    { label: "REVENUE", value: finance.income, eur: true, color: "#67e8f9", Icon: TrendingUp },
-    { label: "EXPENSES", value: finance.expenses, eur: true, color: "#fbbf24", Icon: TrendingDown },
-    { label: "PIPELINE", value: finance.pipelineValue, eur: true, color: "#a78bfa", Icon: Activity },
-    { label: "CLIENTS", value: clients, eur: false, color: "#e4e4e7", Icon: Users },
-  ];
+/* ---------- Livello 1: hero finanziario ---------- */
+function FinancialHero({ derived, goal }) {
+  const stats = financeStats(derived);
+  const fc = forecast(derived, goal);
   return (
-    <Panel className="grid grid-cols-5 divide-x divide-white/[0.05]">
-      {items.map(({ label, value, eur, color, Icon }) => (
-        <div key={label} className="flex items-center gap-3 px-5 py-3.5">
-          <Icon size={15} strokeWidth={1.75} className="shrink-0 text-zinc-600" />
-          <div className="min-w-0">
-            <SysLabel>{label}</SysLabel>
-            <p className="mt-1 text-lg font-medium leading-none" style={{ color }}>
-              <Rolling value={value} prefix={eur ? "€" : ""} />
-            </p>
-          </div>
-        </div>
-      ))}
-    </Panel>
-  );
-}
-
-function Funnel({ funnel }) {
-  const steps = [
-    ["LEADS", funnel.leads, "#67e8f9"],
-    ["CONTACTED", funnel.contacted, "#60a5fa"],
-    ["REPLIES", funnel.replied, "#a78bfa"],
-    ["MEETINGS", funnel.meetings, "#f0abfc"],
-    ["QUOTES", funnel.quotes, "#fbbf24"],
-    ["WON", funnel.won, "#34d399"],
-  ];
-  const max = Math.max(1, funnel.leads);
-  return (
-    <div className="grid gap-2">
-      {steps.map(([label, n, color]) => (
-        <div key={label} className="flex items-center gap-2.5">
-          <span className="label-sys w-[76px] shrink-0">{label}</span>
-          <div className="h-[7px] flex-1 overflow-hidden rounded-full bg-white/[0.05]">
-            <motion.div className="h-full rounded-full" style={{ background: color + "cc" }}
-              animate={{ width: `${Math.max(n > 0 ? 4 : 0, (n / max) * 100)}%` }}
-              transition={{ type: "spring", stiffness: 90, damping: 22 }} />
-          </div>
-          <span className="num w-9 shrink-0 text-right text-[11.5px] text-zinc-300">{n}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function AgentStrip() {
-  const agents = useAgentsState();
-  return (
-    <div className="flex flex-wrap items-center gap-2">
-      {AGENTS.map((a) => {
-        const st = agents[a.id]?.status || "off";
-        const c = st === "online" ? "#34d399" : st === "paused" ? "#fbbf24" : "#52525b";
-        return (
-          <span key={a.id} className="flex items-center gap-1.5 rounded-md border border-white/[0.06] bg-white/[0.02] px-2 py-1">
-            <span className={`h-1.5 w-1.5 rounded-full ${st === "online" ? "dot-live" : ""}`} style={{ background: c }} />
-            <span className="num text-[9px] tracking-[0.12em] text-zinc-400">{a.name.toUpperCase()}</span>
+    <Card ambient="cyan" className="grid grid-cols-1 gap-6 p-6 lg:grid-cols-[1.3fr_1fr] lg:p-7">
+      <div className="min-w-0">
+        <Eyebrow>VALORE GENERATO · TOTALE</Eyebrow>
+        <div className="mt-2 flex items-end gap-3">
+          <span className="text-[46px] font-extrabold leading-none tracking-tight text-fg lg:text-[56px]">
+            <Rolling value={derived.finance.profit} prefix="€" />
           </span>
-        );
-      })}
+          <Delta pct={stats.growth} className="mb-2" />
+        </div>
+        <p className="mt-2 text-[12.5px] text-muted">
+          <span className="num text-green">{fmtEur(stats.monthIncome)}</span> generati questo mese · margine <span className="num text-fg">{derived.finance.income ? Math.round((derived.finance.profit / derived.finance.income) * 100) : 0}%</span>
+        </p>
+        <div className="mt-5 grid grid-cols-3 gap-3">
+          {[
+            { l: "ENTRATE", v: derived.finance.income, c: "#41F5A2" },
+            { l: "SPESE", v: derived.finance.expenses, c: "#FFC857" },
+            { l: "PIPELINE", v: derived.finance.pipelineValue, c: "#9D6CFF" },
+          ].map((m) => (
+            <div key={m.l}>
+              <Eyebrow>{m.l}</Eyebrow>
+              <p className="num mt-1 text-[17px] font-semibold" style={{ color: m.c }}>{fmtEur(m.v)}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex flex-col justify-between rounded-2xl border border-hair bg-black/20 p-5">
+        <div className="flex items-center justify-between">
+          <Eyebrow>OBIETTIVO MENSILE</Eyebrow>
+          <Pill tone={fc.reachedPct >= 100 ? "green" : "cyan"}>{fc.reachedPct}%</Pill>
+        </div>
+        <div className="my-3">
+          <p className="num text-[22px] font-bold text-fg">
+            {fmtEur(stats.monthIncome)} <span className="text-[14px] font-medium text-faint">/ {fmtEur(goal)}</span>
+          </p>
+          <Bar pct={fc.reachedPct} color={fc.reachedPct >= 100 ? "#41F5A2" : "#26E6FF"} className="mt-2.5" h={8} />
+        </div>
+        <div className="flex items-center justify-between border-t border-hair pt-3">
+          <div>
+            <Eyebrow>PREVISIONE FINE MESE</Eyebrow>
+            <p className="num text-[15px] font-semibold text-cyan">{fmtEur(fc.endOfMonth)}</p>
+          </div>
+          <div className="text-right">
+            <Eyebrow>PROB. OBIETTIVO</Eyebrow>
+            <p className="num text-[15px] font-semibold text-fg">{fc.probability}%</p>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+/* ---------- Livello 2: Core + essenziali ---------- */
+function EssentialTile({ Icon, label, value, accent, prefix }) {
+  return (
+    <Card hover className="flex items-center gap-3 p-3.5">
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" style={{ background: accent + "16", color: accent }}>
+        <Icon size={16} strokeWidth={1.9} />
+      </span>
+      <div className="min-w-0">
+        <Eyebrow>{label}</Eyebrow>
+        <p className="num mt-0.5 text-[19px] font-semibold text-fg"><Rolling value={value} prefix={prefix || ""} /></p>
+      </div>
+    </Card>
+  );
+}
+
+function CoreBand({ derived, pulse, agentsState, eventsCount, mode }) {
+  const onlineAgents = AGENTS.filter((a) => agentsState[a.id]?.status === "online" || agentsState[a.id]?.status === "running").length;
+  const runningTasks = derived.tasks.filter((t) => !t.done).length;
+  const errors = Object.values(derived.agentEvents).flat().filter((e) => e.type.includes("error") && isToday(e.ts)).length;
+  const stats = financeStats(derived);
+
+  return (
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr_220px]">
+      <div className="order-2 grid content-center gap-3 lg:order-1">
+        <EssentialTile Icon={Users} label="LEAD OGGI" value={derived.today.leadsFound} accent="#26E6FF" />
+        <EssentialTile Icon={Mail} label="EMAIL INVIATE" value={derived.today.emailsSent} accent="#3388FF" />
+      </div>
+
+      <Card className="order-1 relative flex min-h-[380px] flex-col items-center justify-center overflow-hidden lg:order-2">
+        <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between px-4 pt-3">
+          <Eyebrow>MAREA CORE</Eyebrow>
+          <span className="num flex items-center gap-1.5 text-[9px] tracking-[0.2em] text-faint">
+            <span className="h-1.5 w-1.5 rounded-full bg-cyan live-dot" /> NEURAL LINK
+          </span>
+        </div>
+        <div className="h-[360px] w-full max-w-[440px]"><NeuralCore pulse={pulse} /></div>
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col items-center gap-1 pb-4">
+          <p className="text-[13px] font-semibold tracking-wide text-fg">Operational</p>
+          <div className="num flex items-center gap-3 text-[10.5px] text-muted">
+            <span><span className="text-green">{onlineAgents}</span> agenti attivi</span>
+            <span className="text-faint">·</span>
+            <span><span className="text-cyan">{runningTasks}</span> task in esecuzione</span>
+            <span className="text-faint">·</span>
+            <span><span style={{ color: errors ? "#FF5E6C" : "#8B97A8" }}>{errors}</span> errori</span>
+          </div>
+          <span className="num mt-1 text-[8.5px] tracking-[0.2em] text-faint">{eventsCount.toLocaleString("it-IT")} EVENTS · {mode.toUpperCase()}</span>
+        </div>
+      </Card>
+
+      <div className="order-3 grid content-center gap-3">
+        <EssentialTile Icon={CalendarClock} label="APPUNTAMENTI" value={derived.today.meetings} accent="#9D6CFF" />
+        <EssentialTile Icon={Wallet} label="ENTRATE MESE" value={stats.monthIncome} accent="#41F5A2" prefix="€" />
+      </div>
     </div>
+  );
+}
+
+/* ---------- Livello 3: priorità + live ---------- */
+function Priorities({ derived }) {
+  const setView = useStore((s) => s.setView);
+  const items = useMemo(() => {
+    const out = [];
+    for (const f of derived.followupsOverdue.slice(0, 4))
+      out.push({ id: "f" + f.id, Icon: PhoneCall, tone: "#FF5E6C", title: `Richiama ${f.leadName}`, sub: "Follow-up in ritardo", due: f.due, tag: "URGENTE" });
+    for (const f of derived.followupsPending.filter((x) => isToday(x.due)).slice(0, 3))
+      out.push({ id: "ft" + f.id, Icon: BellRing, tone: "#FFC857", title: `Follow-up ${f.leadName}`, sub: "In scadenza oggi", due: f.due, tag: "OGGI" });
+    for (const t of derived.tasks.filter((t) => !t.done && t.priority === "high").slice(0, 4))
+      out.push({ id: "t" + t.id, Icon: Flag, tone: "#26E6FF", title: t.title, sub: "Task prioritario", due: t.due, tag: "TASK" });
+    for (const l of derived.leads.filter((l) => l.stage === "quote").slice(0, 3))
+      out.push({ id: "q" + l.id, Icon: ArrowUpRight, tone: "#41F5A2", title: `Chiudi ${l.name}`, sub: `Preventivo ${fmtEur(l.value || 0)} inviato`, due: l.updated, tag: "DEAL" });
+    return out.slice(0, 8);
+  }, [derived]);
+
+  return (
+    <Card className="flex min-h-0 flex-col p-4">
+      <div className="mb-3 flex items-center justify-between">
+        <Eyebrow>PRIORITÀ DI OGGI</Eyebrow>
+        <Pill tone={items.length ? "yellow" : "green"}>{items.length} da gestire</Pill>
+      </div>
+      {!items.length ? (
+        <Empty title="Tutto sotto controllo" hint="Nessuna priorità urgente al momento. Le attività in ritardo o in scadenza appariranno qui." />
+      ) : (
+        <div className="flex flex-col gap-1.5">
+          {items.map((it) => (
+            <button key={it.id} onClick={() => setView(it.tag === "TASK" ? "tasks" : it.tag === "DEAL" ? "pipeline" : "outreach")}
+              className="card-hover flex items-center gap-3 rounded-xl border border-hair2 bg-white/[0.012] px-3 py-2.5 text-left">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg" style={{ background: it.tone + "18", color: it.tone }}>
+                <it.Icon size={15} strokeWidth={1.9} />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[12.5px] font-medium text-fg">{it.title}</p>
+                <p className="truncate text-[10.5px] text-muted">{it.sub}</p>
+              </div>
+              <div className="flex shrink-0 flex-col items-end gap-1">
+                <span className="num rounded px-1.5 py-px text-[8.5px] font-bold tracking-wide" style={{ color: it.tone, background: it.tone + "16" }}>{it.tag}</span>
+                {it.due && <span className="num text-[9px] text-faint">{fmtDate(it.due)}</span>}
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+    </Card>
+  );
+}
+
+function LiveActivity({ events }) {
+  const feed = useMemo(() => events.slice(-22).reverse(), [events]);
+  return (
+    <Card className="flex min-h-0 flex-col p-4">
+      <div className="mb-3 flex items-center justify-between">
+        <Eyebrow>LIVE ACTIVITY</Eyebrow>
+        <span className="flex items-center gap-1.5 text-[9.5px] text-faint">
+          <span className="h-1.5 w-1.5 rounded-full bg-green live-dot" /> streaming
+        </span>
+      </div>
+      <div className="relative max-h-[420px] min-h-0 flex-1 overflow-y-auto pr-1">
+        <div className="flex flex-col gap-1.5">
+          <AnimatePresence initial={false}>
+            {feed.map((e) => (
+              <motion.div key={e.id}
+                initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                transition={{ duration: 0.28, ease: "easeOut" }}>
+                <FeedRow evt={e} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      </div>
+    </Card>
   );
 }
 
 export default function Overview() {
   const derived = useDerived();
   const events = useEvents();
+  const agentsState = useAgentsState();
   const pulse = useStore((s) => s.corePulse);
-  const { today, funnel, finance, clients, followupsPending, followupsOverdue } = derived;
-
-  const feed = useMemo(() => events.slice(-30).reverse(), [events]);
+  const mode = useStore((s) => s.mode);
+  const goal = useStore((s) => s.settings.revenueGoal) || 5000;
 
   return (
-    <div className="flex h-full flex-col gap-4 p-4">
-      <div className="grid min-h-0 flex-1 grid-cols-[300px_minmax(0,1fr)_320px] gap-4">
-        {/* OGGI */}
-        <div className="flex min-h-0 flex-col gap-4">
-          <Panel className="p-4">
-            <div className="mb-3 flex items-center justify-between">
-              <SysLabel>ATTIVITÀ DI OGGI</SysLabel>
-              <span className="num text-[9px] text-zinc-600">{new Date().toLocaleDateString("it-IT", { weekday: "short", day: "2-digit", month: "short" })}</span>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <Stat label="LEAD TROVATI" value={today.leadsFound} accent="#67e8f9" />
-              <Stat label="CONTATTATE" value={today.contacted + today.emailsSent} accent="#60a5fa" />
-              <Stat label="EMAIL INVIATE" value={today.emailsSent} accent="#60a5fa" />
-              <Stat label="RISPOSTE" value={today.replies} accent="#34d399" />
-              <Stat label="CHIAMATE" value={today.calls} accent="#a78bfa" />
-              <Stat label="APPUNTAMENTI" value={today.meetings} accent="#f0abfc" />
-            </div>
-            <div className="mt-3 flex items-center justify-between rounded-lg border border-white/[0.05] bg-white/[0.015] px-3 py-2">
-              <span className="text-[11px] text-zinc-400">Follow-up da fare</span>
-              <span className="num text-[12px] font-semibold" style={{ color: followupsOverdue.length ? "#fbbf24" : "#34d399" }}>
-                {followupsPending.length}{followupsOverdue.length ? ` · ${followupsOverdue.length} in ritardo` : ""}
-              </span>
-            </div>
-          </Panel>
-
-          <Panel className="flex-1 p-4">
-            <SysLabel className="mb-3 block">FUNNEL · TUTTO IL PERIODO</SysLabel>
-            <Funnel funnel={funnel} />
-          </Panel>
-        </div>
-
-        {/* CORE — integrato nello sfondo, nessun riquadro */}
-        <div className="relative flex min-h-0 flex-col overflow-visible">
-          <div className="pointer-events-none z-10 flex items-center justify-between px-2 pt-1">
-            <SysLabel>MAREA CORE</SysLabel>
-            <span className="num flex items-center gap-1.5 text-[9px] tracking-[0.2em] text-zinc-600">
-              <span className="h-1.5 w-1.5 rounded-full bg-cyan-300 dot-live" /> NEURAL LINK ACTIVE
-            </span>
-          </div>
-          <div className="min-h-0 flex-1">
-            <NeuralCore pulse={pulse} />
-          </div>
-          <div className="z-10 flex items-center justify-between gap-3 px-2 pb-1">
-            <AgentStrip />
-            <span className="num shrink-0 text-[9px] tracking-[0.15em] text-zinc-600">
-              {events.length.toLocaleString("it-IT")} EVENTS
-            </span>
-          </div>
-        </div>
-
-        {/* FEED */}
-        <Panel className="flex min-h-0 flex-col p-3.5">
-          <div className="mb-2.5 flex items-center justify-between px-0.5">
-            <SysLabel>LIVE ACTIVITY</SysLabel>
-            <span className="flex items-center gap-1.5 text-[9.5px] text-zinc-600">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 dot-live" /> streaming
-            </span>
-          </div>
-          <div className="relative min-h-0 flex-1 overflow-hidden">
-            <div className="flex flex-col gap-1.5">
-              <AnimatePresence initial={false}>
-                {feed.map((e) => (
-                  <motion.div key={e.id} layout
-                    initial={{ opacity: 0, y: -12, height: 0 }}
-                    animate={{ opacity: 1, y: 0, height: "auto" }}
-                    exit={{ opacity: 0 }}
-                    transition={{ type: "spring", stiffness: 320, damping: 32 }}>
-                    <FeedItem evt={e} />
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black to-transparent" />
-          </div>
-        </Panel>
+    <div className="mx-auto flex max-w-[1440px] flex-col gap-4 p-4 lg:p-5">
+      <FinancialHero derived={derived} goal={goal} />
+      <CoreBand derived={derived} pulse={pulse} agentsState={agentsState} eventsCount={events.length} mode={mode} />
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <Priorities derived={derived} />
+        <LiveActivity events={events} />
       </div>
-
-      <KpiBar finance={finance} clients={clients} />
     </div>
   );
 }

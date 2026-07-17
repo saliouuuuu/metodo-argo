@@ -126,7 +126,7 @@ export default function QuickAdd() {
             {!action ? (
               <>
                 <div className="flex items-center gap-3 border-b border-white/[0.06] px-4">
-                  <span className="label-sys">REGISTRA</span>
+                  <span className="eyebrow">REGISTRA</span>
                   <input
                     ref={inputRef} value={q} onChange={(e) => { setQ(e.target.value); setSel(0); }} onKeyDown={onListKey}
                     placeholder="Cosa hai fatto? (lead, email, chiamata, entrata…)"
@@ -165,7 +165,7 @@ export default function QuickAdd() {
                     if (def.type === "lead") {
                       return (
                         <label key={f} className="grid gap-1">
-                          <span className="label-sys">{def.label}</span>
+                          <span className="eyebrow">{def.label}</span>
                           <select value={form[f] || ""} onChange={(e) => setForm({ ...form, [f]: e.target.value })}
                             className="rounded-lg border border-white/10 bg-black px-3 py-2 text-[13px] text-zinc-100 outline-none focus:border-cyan-400/50">
                             <option value="">— Nuovo / non in lista —</option>
@@ -182,7 +182,7 @@ export default function QuickAdd() {
                     if (def.type === "followup") {
                       return (
                         <label key={f} className="grid gap-1">
-                          <span className="label-sys">{def.label}</span>
+                          <span className="eyebrow">{def.label}</span>
                           <select required value={form[f] || ""} onChange={(e) => setForm({ ...form, [f]: e.target.value })}
                             className="rounded-lg border border-white/10 bg-black px-3 py-2 text-[13px] text-zinc-100 outline-none focus:border-cyan-400/50">
                             <option value="">Scegli il follow-up…</option>
@@ -196,7 +196,7 @@ export default function QuickAdd() {
                     if (def.type === "select") {
                       return (
                         <label key={f} className="grid gap-1">
-                          <span className="label-sys">{def.label}</span>
+                          <span className="eyebrow">{def.label}</span>
                           <select value={form[f] || def.opts[0][0]} onChange={(e) => setForm({ ...form, [f]: e.target.value })}
                             className="rounded-lg border border-white/10 bg-black px-3 py-2 text-[13px] text-zinc-100 outline-none focus:border-cyan-400/50">
                             {def.opts.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
@@ -206,7 +206,7 @@ export default function QuickAdd() {
                     }
                     return (
                       <label key={f} className="grid gap-1">
-                        <span className="label-sys">{def.label}{def.req && " *"}</span>
+                        <span className="eyebrow">{def.label}{def.req && " *"}</span>
                         <input type={def.type} required={def.req} placeholder={def.ph || ""}
                           value={form[f] || ""} onChange={(e) => setForm({ ...form, [f]: e.target.value })}
                           step={def.type === "number" ? "0.01" : undefined}
