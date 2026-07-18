@@ -11,3 +11,8 @@ node_modules/
 
 # Sistema
 .DS_Store
+
+# Skill/tooling locale (installate con `npx skills add`)
+.agents/
+.claude/
+skills-lock.json
