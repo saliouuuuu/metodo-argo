@@ -1,0 +1,293 @@
+{
+  "name": "Marea B2B — Lead Scout + Audit + Outreach",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger",
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "q",
+              "name": "query",
+              "value": "elettricisti Cuneo",
+              "type": "string"
+            },
+            {
+              "id": "m",
+              "name": "maxPlaces",
+              "value": 20,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "params",
+      "name": "Parametri ricerca",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        180,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.apify.com/v2/acts/compass~crawler-google-places/run-sync-get-dataset-items?token=YOUR_APIFY_TOKEN",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"searchStringsArray\": [\"{{$json.query}}\"],\n  \"maxCrawledPlaces\": {{$json.maxPlaces}},\n  \"language\": \"it\"\n}",
+        "options": {}
+      },
+      "id": "scout",
+      "name": "Lead Scout (Apify Google Maps)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "nosite",
+              "leftValue": "={{ $json.website }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "filter",
+      "name": "Solo senza sito",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "YOUR_ANTHROPIC_KEY"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-5\",\n  \"max_tokens\": 500,\n  \"messages\": [{\n    \"role\": \"user\",\n    \"content\": \"Scrivi in italiano un'email breve e personalizzata per questa attività locale che NON ha un sito web. 3 motivi concreti per cui perde clienti senza un sito moderno mobile, tono umano e diretto, CTA leggera tipo 'vi mando due esempi?'. Aggiungi in fondo una riga: 'Rispondi STOP per non essere ricontattato.'\\n\\nAttivita: {{$json.title}}\\nCategoria: {{$json.categoryName}}\\nCitta: {{$json.city}}\\nTelefono: {{$json.phone}}\"\n  }]\n}",
+        "options": {}
+      },
+      "id": "audit",
+      "name": "Audit AI (Claude)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e",
+              "name": "email",
+              "value": "={{ $('Solo senza sito').item.json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "n",
+              "name": "name",
+              "value": "={{ $('Solo senza sito').item.json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "b",
+              "name": "emailBody",
+              "value": "={{ $json.content[0].text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "compose",
+      "name": "Componi email",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1140,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "=Un'idea per {{ $json.name }}",
+        "emailType": "text",
+        "message": "={{ $json.emailBody }}",
+        "options": {}
+      },
+      "id": "send",
+      "name": "Invia (Gmail)",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1380,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "INCOLLA_URL_DEL_TUO_GOOGLE_SHEET"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "Foglio1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "nome": "={{ $json.name }}",
+            "email": "={{ $json.email }}",
+            "audit": "={{ $json.emailBody }}",
+            "stato": "contattato",
+            "data": "={{ $now.toISO() }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "sheet",
+      "name": "Salva su Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1380,
+        380
+      ]
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Parametri ricerca",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parametri ricerca": {
+      "main": [
+        [
+          {
+            "node": "Lead Scout (Apify Google Maps)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Scout (Apify Google Maps)": {
+      "main": [
+        [
+          {
+            "node": "Solo senza sito",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Solo senza sito": {
+      "main": [
+        [
+          {
+            "node": "Audit AI (Claude)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audit AI (Claude)": {
+      "main": [
+        [
+          {
+            "node": "Componi email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Componi email": {
+      "main": [
+        [
+          {
+            "node": "Invia (Gmail)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Salva su Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
