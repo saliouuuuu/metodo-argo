@@ -3,12 +3,13 @@
    ============================================================ */
 import React from "react";
 import {
-  Sun, LayoutGrid, FolderKanban, Network, Lightbulb,
+  Sun, LayoutGrid, Users, FolderKanban, Network, Lightbulb,
   Wrench, LineChart, Radar, Settings, Waves,
 } from "lucide-react";
 
 const ACTIVE = [
   { id: "today", label: "Today", Icon: Sun },
+  { id: "leads", label: "Leads", Icon: Users },
   { id: "overview", label: "Business Overview", Icon: LayoutGrid },
 ];
 const SOON = [

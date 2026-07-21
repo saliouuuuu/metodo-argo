@@ -107,4 +107,12 @@ export const actions = {
   addInbox(text) { setState((s) => { s.today_focus.quick_inbox.unshift({ id: Date.now(), text, ts: new Date().toISOString() }); return s; }); },
   removeInbox(id) { setState((s) => { s.today_focus.quick_inbox = s.today_focus.quick_inbox.filter((x) => x.id !== id); return s; }); },
   doneFollowup(i) { setState((s) => { s.today_focus.crm_quick_followups.splice(i, 1); return s; }); },
+  addFollowup(contact, action) {
+    setState((s) => {
+      if (!s.today_focus.crm_quick_followups.some((f) => f.contact === contact)) {
+        s.today_focus.crm_quick_followups.unshift({ contact, action });
+      }
+      return s;
+    });
+  },
 };

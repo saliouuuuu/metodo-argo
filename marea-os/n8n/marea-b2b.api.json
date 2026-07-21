@@ -196,7 +196,11 @@
           "mappingMode": "defineBelow",
           "value": {
             "nome": "={{ $json.name }}",
+            "categoria": "={{ $('Solo senza sito').item.json.categoryName }}",
+            "citta": "={{ $('Solo senza sito').item.json.city }}",
+            "telefono": "={{ $('Solo senza sito').item.json.phone }}",
             "email": "={{ $json.email }}",
+            "sito": "={{ $('Solo senza sito').item.json.website }}",
             "audit": "={{ $json.emailBody }}",
             "stato": "contattato",
             "data": "={{ $now.toISO() }}"
