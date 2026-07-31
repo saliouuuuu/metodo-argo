@@ -3,9 +3,10 @@ import { AnimatePresence } from "framer-motion";
 import Sidebar from "./components/Sidebar.jsx";
 import Today from "./views/Today.jsx";
 import Leads from "./views/Leads.jsx";
+import Finance from "./views/Finance.jsx";
 import Overview from "./views/Overview.jsx";
 
-const VIEWS = { today: Today, leads: Leads, overview: Overview };
+const VIEWS = { today: Today, leads: Leads, finance: Finance, overview: Overview };
 
 export default function App() {
   const [view, setView] = useState("today");

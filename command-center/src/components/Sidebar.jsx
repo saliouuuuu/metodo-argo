@@ -3,13 +3,14 @@
    ============================================================ */
 import React from "react";
 import {
-  Sun, LayoutGrid, Users, FolderKanban, Network, Lightbulb,
+  Sun, LayoutGrid, Users, Wallet, FolderKanban, Network, Lightbulb,
   Wrench, LineChart, Radar, Settings, Waves,
 } from "lucide-react";
 
 const ACTIVE = [
   { id: "today", label: "Today", Icon: Sun },
   { id: "leads", label: "Leads", Icon: Users },
+  { id: "finance", label: "Finance", Icon: Wallet },
   { id: "overview", label: "Business Overview", Icon: LayoutGrid },
 ];
 const SOON = [
@@ -17,7 +18,7 @@ const SOON = [
   { label: "Systems Map", Icon: Network },
   { label: "Idea Vault", Icon: Lightbulb },
   { label: "Tool Library", Icon: Wrench },
-  { label: "KPI / Finance", Icon: LineChart },
+  { label: "KPI avanzati", Icon: LineChart },
   { label: "Opportunity Radar", Icon: Radar },
 ];
 

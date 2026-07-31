@@ -54,6 +54,16 @@ export const INITIAL = {
       kpi_label: "Stato", kpi_value: "In pausa",
     },
   },
+  finance: {
+    // Lead chiuse / vinte: diventano ricavi.
+    deals: [
+      { id: 1, client: "Il Metodo Argo — Corso", project: "Metodo Argo", amount: 97, ts: "2026-07-28", status: "won" },
+    ],
+    // Movimenti manuali (entrate/uscite non legate a un deal).
+    transactions: [
+      { id: 1, label: "Abbonamenti tool (n8n, Apify)", amount: -49, ts: "2026-07-25", kind: "expense" },
+    ],
+  },
 };
 
 function load() {
@@ -115,4 +125,30 @@ export const actions = {
       return s;
     });
   },
+
+  /* ---------- finance ---------- */
+  addDeal({ client, project, amount }) {
+    setState((s) => {
+      s.finance.deals.unshift({
+        id: Date.now(), client: client.trim(),
+        project: (project || "").trim(), amount: Math.round(+amount || 0),
+        ts: new Date().toISOString().slice(0, 10), status: "won",
+      });
+      return s;
+    });
+  },
+  removeDeal(id) { setState((s) => { s.finance.deals = s.finance.deals.filter((d) => d.id !== id); return s; }); },
+  addTransaction({ label, amount, kind }) {
+    setState((s) => {
+      const a = Math.abs(Math.round(+amount || 0));
+      s.finance.transactions.unshift({
+        id: Date.now(), label: label.trim(),
+        amount: kind === "income" ? a : -a,
+        ts: new Date().toISOString().slice(0, 10),
+        kind: kind === "income" ? "income" : "expense",
+      });
+      return s;
+    });
+  },
+  removeTransaction(id) { setState((s) => { s.finance.transactions = s.finance.transactions.filter((t) => t.id !== id); return s; }); },
 };
