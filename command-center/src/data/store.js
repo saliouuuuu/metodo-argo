@@ -54,6 +54,9 @@ export const INITIAL = {
       kpi_label: "Stato", kpi_value: "In pausa",
     },
   },
+  // Stato di lavorazione per ogni lead (chiave = telefono o nome|città).
+  // Sopravvive ai re-scraping perché è slegato dalla cache Apify.
+  leads_status: {},
   finance: {
     // Lead chiuse / vinte: diventano ricavi.
     deals: [
@@ -151,4 +154,32 @@ export const actions = {
     });
   },
   removeTransaction(id) { setState((s) => { s.finance.transactions = s.finance.transactions.filter((t) => t.id !== id); return s; }); },
+
+  /* ---------- lavorazione lead ---------- */
+  setLeadStatus(key, status) {
+    setState((s) => {
+      const cur = s.leads_status[key] || {};
+      s.leads_status[key] = { ...cur, status, ts: new Date().toISOString() };
+      return s;
+    });
+  },
+  setLeadNote(key, note) {
+    setState((s) => {
+      const cur = s.leads_status[key] || {};
+      s.leads_status[key] = { ...cur, note };
+      return s;
+    });
+  },
+  // Chiude il lead come cliente e lo registra in Finance come ricavo.
+  closeLead(key, { client, amount }) {
+    setState((s) => {
+      const cur = s.leads_status[key] || {};
+      s.leads_status[key] = { ...cur, status: "chiuso", ts: new Date().toISOString() };
+      s.finance.deals.unshift({
+        id: Date.now(), client: (client || "Lead").trim(), project: "Lead",
+        amount: Math.round(+amount || 0), ts: new Date().toISOString().slice(0, 10), status: "won",
+      });
+      return s;
+    });
+  },
 };

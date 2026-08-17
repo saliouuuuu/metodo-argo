@@ -1,19 +1,31 @@
 /* ============================================================
-   Leads — motore di scraping REALE (Apify Google Maps).
-   Cerchi per categoria × città nella zona di Cuneo, l'app filtra
-   le attività SENZA sito e con telefono = lead "hot" da chiamare.
-   Nessun terminale, nessun n8n: clicchi e arrivano.
+   Leads — banco chiamate. Scraper Apify reale + lavorazione:
+   ogni lead ha uno stato (Da chiamare → Richiama → Interessato →
+   Chiuso/Scartato), note e chiusura che finisce in Finance.
    ============================================================ */
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Search, Phone, Plus, KeyRound, Flame, MapPin, Star, Loader2, X, PhoneCall } from "lucide-react";
 import {
-  runScrape, getToken, setToken, getCache, setCache,
+  Search, Phone, PhoneCall, Plus, KeyRound, Flame, MapPin, Star, Loader2,
+  ChevronDown, RotateCcw, Check, X, StickyNote, PartyPopper, PhoneOff, Clock,
+} from "lucide-react";
+import {
+  runScrape, getToken, setToken, getCache,
   DEFAULT_CITIES, DEFAULT_CATEGORIES,
 } from "../data/apify.js";
-import { actions } from "../data/store.js";
+import { useStore, actions } from "../data/store.js";
 
-/* ---------- prima configurazione: incolla il token Apify ---------- */
+const STATUS = {
+  nuovo:       { label: "Da chiamare", dot: "#8B5CF6" },
+  richiama:    { label: "Richiama",    dot: "#FF9F0A" },
+  interessato: { label: "Interessato", dot: "#30D158" },
+  chiuso:      { label: "Chiuso",      dot: "#30D158" },
+  scartato:    { label: "Scartato",    dot: "#8E8E93" },
+};
+const leadKey = (l) => (l.phone ? l.phone.replace(/\s/g, "") : `${l.name}|${l.city}`);
+const today = () => new Date().toISOString().slice(0, 10);
+
+/* ---------- prima configurazione ---------- */
 function TokenCard({ onSave }) {
   const [v, setV] = useState("");
   return (
@@ -36,33 +48,85 @@ function TokenCard({ onSave }) {
   );
 }
 
-/* ---------- singolo lead ---------- */
-function LeadCard({ l }) {
-  const [added, setAdded] = useState(false);
-  const add = () => {
-    actions.addFollowup(l.name, l.phone ? `Chiama ${l.phone}` : l.website ? `Guarda ${l.website}` : "Ricontatta");
-    setAdded(true);
-  };
+/* ---------- pannello ricerca (collassabile) ---------- */
+function SearchPanel({ open, setOpen, cats, setCats, cities, setCities, maxPer, setMaxPer, busy, progress, run }) {
+  const toggle = (arr, set, val) => set(arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val]);
   return (
-    <div className={`glass p-4 ${l.hot ? "ring-1 ring-viola/25" : ""}`}>
+    <div className="glass mt-5 overflow-hidden">
+      <button onClick={() => setOpen(!open)} className="flex w-full items-center justify-between px-5 py-3.5 text-left">
+        <span className="section-label">Cerca nuovi lead</span>
+        <ChevronDown size={16} className={`text-ink2 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <div className="border-t border-line px-5 pb-5 pt-4">
+          <p className="section-label">Cosa cerchi</p>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {DEFAULT_CATEGORIES.map((c) => (
+              <button key={c} onClick={() => toggle(cats, setCats, c)}
+                className={`rounded-full border px-2.5 py-1 text-[11.5px] transition ${cats.includes(c) ? "border-viola/40 bg-viola/12 text-viola-h" : "border-line text-ink2 hover:text-ink"}`}>{c}</button>
+            ))}
+          </div>
+          <p className="section-label mt-4">Dove</p>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {DEFAULT_CITIES.map((c) => (
+              <button key={c} onClick={() => toggle(cities, setCities, c)}
+                className={`rounded-full border px-2.5 py-1 text-[11.5px] transition ${cities.includes(c) ? "border-viola/40 bg-viola/12 text-viola-h" : "border-line text-ink2 hover:text-ink"}`}>{c}</button>
+            ))}
+          </div>
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <label className="flex items-center gap-2 text-[12px] text-ink2">
+              Max per ricerca
+              <input type="number" min={5} max={50} value={maxPer} onChange={(e) => setMaxPer(+e.target.value)}
+                className="w-16 rounded-lg border border-line bg-white/[0.02] px-2 py-1 text-[12.5px] text-ink outline-none" />
+            </label>
+            <button onClick={run} disabled={busy}
+              className="inline-flex items-center gap-2 rounded-xl bg-viola px-4 py-2 text-[13.5px] font-semibold text-white transition hover:bg-viola-h disabled:opacity-50">
+              {busy ? <Loader2 size={15} className="animate-spin" /> : <Search size={15} />}
+              {busy ? "Cerco…" : "Cerca lead"}
+            </button>
+            {busy && progress && (
+              <span className="text-[12px] text-ink2">
+                {progress.phase === "start" && "Avvio del motore…"}
+                {progress.phase === "running" && `Scraping… ${progress.found || 0} trovati (${progress.searches} ricerche)`}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------- singolo lead ---------- */
+function LeadCard({ l, st }) {
+  const key = leadKey(l);
+  const status = st?.status || "nuovo";
+  const meta = STATUS[status];
+  const [closing, setClosing] = useState(false);
+  const [amount, setAmount] = useState("97");
+  const [noteOpen, setNoteOpen] = useState(!!st?.note);
+  const [note, setNote] = useState(st?.note || "");
+  const done = status === "chiuso" || status === "scartato";
+
+  const set = (s) => actions.setLeadStatus(key, s);
+  const interessato = () => { set("interessato"); if (l.phone) actions.addFollowup(l.name, `Ricontatta ${l.phone}`); };
+  const confirmClose = () => { actions.closeLead(key, { client: l.name, amount }); setClosing(false); };
+
+  return (
+    <div className="glass p-4" style={{ borderLeft: `3px solid ${meta.dot}` }}>
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="truncate text-[14px] font-semibold text-ink">{l.name}</p>
           <p className="truncate text-[12px] text-ink2">{[l.category, l.city].filter(Boolean).join(" · ") || "—"}</p>
         </div>
-        {l.hot ? (
-          <span className="inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: "rgba(139,92,246,0.16)", color: "#A78BFA" }}>
-            <Flame size={11} /> HOT
-          </span>
-        ) : (
-          <span className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium" style={{ background: "rgba(152,152,157,0.12)", color: "#98989D" }}>
-            {l.hasSite ? "ha sito" : "no tel"}
-          </span>
-        )}
+        <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-semibold"
+          style={{ background: `${meta.dot}22`, color: meta.dot }}>
+          <span className="h-1.5 w-1.5 rounded-full" style={{ background: meta.dot }} /> {meta.label}
+        </span>
       </div>
 
       {l.phone && (
-        <a href={`tel:${l.phone.replace(/\s/g, "")}`} className="mt-2.5 inline-flex items-center gap-1.5 text-[13px] font-semibold text-ink transition hover:text-viola-h">
+        <a href={`tel:${l.phone.replace(/\s/g, "")}`} className="mt-2.5 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-ink transition hover:text-viola-h">
           <PhoneCall size={13} className="text-viola-h" /> {l.phone}
           {l.mobile && <span className="rounded-full bg-white/[0.06] px-1.5 py-0.5 text-[9px] font-medium text-ink2">personale</span>}
         </a>
@@ -72,27 +136,68 @@ function LeadCard({ l }) {
         {l.score && <span className="inline-flex items-center gap-1"><Star size={11} />{l.score}</span>}
       </div>
 
-      <button onClick={add} disabled={added}
-        className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-line px-2.5 py-1.5 text-[11.5px] font-medium text-ink2 transition hover:border-viola/40 hover:text-viola-h disabled:opacity-50">
-        <Plus size={12} /> {added ? "Aggiunto ai follow-up" : "Aggiungi ai follow-up"}
-      </button>
+      {noteOpen && (
+        <textarea value={note} onChange={(e) => setNote(e.target.value)} onBlur={() => actions.setLeadNote(key, note)}
+          placeholder="Note: esito chiamata, quando richiamare…" rows={2}
+          className="mt-2.5 w-full resize-none rounded-lg border border-line bg-white/[0.02] px-2.5 py-2 text-[12px] text-ink outline-none placeholder:text-ink2/40" />
+      )}
+
+      {/* azioni */}
+      {closing ? (
+        <div className="mt-3 flex items-center gap-2">
+          <span className="text-[12px] text-ink2">Importo €</span>
+          <input value={amount} onChange={(e) => setAmount(e.target.value)} type="number" autoFocus
+            className="w-24 rounded-lg border border-line bg-white/[0.02] px-2 py-1.5 text-[12.5px] text-ink outline-none" />
+          <button onClick={confirmClose} className="inline-flex items-center gap-1 rounded-lg bg-pos/20 px-2.5 py-1.5 text-[12px] font-semibold text-pos hover:bg-pos/30"><Check size={13} /> Conferma</button>
+          <button onClick={() => setClosing(false)} className="text-ink2 hover:text-ink"><X size={15} /></button>
+        </div>
+      ) : done ? (
+        <div className="mt-3 flex items-center justify-between">
+          <span className="text-[11.5px] text-ink2">{status === "chiuso" ? "🎉 Cliente — in Finance" : "Scartato"}</span>
+          <button onClick={() => set("nuovo")} className="inline-flex items-center gap-1 text-[11.5px] text-ink2 hover:text-ink"><RotateCcw size={12} /> Riporta</button>
+        </div>
+      ) : (
+        <div className="mt-3 flex flex-wrap items-center gap-1.5">
+          <ActBtn onClick={() => set("richiama")} tone="warn" Icon={Clock}>Richiama</ActBtn>
+          <ActBtn onClick={interessato} tone="pos" Icon={Flame}>Interessato</ActBtn>
+          <ActBtn onClick={() => setClosing(true)} tone="viola" Icon={PartyPopper}>Chiusa</ActBtn>
+          <ActBtn onClick={() => set("scartato")} tone="mute" Icon={PhoneOff}>Scarta</ActBtn>
+          <button onClick={() => setNoteOpen(!noteOpen)} title="Note"
+            className="ml-auto inline-flex h-7 w-7 items-center justify-center rounded-lg border border-line text-ink2 transition hover:text-ink"><StickyNote size={13} /></button>
+        </div>
+      )}
     </div>
   );
 }
 
-/* ---------- chip città/categoria toggle ---------- */
-function Chip({ on, children, onClick }) {
+function ActBtn({ onClick, tone, Icon, children }) {
+  const c = { warn: "#FF9F0A", pos: "#30D158", viola: "#A78BFA", mute: "#8E8E93" }[tone];
   return (
     <button onClick={onClick}
-      className={`rounded-full border px-2.5 py-1 text-[11.5px] transition ${on ? "border-viola/40 bg-viola/12 text-viola-h" : "border-line text-ink2 hover:text-ink"}`}>
-      {children}
+      className="inline-flex items-center gap-1 rounded-lg border border-line px-2 py-1.5 text-[11.5px] font-medium text-ink2 transition hover:text-ink"
+      style={{ borderColor: "rgba(255,255,255,0.06)" }}
+      onMouseEnter={(e) => (e.currentTarget.style.borderColor = c + "66")}
+      onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)")}>
+      <Icon size={12} style={{ color: c }} /> {children}
+    </button>
+  );
+}
+
+/* ---------- filtro/stat ---------- */
+function Tab({ on, dot, children, onClick }) {
+  return (
+    <button onClick={onClick}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12.5px] transition ${on ? "border-viola/40 bg-viola/10 text-ink" : "border-line text-ink2 hover:text-ink"}`}>
+      {dot && <span className="h-1.5 w-1.5 rounded-full" style={{ background: dot }} />} {children}
     </button>
   );
 }
 
 export default function Leads() {
   const [token, setTok] = useState(getToken());
+  const statusMap = useStore((s) => s.leads_status);
   const [leads, setLeads] = useState(getCache());
+  const [panelOpen, setPanelOpen] = useState(false);
   const [cities, setCities] = useState(DEFAULT_CITIES.slice(0, 4));
   const [cats, setCats] = useState(["parrucchiere", "estetista", "ristorante"]);
   const [maxPer, setMaxPer] = useState(20);
@@ -100,29 +205,47 @@ export default function Leads() {
   const [progress, setProgress] = useState(null);
   const [err, setErr] = useState("");
   const [q, setQ] = useState("");
-  const [onlyHot, setOnlyHot] = useState(true);
+  const [tab, setTab] = useState("da_chiamare");
+  const [cat, setCat] = useState("");
+
+  useEffect(() => { if (!leads.length) setPanelOpen(true); }, []); // eslint-disable-line
 
   const saveToken = (t) => { setToken(t); setTok(t.trim()); };
-
-  const toggle = (arr, set, val) =>
-    set(arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val]);
-
   const run = useCallback(async () => {
     if (!cats.length || !cities.length) { setErr("Scegli almeno una categoria e una città."); return; }
     setBusy(true); setErr(""); setProgress({ phase: "start" });
     try {
       const { leads } = await runScrape(token, { categories: cats, cities, maxPerSearch: maxPer }, setProgress);
-      setLeads(leads);
-    } catch (e) {
-      setErr(e.message || "Errore durante la ricerca.");
-    } finally { setBusy(false); }
+      setLeads(leads); setPanelOpen(false);
+    } catch (e) { setErr(e.message || "Errore durante la ricerca."); }
+    finally { setBusy(false); }
   }, [token, cats, cities, maxPer]);
 
-  const filtered = leads.filter((l) =>
-    (!onlyHot || l.hot) &&
-    (!q || (l.name + l.city + l.category).toLowerCase().includes(q.toLowerCase()))
-  );
-  const hotCount = leads.filter((l) => l.hot).length;
+  const stOf = (l) => statusMap[leadKey(l)]?.status || "nuovo";
+  const counts = useMemo(() => {
+    const c = { da_chiamare: 0, interessato: 0, chiuso: 0, scartato: 0 };
+    leads.forEach((l) => {
+      const s = stOf(l);
+      if (s === "nuovo" || s === "richiama") c.da_chiamare++;
+      else if (c[s] != null) c[s]++;
+    });
+    return c;
+  }, [leads, statusMap]);
+  const workedToday = useMemo(() =>
+    Object.values(statusMap).filter((v) => v.ts?.slice(0, 10) === today() && v.status && v.status !== "nuovo").length,
+    [statusMap]);
+  const categories = useMemo(() => [...new Set(leads.map((l) => l.category).filter(Boolean))].sort(), [leads]);
+
+  const filtered = leads.filter((l) => {
+    const s = stOf(l);
+    const inTab =
+      tab === "tutti" ? true :
+      tab === "da_chiamare" ? (s === "nuovo" || s === "richiama") :
+      s === tab;
+    return inTab &&
+      (!cat || l.category === cat) &&
+      (!q || (l.name + l.city + l.category).toLowerCase().includes(q.toLowerCase()));
+  });
 
   if (!token) {
     return (
@@ -133,77 +256,70 @@ export default function Leads() {
     );
   }
 
+  const total = leads.length;
+  const worked = counts.interessato + counts.chiuso + counts.scartato + leads.filter((l) => stOf(l) === "richiama").length;
+  const pct = total ? Math.round((worked / total) * 100) : 0;
+
   return (
     <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18, ease: "easeOut" }} className="mx-auto max-w-[1040px] px-8 py-9">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-[30px] font-semibold tracking-tight text-ink">Leads</h1>
+          <h1 className="text-[30px] font-semibold tracking-tight text-ink">Banco chiamate</h1>
           <p className="mt-1 text-[13.5px] text-ink2">
-            {leads.length ? <>{hotCount} hot da chiamare · {leads.length} trovati in totale</> : "Attività senza sito nella zona di Cuneo, pronte da chiamare."}
+            {total ? <>{counts.da_chiamare} da chiamare · {workedToday} lavorati oggi</> : "Attività senza sito nella zona di Cuneo, pronte da chiamare."}
           </p>
         </div>
         <button onClick={() => { setTok(""); setToken(""); }} className="text-[11.5px] text-ink2 underline-offset-2 hover:text-ink hover:underline">Cambia token</button>
       </div>
 
-      {/* pannello di ricerca */}
-      <div className="glass mt-5 p-5">
-        <p className="section-label">Cosa cerchi</p>
-        <div className="mt-2 flex flex-wrap gap-1.5">
-          {DEFAULT_CATEGORIES.map((c) => <Chip key={c} on={cats.includes(c)} onClick={() => toggle(cats, setCats, c)}>{c}</Chip>)}
+      {/* progresso */}
+      {total > 0 && (
+        <div className="mt-4">
+          <div className="flex items-center justify-between text-[11.5px] text-ink2">
+            <span>Avanzamento lista</span><span className="tnum">{worked}/{total} · {pct}%</span>
+          </div>
+          <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
+            <div className="h-full rounded-full bg-viola transition-all" style={{ width: `${pct}%` }} />
+          </div>
         </div>
-        <p className="section-label mt-4">Dove</p>
-        <div className="mt-2 flex flex-wrap gap-1.5">
-          {DEFAULT_CITIES.map((c) => <Chip key={c} on={cities.includes(c)} onClick={() => toggle(cities, setCities, c)}>{c}</Chip>)}
-        </div>
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          <label className="flex items-center gap-2 text-[12px] text-ink2">
-            Max per ricerca
-            <input type="number" min={5} max={50} value={maxPer} onChange={(e) => setMaxPer(+e.target.value)}
-              className="w-16 rounded-lg border border-line bg-white/[0.02] px-2 py-1 text-[12.5px] text-ink outline-none" />
-          </label>
-          <button onClick={run} disabled={busy}
-            className="inline-flex items-center gap-2 rounded-xl bg-viola px-4 py-2 text-[13.5px] font-semibold text-white transition hover:bg-viola-h disabled:opacity-50">
-            {busy ? <Loader2 size={15} className="animate-spin" /> : <Search size={15} />}
-            {busy ? "Cerco…" : "Cerca lead"}
-          </button>
-          {busy && progress && (
-            <span className="text-[12px] text-ink2">
-              {progress.phase === "start" && "Avvio del motore…"}
-              {progress.phase === "running" && `Scraping in corso… ${progress.found || 0} trovati (${progress.searches} ricerche)`}
-              {progress.phase === "done" && "Fatto."}
-            </span>
-          )}
-        </div>
-        <p className="mt-3 text-[11px] text-ink2/70">
-          Ogni categoria viene cercata in ogni città selezionata. Più combinazioni = più tempo e più crediti Apify.
-        </p>
-      </div>
+      )}
+
+      <SearchPanel {...{ open: panelOpen, setOpen: setPanelOpen, cats, setCats, cities, setCities, maxPer, setMaxPer, busy, progress, run }} />
 
       {err && <p className="mt-5 rounded-xl border border-crit/30 bg-crit/5 px-4 py-3 text-[13px] text-crit">{err}</p>}
 
-      {/* filtri risultati */}
-      {leads.length > 0 && (
-        <div className="mt-5 flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-2 rounded-xl border border-line bg-white/[0.02] px-3">
-            <Search size={14} className="text-ink2" />
-            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filtra…" className="w-44 bg-transparent py-2 text-[13px] text-ink outline-none placeholder:text-ink2/50" />
+      {total > 0 && (
+        <>
+          <div className="mt-5 flex flex-wrap items-center gap-2">
+            <Tab on={tab === "da_chiamare"} dot="#8B5CF6" onClick={() => setTab("da_chiamare")}>Da chiamare · {counts.da_chiamare}</Tab>
+            <Tab on={tab === "interessato"} dot="#30D158" onClick={() => setTab("interessato")}>Interessati · {counts.interessato}</Tab>
+            <Tab on={tab === "chiuso"} dot="#30D158" onClick={() => setTab("chiuso")}>Chiusi · {counts.chiuso}</Tab>
+            <Tab on={tab === "scartato"} dot="#8E8E93" onClick={() => setTab("scartato")}>Scartati · {counts.scartato}</Tab>
+            <Tab on={tab === "tutti"} onClick={() => setTab("tutti")}>Tutti · {total}</Tab>
           </div>
-          <button onClick={() => setOnlyHot(!onlyHot)}
-            className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-[12.5px] transition ${onlyHot ? "border-viola/40 bg-viola/10 text-viola-h" : "border-line text-ink2 hover:text-ink"}`}>
-            <Flame size={13} /> Solo hot (senza sito + telefono)
-          </button>
-        </div>
+          <div className="mt-2.5 flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-2 rounded-xl border border-line bg-white/[0.02] px-3">
+              <Search size={14} className="text-ink2" />
+              <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filtra per nome…" className="w-48 bg-transparent py-2 text-[13px] text-ink outline-none placeholder:text-ink2/50" />
+            </div>
+            <select value={cat} onChange={(e) => setCat(e.target.value)}
+              className="rounded-xl border border-line bg-surface px-3 py-2 text-[12.5px] text-ink2 outline-none">
+              <option value="">Tutte le categorie</option>
+              {categories.map((c) => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
+        </>
       )}
 
-      {leads.length === 0 && !busy && !err && (
-        <p className="mt-10 text-center text-[13.5px] text-ink2">Scegli categorie e città, poi premi <b className="text-ink">Cerca lead</b>. I risultati appariranno qui.</p>
+      {total === 0 && !busy && !err && (
+        <p className="mt-10 text-center text-[13.5px] text-ink2">Apri <b className="text-ink">Cerca nuovi lead</b>, scegli categorie e città, poi premi Cerca.</p>
       )}
-      {leads.length > 0 && filtered.length === 0 && (
-        <p className="mt-8 text-center text-[13px] text-ink2">Nessun lead con questi filtri. Prova a togliere "Solo hot".</p>
+      {total > 0 && filtered.length === 0 && (
+        <p className="mt-8 text-center text-[13px] text-ink2">Nessun lead in questa sezione.</p>
       )}
 
-      <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-        {filtered.map((l) => <LeadCard key={l.id} l={l} />)}
+      <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+        {filtered.map((l) => <LeadCard key={leadKey(l)} l={l} st={statusMap[leadKey(l)]} />)}
       </div>
     </motion.div>
   );
