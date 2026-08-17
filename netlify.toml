@@ -1,12 +1,12 @@
+# Deploy del Command Center (cartella command-center) su Netlify.
+# Netlify legge questo file da solo: base, build e publish sono già pronti.
 [build]
-  publish = "."
-  functions = "netlify/functions"
+  base = "command-center"
+  command = "npm run build"
+  publish = "dist"
 
-# Le funzioni sono raggiungibili come /api/<nome>
+# App a pagina singola: ogni URL torna all'index.
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  from = "/*"
+  to = "/index.html"
   status = 200
-
-[functions]
-  node_bundler = "esbuild"
