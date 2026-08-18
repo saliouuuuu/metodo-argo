@@ -7,6 +7,8 @@
    Apify espone CORS (*), quindi funziona da localhost e da sito.
    Il token si salva in locale (solo sul tuo dispositivo).
    ============================================================ */
+import SEED from "./seed_leads.json";
+
 const TOKEN_KEY = "cc_apify_token";
 const CACHE_KEY = "cc_leads_cache";
 const ACTOR = "compass~crawler-google-places";
@@ -15,7 +17,16 @@ const API = "https://api.apify.com/v2";
 export const getToken = () => localStorage.getItem(TOKEN_KEY) || "";
 export const setToken = (t) => localStorage.setItem(TOKEN_KEY, (t || "").trim());
 
-export const getCache = () => { try { return JSON.parse(localStorage.getItem(CACHE_KEY)) || []; } catch { return []; } };
+/* 475 lead veri della zona di Cuneo già inclusi: appaiono al primo
+   avvio anche senza token. Il token serve solo per cercarne di nuovi. */
+export { SEED };
+export const getCache = () => {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (raw) return JSON.parse(raw) || [];
+  } catch {}
+  return SEED;
+};
 export const setCache = (leads) => { try { localStorage.setItem(CACHE_KEY, JSON.stringify(leads)); } catch {} };
 
 /* Zona Cuneo di default — modificabili dall'utente. */

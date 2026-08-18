@@ -25,32 +25,10 @@ const STATUS = {
 const leadKey = (l) => (l.phone ? l.phone.replace(/\s/g, "") : `${l.name}|${l.city}`);
 const today = () => new Date().toISOString().slice(0, 10);
 
-/* ---------- prima configurazione ---------- */
-function TokenCard({ onSave }) {
-  const [v, setV] = useState("");
-  return (
-    <div className="glass mx-auto mt-10 max-w-[560px] p-6 text-center">
-      <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-2xl bg-viola/15"><KeyRound size={20} className="text-viola-h" /></span>
-      <h2 className="mt-3 text-[17px] font-semibold text-ink">Collega Apify</h2>
-      <p className="mt-1.5 text-[13px] leading-relaxed text-ink2">
-        Il motore usa Apify per leggere Google Maps. Vai su <b>apify.com → Settings → Integrations</b>,
-        copia il tuo <b>API token</b> e incollalo qui. Resta salvato solo sul tuo dispositivo.
-      </p>
-      <div className="mt-4 flex items-center gap-2 rounded-xl border border-line bg-white/[0.02] px-3 py-2">
-        <input value={v} onChange={(e) => setV(e.target.value)} placeholder="apify_api_…" type="password"
-          className="w-full bg-transparent text-[13px] text-ink outline-none placeholder:text-ink2/50" />
-      </div>
-      <button onClick={() => onSave(v)} disabled={!v.trim()}
-        className="mt-3 rounded-xl bg-viola px-4 py-2 text-[13.5px] font-semibold text-white transition hover:bg-viola-h disabled:opacity-40">
-        Collega
-      </button>
-    </div>
-  );
-}
-
 /* ---------- pannello ricerca (collassabile) ---------- */
-function SearchPanel({ open, setOpen, cats, setCats, cities, setCities, maxPer, setMaxPer, busy, progress, run }) {
+function SearchPanel({ open, setOpen, token, saveToken, cats, setCats, cities, setCities, maxPer, setMaxPer, busy, progress, run }) {
   const toggle = (arr, set, val) => set(arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val]);
+  const [tok, setTok] = useState("");
   return (
     <div className="glass mt-5 overflow-hidden">
       <button onClick={() => setOpen(!open)} className="flex w-full items-center justify-between px-5 py-3.5 text-left">
@@ -59,6 +37,18 @@ function SearchPanel({ open, setOpen, cats, setCats, cities, setCities, maxPer, 
       </button>
       {open && (
         <div className="border-t border-line px-5 pb-5 pt-4">
+          {!token && (
+            <div className="mb-4 rounded-xl border border-viola/25 bg-viola/[0.06] p-3.5">
+              <p className="flex items-center gap-1.5 text-[12.5px] font-medium text-ink"><KeyRound size={13} className="text-viola-h" /> Per cercare nuovi lead serve il token Apify</p>
+              <p className="mt-1 text-[11.5px] leading-relaxed text-ink2">apify.com → Settings → Integrations → copia l'API token. Resta salvato solo su questo dispositivo. (I 475 lead qui sotto ci sono già senza token.)</p>
+              <div className="mt-2.5 flex items-center gap-2">
+                <input value={tok} onChange={(e) => setTok(e.target.value)} placeholder="apify_api_…" type="password"
+                  className="w-full rounded-lg border border-line bg-white/[0.02] px-2.5 py-1.5 text-[12.5px] text-ink outline-none placeholder:text-ink2/50" />
+                <button onClick={() => tok.trim() && saveToken(tok)} disabled={!tok.trim()}
+                  className="shrink-0 rounded-lg bg-viola px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-viola-h disabled:opacity-40">Collega</button>
+              </div>
+            </div>
+          )}
           <p className="section-label">Cosa cerchi</p>
           <div className="mt-2 flex flex-wrap gap-1.5">
             {DEFAULT_CATEGORIES.map((c) => (
@@ -212,6 +202,7 @@ export default function Leads() {
 
   const saveToken = (t) => { setToken(t); setTok(t.trim()); };
   const run = useCallback(async () => {
+    if (!token) { setPanelOpen(true); setErr("Incolla prima il token Apify qui sopra per cercare nuovi lead."); return; }
     if (!cats.length || !cities.length) { setErr("Scegli almeno una categoria e una città."); return; }
     setBusy(true); setErr(""); setProgress({ phase: "start" });
     try {
@@ -247,15 +238,6 @@ export default function Leads() {
       (!q || (l.name + l.city + l.category).toLowerCase().includes(q.toLowerCase()));
   });
 
-  if (!token) {
-    return (
-      <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }} className="mx-auto max-w-[1040px] px-8 py-9">
-        <h1 className="text-[30px] font-semibold tracking-tight text-ink">Leads</h1>
-        <TokenCard onSave={saveToken} />
-      </motion.div>
-    );
-  }
-
   const total = leads.length;
   const worked = counts.interessato + counts.chiuso + counts.scartato + leads.filter((l) => stOf(l) === "richiama").length;
   const pct = total ? Math.round((worked / total) * 100) : 0;
@@ -269,7 +251,7 @@ export default function Leads() {
             {total ? <>{counts.da_chiamare} da chiamare · {workedToday} lavorati oggi</> : "Attività senza sito nella zona di Cuneo, pronte da chiamare."}
           </p>
         </div>
-        <button onClick={() => { setTok(""); setToken(""); }} className="text-[11.5px] text-ink2 underline-offset-2 hover:text-ink hover:underline">Cambia token</button>
+        {token && <button onClick={() => { setTok(""); setToken(""); }} className="text-[11.5px] text-ink2 underline-offset-2 hover:text-ink hover:underline">Cambia token</button>}
       </div>
 
       {/* progresso */}
@@ -284,7 +266,7 @@ export default function Leads() {
         </div>
       )}
 
-      <SearchPanel {...{ open: panelOpen, setOpen: setPanelOpen, cats, setCats, cities, setCities, maxPer, setMaxPer, busy, progress, run }} />
+      <SearchPanel {...{ open: panelOpen, setOpen: setPanelOpen, token, saveToken, cats, setCats, cities, setCities, maxPer, setMaxPer, busy, progress, run }} />
 
       {err && <p className="mt-5 rounded-xl border border-crit/30 bg-crit/5 px-4 py-3 text-[13px] text-crit">{err}</p>}
 
